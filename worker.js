@@ -60,22 +60,30 @@ async function buildVapidJWT(endpoint){
   const rawSig=new Uint8Array(64);rawSig.set(rPad);rawSig.set(sPad,32);
   return hdr+'.'+pld+'.'+toBase64Url(rawSig);
 }
-async function sendPush(subscription,payload){
-  const endpoint=subscription.endpoint;
-  const jwt=await buildVapidJWT(endpoint);
-  const auth='vapid t='+jwt+', k='+VAPID_PUBLIC_KEY;
-  const bodyStr=JSON.stringify(payload);
-  const bodyBytes=new TextEncoder().encode(bodyStr);
-  const res=await fetch(endpoint,{
-    method:'POST',
-    headers:{
-      'Authorization':auth,'Content-Type':'application/octet-stream',
-      'Content-Encoding':'aes128gcm','TTL':'86400','Urgency':'high',
-      'Content-Length':String(bodyBytes.length)
+async function sendPush(subscription, payload){
+  const endpoint = subscription.endpoint;
+  const jwt = await buildVapidJWT(endpoint);
+  const auth = 'vapid t=' + jwt + ', k=' + VAPID_PUBLIC_KEY;
+  const bodyStr = JSON.stringify(payload);
+
+  // Send as plain text — we are not doing end-to-end encryption of the payload.
+  // The VAPID JWT authenticates the server; the payload travels over HTTPS.
+  // Do NOT set Content-Encoding: aes128gcm unless the body is actually encrypted
+  // (RFC 8291) — browsers silently drop messages with mismatched encoding.
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Authorization': auth,
+      'Content-Type': 'text/plain;charset=UTF-8',
+      'TTL': '86400',
+      'Urgency': 'high'
     },
-    body:bodyStr
+    body: bodyStr
   });
-  if(!res.ok){const txt=await res.text().catch(()=>'');console.error('Push error:',res.status,txt);}
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    console.error('Push error:', res.status, txt);
+  }
   return res;
 }
 
