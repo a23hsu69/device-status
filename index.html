@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#0F6E56"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Device Status"/>
+<meta name="description" content="Kochi Region Device Status Monitor"/>
+<link rel="manifest" href="./manifest.json"/>
+<link rel="apple-touch-icon" href="./icons/icon-180.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"/>
+<title>Device Status — Kochi</title>
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f7f7f6;--bg3:#f0efe9;
+  --text:#111110;--text2:#6b6b67;--text3:#a8a8a2;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.18);
+  --accent:#0F6E56;--accent-bg:#e8f5f0;--accent-light:#d0ede3;
+  --red-bg:#FDF2F2;--red-text:#b91c1c;--red-dot:#ef4444;
+  --amber-bg:#FFFBEB;--amber-text:#92400e;--amber-dot:#f59e0b;
+  --green-bg:#F0FDF4;--green-text:#166534;--green-dot:#22c55e;
+  --teal-bg:#F0FDFA;--teal-text:#134e4a;--teal-dot:#14b8a6;
+  --radius:6px;--radius-lg:10px;--radius-xl:14px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#141413;--bg2:#1e1e1c;--bg3:#272724;
+    --text:#f0ede8;--text2:#a0a09a;--text3:#5a5a56;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.15);
+    --accent:#1D9E75;--accent-bg:#0c2820;--accent-light:#0f3528;
+    --red-bg:#2d1515;--red-text:#fca5a5;--red-dot:#ef4444;
+    --amber-bg:#2d1f0a;--amber-text:#fcd34d;--amber-dot:#f59e0b;
+    --green-bg:#0f2d1a;--green-text:#86efac;--green-dot:#22c55e;
+    --teal-bg:#0a2420;--teal-text:#5eead4;--teal-dot:#14b8a6;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg3);color:var(--text);font-family:var(--font);font-size:14px}
+body{display:flex;flex-direction:column;min-height:100vh}
+
+/* topbar */
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;flex-shrink:0;box-shadow:var(--shadow)}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:32px;height:32px;border-radius:8px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600;letter-spacing:-0.01em}
+.topbar-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.version-tag{font-size:10px;color:var(--text3);font-weight:500;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:2px 8px}
+.offline-badge,.stale-badge{font-size:10px;font-weight:600;background:var(--amber-bg);color:var(--amber-text);border-radius:20px;padding:2px 8px;border:1px solid var(--amber-dot)}
+
+/* buttons */
+.btn{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:6px 12px;font-size:13px;cursor:pointer;color:var(--text);display:inline-flex;align-items:center;gap:6px;font-family:var(--font);white-space:nowrap;font-weight:500;transition:background .12s}
+.btn:hover{background:var(--bg2)}.btn:active{transform:scale(0.97)}.btn:disabled{opacity:0.4;pointer-events:none}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn-primary:hover{opacity:0.9;background:var(--accent)}
+.btn-sm{font-size:12px;padding:5px 10px}
+.btn-icon{padding:6px}
+.notif-btn{background:none;border:1px solid var(--border2);border-radius:var(--radius);padding:5px 8px;cursor:pointer;color:var(--text2);display:none;align-items:center;gap:5px;font-size:12px;font-family:var(--font)}
+.notif-btn:hover{background:var(--bg2)}.notif-btn.subscribed{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+
+/* main layout */
+.main{flex:1;padding:1.25rem;max-width:1200px;width:100%;margin:0 auto}
+
+/* stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:1.25rem}
+.stat{background:var(--bg);border-radius:var(--radius-lg);padding:1rem 1.1rem;border:1px solid var(--border);box-shadow:var(--shadow)}
+.stat-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.stat-val{font-size:26px;font-weight:700;line-height:1;letter-spacing:-0.02em}
+.stat-val.red{color:var(--red-dot)}.stat-val.amber{color:var(--amber-dot)}.stat-val.green{color:var(--green-dot)}.stat-val.teal{color:var(--teal-dot)}
+
+/* card */
+.card{background:var(--bg);border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+
+/* tabs */
+.tab-bar{display:flex;border-bottom:1px solid var(--border);padding:0 1.25rem;background:var(--bg)}
+.tab{font-size:13px;font-weight:500;padding:12px 16px;cursor:pointer;color:var(--text2);border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent;font-family:var(--font);transition:color .12s;display:inline-flex;align-items:center;gap:6px}
+.tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* toolbar */
+.toolbar{display:flex;gap:8px;padding:.85rem 1.25rem;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);background:var(--bg2)}
+.search-wrap{position:relative;min-width:180px;max-width:260px;flex:1}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3)}
+.search-inp{width:100%;border:1px solid var(--border2);border-radius:20px;padding:6px 10px 6px 30px;font-size:12px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
+.search-inp:focus{border-color:var(--accent)}.search-inp::placeholder{color:var(--text3)}
+.pill{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);cursor:pointer;color:var(--text2);font-family:var(--font);font-weight:500;transition:all .12s}
+.pill:hover{border-color:var(--accent);color:var(--accent)}.pill.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);font-weight:600}
+.sort-sel{font-size:12px;padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:var(--font);cursor:pointer}
+.export-group{display:flex;gap:6px;margin-left:auto}
+
+/* legend */
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:.6rem 1.25rem;font-size:11px;color:var(--text2);align-items:center;border-bottom:1px solid var(--border);background:var(--bg2)}
+.legend-item{display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot-c{background:var(--red-dot)}.dot-h{background:var(--amber-dot)}.dot-t{background:var(--green-dot)}.dot-r{background:var(--teal-dot)}
+
+/* results count */
+.results-count{font-size:11px;color:var(--text2);padding:6px 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)}
+.results-count strong{color:var(--text);font-weight:600}
+
+/* table */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}
+table{width:100%;min-width:760px;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
+thead th{font-size:10.5px;font-weight:700;color:var(--text3);text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;background:var(--bg2)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .08s}
+tbody tr:hover{background:var(--accent-bg)}
+td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
+.loc-cell{display:flex;align-items:center;gap:5px;overflow:hidden}
+.loc-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap;gap:4px}
+.badge-c{background:var(--red-bg);color:var(--red-text)}.badge-h{background:var(--amber-bg);color:var(--amber-text)}
+.badge-t{background:var(--green-bg);color:var(--green-text)}.badge-r{background:var(--teal-bg);color:var(--teal-text)}
+.days{font-weight:700;font-size:13px}
+.days-t{color:var(--green-dot)}.days-h{color:var(--amber-dot)}.days-c{color:var(--red-dot)}
+
+/* inline inputs */
+.einput{width:100%;border:none;background:transparent;font-size:12px;color:var(--text);font-family:var(--font);padding:0;outline:none}
+.einput:focus{background:var(--bg2);border-radius:4px;padding:2px 6px;outline:1px solid var(--accent)}
+.einput::placeholder{color:var(--text3)}
+
+/* row action buttons */
+.btn-res{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-dot);color:var(--green-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600}
+.btn-res:hover{background:var(--green-dot);color:#fff}
+.btn-reopen{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--amber-bg);border:1px solid var(--amber-dot);color:var(--amber-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600}
+.btn-reopen:hover{background:var(--amber-dot);color:#fff}
+.resolved-row td{opacity:0.55}
+.ts{font-size:11px;color:var(--text2);white-space:nowrap}
+
+/* empty / error */
+.empty{text-align:center;padding:4rem 1rem;color:var(--text2);font-size:14px}
+.error-bar{border-radius:var(--radius);padding:10px 14px;font-size:12.5px;margin-bottom:1rem;line-height:1.5;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.error-warn{background:var(--red-bg);color:var(--red-text)}.error-info{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}.error-stale{background:var(--amber-bg);color:var(--amber-text)}
+.error-close{cursor:pointer;font-size:16px;opacity:.5;flex-shrink:0;background:none;border:none;color:inherit;line-height:1}.error-close:hover{opacity:1}
+
+/* modal */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.modal-backdrop.open{display:flex}
+@media(min-width:600px){.modal-backdrop{align-items:center;padding:1rem}}
+.modal{background:var(--bg);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:1.5rem;width:100%;max-height:90vh;overflow-y:auto;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+@media(min-width:600px){.modal{border-radius:var(--radius-xl);max-width:540px;max-height:80vh}}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.01em}
+.modal p{font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6}
+.eng-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;align-items:center}
+.eng-lbl{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eng-inp{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font)}
+.eng-inp:focus{outline:none;border-color:var(--accent)}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1rem}
+.eng-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.btn-upload-again{font-size:12px;padding:4px 10px;border-radius:var(--radius)}
+
+/* toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);border-radius:var(--radius-lg);padding:9px 20px;font-size:13px;font-weight:500;z-index:400;pointer-events:none;opacity:0;transition:opacity .2s;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.toast.show{opacity:1}
+
+/* login */
+.login-screen{position:fixed;inset:0;background:var(--bg3);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.login-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+.login-logo{width:52px;height:52px;border-radius:12px;display:block;margin:0 auto 1.25rem}
+.login-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;letter-spacing:-0.01em}
+.login-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:1.5rem}
+.login-field{margin-bottom:12px}
+.login-field label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.login-field input{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:9px 12px;font-size:14px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
+.login-field input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);margin-top:4px;transition:opacity .12s}
+.login-btn:hover{opacity:0.9}.login-btn:active{opacity:0.8}
+.login-error{background:var(--red-bg);color:var(--red-text);border-radius:var(--radius);padding:8px 12px;font-size:12px;margin-bottom:12px;display:none;text-align:center;font-weight:500}
+.login-footer{font-size:11px;color:var(--text3);text-align:center;margin-top:1rem}
+
+/* user pill in topbar */
+.user-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 8px}
+.user-pill span{font-weight:500;color:var(--text)}
+.user-pill button{background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0;margin-left:2px;font-family:var(--font)}
+.user-pill button:hover{color:var(--red-dot)}
+
+/* alert modal */
+.alert-recipient{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);cursor:pointer;transition:all .12s;margin-bottom:8px;user-select:none}
+.alert-recipient:hover,.alert-recipient.selected{border-color:var(--accent);background:var(--accent-bg)}
+.alert-recipient input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer;pointer-events:none}
+.alert-recipient-name{font-size:13px;font-weight:600;color:var(--text)}
+.alert-recipient-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.alert-field{margin-bottom:12px}
+.alert-field label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.alert-field input,.alert-field textarea{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none}
+.alert-field input:focus,.alert-field textarea:focus{border-color:var(--accent)}
+.alert-field textarea{resize:vertical;min-height:72px}
+.alert-preview{background:var(--bg2);border-radius:var(--radius);padding:10px 12px;font-size:12px;border-left:3px solid var(--accent);margin-bottom:1rem;display:none}
+.alert-preview-title{font-weight:600;color:var(--text);font-size:13px;margin-bottom:3px}
+
+/* in-app alert bar */
+.inapp-alert{display:none;position:sticky;top:58px;z-index:90;background:#1a1a18;color:#fff;padding:10px 1.25rem;font-size:13px;align-items:center;gap:12px;flex-shrink:0;animation:slideDown .3s ease}
+.inapp-alert.show{display:flex}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.inapp-alert-text{flex:1}
+.inapp-alert-title{font-weight:600;font-size:13px}
+.inapp-alert-body{font-size:12px;opacity:.8;margin-top:2px}
+.inapp-alert-close{background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap}
+
+/* notifications tab */
+.notif-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red-dot);color:#fff;border-radius:20px;font-size:9px;font-weight:700;min-width:16px;height:16px;padding:0 4px;line-height:1}
+.notif-toolbar{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+.notif-count-lbl{font-size:12px;color:var(--text2)}
+.notif-clear-btn{font-size:11px;padding:4px 10px;border-radius:var(--radius);background:var(--bg);border:1px solid var(--border2);color:var(--text2);cursor:pointer;font-family:var(--font)}
+.notif-clear-btn:hover{background:var(--red-bg);color:var(--red-text);border-color:var(--red-dot)}
+.notif-inbox{padding:0 1.25rem}
+.notif-empty{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:13px}
+.notif-empty-icon{font-size:28px;margin-bottom:8px}
+.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.notif-item:last-child{border-bottom:none}
+.notif-icon-wrap{width:36px;height:36px;border-radius:10px;background:var(--accent-bg);border:1px solid var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.notif-content{flex:1;min-width:0}
+.notif-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
+.notif-body{font-size:12px;color:var(--text2);line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.notif-meta{font-size:10.5px;color:var(--text3);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap}
+.notif-unread-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px}
+
+/* onboarding */
+.onboard{position:fixed;inset:0;background:var(--bg3);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;overflow-y:auto}
+.onboard h1{font-size:22px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
+.onboard-sub{font-size:14px;color:var(--text2);line-height:1.6;max-width:380px;margin:0 auto 1.5rem}
+.onboard-box{width:100%;max-width:460px}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-xl);padding:2.5rem 1rem;cursor:pointer;transition:all .15s;background:var(--bg)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-bg)}
+.upload-zone input{display:none}
+.upload-zone p{font-size:13px;color:var(--text2);margin:4px 0 0}
+.upload-zone .hint{font-size:11px;color:var(--text3);margin-top:4px}
+.upload-summary{margin-top:1rem;font-size:13px;text-align:left}
+.tag-matched{display:inline-block;background:var(--green-bg);color:var(--green-text);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin:2px}
+.onboard-actions{display:flex;gap:8px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:1.5rem}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+.step-dot.active{background:var(--accent)}.step-dot.done{background:var(--green-dot)}
+.gaps-list{width:100%;max-width:460px;text-align:left;max-height:45vh;overflow-y:auto;margin-bottom:.5rem}
+.gap-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;align-items:center}
+.gap-lbl{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gap-inp{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font)}
+.section-note{font-size:12px;color:var(--text2);margin-bottom:12px;padding:8px 10px;background:var(--bg2);border-radius:var(--radius);line-height:1.5;text-align:left}
+
+/* ── Admin dashboard cards ── */
+.eng-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.eng-card{background:var(--bg);border-radius:var(--radius-lg);padding:1rem 1.1rem;border:1px solid var(--border);box-shadow:var(--shadow)}
+.eng-card-name{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.eng-card-stats{display:flex;gap:14px;flex-wrap:wrap}
+.eng-stat{text-align:center;min-width:36px}
+.eng-stat-val{font-size:22px;font-weight:700;line-height:1;letter-spacing:-0.02em}
+.eng-stat-lbl{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+@media(max-width:480px){.eng-summary{grid-template-columns:1fr}}
+
+/* ── Row alert button ── */
+.btn-row-alert{background:none;border:none;cursor:pointer;color:var(--text3);padding:3px 4px;border-radius:var(--radius);display:inline-flex;align-items:center;transition:color .12s,background .12s;flex-shrink:0}
+.btn-row-alert:hover{color:var(--accent);background:var(--accent-bg)}
+
+/* ── Activity log tab ── */
+.log-toolbar{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+.log-list{padding:0 1.25rem}
+.log-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.log-dot.resolve{background:var(--green-dot)}.log-dot.reopen{background:var(--amber-dot)}.log-dot.alert{background:var(--accent)}.log-dot.remark{background:var(--text3)}
+.log-text{flex:1;font-size:12px;color:var(--text);line-height:1.5}
+.log-text strong{font-weight:600}
+.log-meta{font-size:10.5px;color:var(--text3);white-space:nowrap;margin-top:1px;flex-shrink:0}
+.log-empty{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:13px}
+.log-clear-btn{font-size:11px;padding:4px 10px;border-radius:var(--radius);background:var(--bg);border:1px solid var(--border2);color:var(--text2);cursor:pointer;font-family:var(--font)}
+.log-clear-btn:hover{background:var(--red-bg);color:var(--red-text);border-color:var(--red-dot)}
+
+/* ── Password change modal ── */
+.pw-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem;margin-bottom:10px}
+.pw-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pw-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0}
+.pw-card-name{font-size:13px;font-weight:600;color:var(--text)}
+.pw-card-role{font-size:11px;color:var(--text3)}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.form-inp{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
+.form-inp:focus{border-color:var(--accent)}
+.form-hint{font-size:11px;color:var(--text3);margin-top:4px}
+.form-error{font-size:11px;color:var(--red-text);margin-top:4px;display:none}
+
+/* ── Admin settings modal ── */
+.settings-section{margin-bottom:1.5rem}
+.settings-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.user-cred-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:10px}
+.user-cred-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.user-cred-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0}
+.user-cred-name{font-size:13px;font-weight:600;color:var(--text)}
+.user-cred-login{font-size:11px;color:var(--text3);margin-top:1px}
+.user-cred-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.user-cred-fields{grid-template-columns:1fr}}
+.cred-field label{display:block;font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.cred-inp{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 9px;font-size:12.5px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
+.cred-inp:focus{border-color:var(--accent)}
+.cred-inp.error{border-color:var(--red-dot)}
+.cred-hint{font-size:10.5px;color:var(--text3);margin-top:3px}
+.settings-info{font-size:12px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;line-height:1.5;margin-bottom:1rem}
+.admin-pw-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1rem}
+.admin-pw-section-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px}
+
+/* install banner */
+.install-bar{background:var(--accent);color:#fff;padding:10px 1.25rem;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+.install-bar button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius);padding:6px 14px;font-size:13px;cursor:pointer;font-family:var(--font);font-weight:500}
+.install-bar button:hover{background:rgba(255,255,255,0.3)}
+
+@media(max-width:700px){
+  .topbar-title{font-size:14px}
+  .main{padding:.75rem}
+  .stats-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  table{font-size:11px;min-width:700px}
+  td,thead th{padding:7px 5px}
+  .export-group{margin-left:0}
+  .toolbar{gap:6px;padding:.65rem .75rem}
+  .sort-sel{max-width:140px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Login screen ─────────────────────────────────────────── -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <img src="./icons/icon-192.png" class="login-logo" alt="" onerror="this.style.display='none'"/>
+    <div class="login-title">Device Status</div>
+    <div class="login-sub">Kochi Region — Authorised Access Only</div>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="Enter username" autocomplete="username"/>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign in</button>
+    <div class="login-footer">LDB Device Monitoring · v3.0 · Sessions expire after 24 hours</div>
+  </div>
+</div>
+
+<!-- ── Install banner ──────────────────────────────────────── -->
+<div id="install-banner" style="display:none;position:relative;z-index:150">
+  <div class="install-bar">
+    <img src="./icons/icon-192.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0" alt=""/>
+    <div style="flex:1;min-width:160px">
+      <div style="font-size:13px;font-weight:500">Install Device Status</div>
+      <div style="font-size:11px;opacity:.85;margin-top:1px">Works offline · Fast access from home screen</div>
+    </div>
+    <button onclick="installApp()">Install</button>
+    <button onclick="dismissInstall()" style="background:transparent;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;padding:0 4px;line-height:1">&#x2715;</button>
+  </div>
+</div>
+
+<!-- ── Top bar ─────────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <img src="./icons/icon-192.png" class="topbar-logo" alt="" onerror="this.style.display='none'"/>
+    <div>
+      <div class="topbar-title">
+        Device Status
+        <span class="version-tag">v3.0</span>
+        <span class="offline-badge" id="offline-badge" style="display:none">Offline</span>
+        <span class="stale-badge" id="stale-badge" style="display:none">Stale</span>
+      </div>
+      <div class="topbar-sub" id="last-fetched">No data loaded</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <!-- user pill — always visible once logged in -->
+    <div class="user-pill" id="user-pill" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span id="user-display">—</span>
+      <button id="change-pw-link" onclick="openChangePwModal()" title="Change password" style="display:none">· Change password</button>
+      <button onclick="doLogout()" title="Log out">Sign out</button>
+    </div>
+    <!-- notify button — engineers only -->
+    <button class="notif-btn" id="notif-btn" onclick="togglePushSubscription()" title="Push notifications">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <span id="notif-label">Notify</span>
+    </button>
+    <!-- send alert — admin only -->
+    <button class="btn btn-sm" id="send-alert-btn" onclick="openAlertModal()" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Send Alert
+    </button>
+    <!-- admin settings — admin only -->
+    <button class="btn btn-icon" id="settings-btn" onclick="openSettingsModal()" title="Settings" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <!-- engineer assignment -->
+    <button class="btn btn-icon" onclick="openSetup()" title="Assign engineers">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 8a3 3 0 100-6 3 3 0 000 6zM2 14s-1 0-1-1 1-4 6-4c.5 0 1 0 1.5.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M13 11v4M11 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <!-- fetch -->
+    <button class="btn" id="fetch-btn" onclick="fetchCSV()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="fetch-label">Fetch Latest</span>
+    </button>
+  </div>
+</div>
+
+<!-- ── In-app alert bar ────────────────────────────────────── -->
+<div class="inapp-alert" id="inapp-alert">
+  <div class="inapp-alert-text">
+    <div class="inapp-alert-title" id="inapp-alert-title">Alert</div>
+    <div class="inapp-alert-body" id="inapp-alert-body"></div>
+  </div>
+  <button class="inapp-alert-close" onclick="dismissInAppAlert()">Dismiss</button>
+</div>
+
+<!-- ── Main content ────────────────────────────────────────── -->
+<div class="main">
+  <div id="error-area"></div>
+
+  <!-- Engineer summary cards — admin only, shown after data loaded -->
+  <div id="eng-summary-row" class="eng-summary" style="display:none">
+    <div class="eng-card">
+      <div class="eng-card-name">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Ayush E P
+      </div>
+      <div class="eng-card-stats">
+        <div class="eng-stat"><div class="eng-stat-val red" id="ec-a-crit">0</div><div class="eng-stat-lbl">Critical</div></div>
+        <div class="eng-stat"><div class="eng-stat-val amber" id="ec-a-high">0</div><div class="eng-stat-lbl">High</div></div>
+        <div class="eng-stat"><div class="eng-stat-val green" id="ec-a-temp">0</div><div class="eng-stat-lbl">Temp</div></div>
+        <div class="eng-stat"><div class="eng-stat-val teal" id="ec-a-res">0</div><div class="eng-stat-lbl">Resolved</div></div>
+      </div>
+    </div>
+    <div class="eng-card">
+      <div class="eng-card-name">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Swethaswan
+      </div>
+      <div class="eng-card-stats">
+        <div class="eng-stat"><div class="eng-stat-val red" id="ec-s-crit">0</div><div class="eng-stat-lbl">Critical</div></div>
+        <div class="eng-stat"><div class="eng-stat-val amber" id="ec-s-high">0</div><div class="eng-stat-lbl">High</div></div>
+        <div class="eng-stat"><div class="eng-stat-val green" id="ec-s-temp">0</div><div class="eng-stat-lbl">Temp</div></div>
+        <div class="eng-stat"><div class="eng-stat-val teal" id="ec-s-res">0</div><div class="eng-stat-lbl">Resolved</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="stats-row" class="stats-grid" style="display:none">
+    <div class="stat"><div class="stat-lbl">Active</div><div class="stat-val red" id="s-total">0</div></div>
+    <div class="stat"><div class="stat-lbl">Critical</div><div class="stat-val red" id="s-crit">0</div></div>
+    <div class="stat"><div class="stat-lbl">High</div><div class="stat-val amber" id="s-high">0</div></div>
+    <div class="stat"><div class="stat-lbl">Temp</div><div class="stat-val green" id="s-temp">0</div></div>
+    <div class="stat"><div class="stat-lbl">Resolved</div><div class="stat-val teal" id="s-res">0</div></div>
+  </div>
+
+  <div id="main-ui" style="display:none">
+    <div class="card" style="margin-bottom:1rem">
+      <div class="tab-bar">
+        <button class="tab active" id="tab-a" onclick="switchTab('active')">Active issues</button>
+        <button class="tab" id="tab-r" onclick="switchTab('resolved')">Resolved</button>
+        <!-- Notifications tab: only shown to engineers via JS -->
+        <button class="tab" id="tab-n" onclick="switchTab('notifs')" style="display:none">
+          Notifications
+          <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+        </button>
+        <!-- Activity log: only shown to admin via JS -->
+        <button class="tab" id="tab-l" onclick="switchTab('log')" style="display:none">Activity Log</button>
+      </div>
+
+      <!-- Active panel -->
+      <div id="panel-active">
+        <div class="legend">
+          <div class="legend-item"><span class="dot dot-c"></span>Critical (&gt;7d)</div>
+          <div class="legend-item"><span class="dot dot-h"></span>High (2–7d)</div>
+          <div class="legend-item"><span class="dot dot-t"></span>Possibly temp (0–1d)</div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <input class="search-inp" type="search" id="search-active" placeholder="Search location, engineer…" oninput="renderActive()"/>
+          </div>
+          <button class="pill active" id="pill-all" onclick="setFilter('all',this)">All</button>
+          <button class="pill" id="pill-critical" onclick="setFilter('critical',this)">Critical</button>
+          <button class="pill" id="pill-high" onclick="setFilter('high',this)">High</button>
+          <button class="pill" id="pill-temp" onclick="setFilter('temp',this)">Temp</button>
+          <select class="sort-sel" id="eng-filter-sel" onchange="setEngFilter(this.value)">
+            <option value="">All engineers</option>
+            <option value="Ayush E P">Ayush E P</option>
+            <option value="Swethaswan">Swethaswan</option>
+          </select>
+          <select class="sort-sel" onchange="setSort(this.value)">
+            <option value="days_desc">Most days down</option>
+            <option value="days_asc">Fewest days down</option>
+            <option value="sync_desc">Newest sync first</option>
+            <option value="sync_asc">Oldest sync first</option>
+          </select>
+          <div class="export-group">
+            <button class="btn" onclick="exportCSV('active')">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>CSV
+            </button>
+            <button class="btn" onclick="exportExcel('active')">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Excel
+            </button>
+          </div>
+        </div>
+        <div id="active-count" class="results-count" style="display:none"></div>
+        <div id="active-tbl"></div>
+      </div>
+
+      <!-- Resolved panel -->
+      <div id="panel-resolved" style="display:none">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <input class="search-inp" type="search" id="search-resolved" placeholder="Search location, engineer…" oninput="renderResolved()"/>
+          </div>
+          <div class="export-group">
+            <button class="btn" onclick="exportCSV('resolved')">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>CSV
+            </button>
+            <button class="btn" onclick="exportExcel('resolved')">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Excel
+            </button>
+          </div>
+        </div>
+        <div id="resolved-count" class="results-count" style="display:none"></div>
+        <div id="resolved-tbl"></div>
+      </div>
+
+      <!-- Notifications panel -->
+      <div id="panel-notifs" style="display:none">
+        <div class="notif-toolbar">
+          <span class="notif-count-lbl" id="notif-inbox-count">No notifications</span>
+          <button class="notif-clear-btn" onclick="clearNotifInbox()">Clear all</button>
+        </div>
+        <div class="notif-inbox" id="notif-inbox-list">
+          <div class="notif-empty"><div class="notif-empty-icon">🔔</div>No notifications yet.<br/>Admin will send alerts here when needed.</div>
+        </div>
+      </div>
+
+      <!-- Activity log panel — admin only -->
+      <div id="panel-log" style="display:none">
+        <div class="log-toolbar">
+          <span class="notif-count-lbl" id="log-count-lbl">Activity log</span>
+          <button class="log-clear-btn" onclick="clearActivityLog()">Clear log</button>
+        </div>
+        <div class="log-list" id="log-list">
+          <div class="log-empty">No activity recorded yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="empty-state" class="empty">
+    <div style="font-size:32px;margin-bottom:10px">📡</div>
+    <div>Press "Fetch Latest" to load device status</div>
+    <div style="font-size:12px;margin-top:6px;color:var(--text2)">Works offline after first load</div>
+  </div>
+</div>
+
+<!-- ── Onboarding overlay ───────────────────────────────────── -->
+<div class="onboard" id="onboard" style="display:none">
+  <div id="onboard-step-upload">
+    <div class="step-dots"><span class="step-dot active"></span><span class="step-dot"></span></div>
+    <h1>Set up engineer assignments</h1>
+    <p class="onboard-sub">Upload your site-to-engineer mapping file. The app will auto-assign engineers to matching locations.</p>
+    <div class="onboard-box">
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('eng-file').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleFileDrop(event)">
+        <input type="file" id="eng-file" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(this)"/>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p><strong>Click to upload</strong> or drag and drop</p>
+        <p class="hint">Excel (.xlsx/.xls) or CSV — Column A: Site name, Column B: Engineer</p>
+      </div>
+      <div id="upload-summary" class="upload-summary" style="display:none"></div>
+    </div>
+    <div class="onboard-actions">
+      <button class="btn" onclick="skipOnboarding()">Skip</button>
+      <button class="btn btn-primary" id="btn-next-step" onclick="goToGapsStep()" style="display:none">Next — fill gaps</button>
+      <button class="btn btn-primary" id="btn-finish-upload" onclick="finishOnboarding()" style="display:none">Finish</button>
+    </div>
+  </div>
+  <div id="onboard-step-gaps" style="display:none">
+    <div class="step-dots"><span class="step-dot done"></span><span class="step-dot active"></span></div>
+    <h1 style="margin-bottom:8px">Fill in unmatched sites</h1>
+    <p class="onboard-sub" style="margin-bottom:1rem">These sites had no match. Add engineers manually or leave blank.</p>
+    <div class="section-note" id="gaps-matched-note"></div>
+    <div class="gaps-list" id="gaps-list"></div>
+    <div class="onboard-actions">
+      <button class="btn" onclick="goBackToUpload()">Back</button>
+      <button class="btn btn-primary" onclick="finishOnboarding()">Save &amp; continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Engineer assignment modal ───────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="modal">
+    <div class="eng-modal-header">
+      <h2>Assign engineers to locations</h2>
+      <button class="btn btn-upload-again" onclick="reopenUploadFromModal()">Upload file</button>
+    </div>
+    <p>Saved locally — persists across sessions.</p>
+    <div id="eng-list"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeSetup()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEngineers()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Manual alert modal ──────────────────────────────────── -->
+<div class="modal-backdrop" id="alert-backdrop" onclick="if(event.target===this)closeAlertModal()">
+  <div class="modal" style="max-width:460px">
+    <h2>Send alert to engineers</h2>
+    <p>Push a notification to one or both engineers instantly.</p>
+    <div class="alert-field"><label>Recipients</label></div>
+    <div class="alert-recipient" id="rec-row-ayush" onclick="toggleRecipient('ayush')">
+      <input type="checkbox" id="rec-ayush"/>
+      <div><div class="alert-recipient-name">Ayush E P</div><div class="alert-recipient-sub">KINFRA sites &amp; toll plazas</div></div>
+    </div>
+    <div class="alert-recipient" id="rec-row-swethaswan" onclick="toggleRecipient('swethaswan')">
+      <input type="checkbox" id="rec-swethaswan"/>
+      <div><div class="alert-recipient-name">Swethaswan</div><div class="alert-recipient-sub">Container terminals &amp; CFS sites</div></div>
+    </div>
+    <div class="alert-field" style="margin-top:14px">
+      <label>Title</label>
+      <input type="text" id="alert-title-inp" placeholder="e.g. Urgent: Site visit required" maxlength="60" oninput="updateAlertPreview()"/>
+    </div>
+    <div class="alert-field">
+      <label>Message</label>
+      <textarea id="alert-body-inp" placeholder="e.g. Please check KINFRA Adoor — device down 5 days." maxlength="200" oninput="updateAlertPreview()"></textarea>
+    </div>
+    <div class="alert-preview" id="alert-preview">
+      <div class="alert-preview-title" id="preview-title-txt"></div>
+      <div id="preview-body-txt"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAlertModal()">Cancel</button>
+      <button class="btn btn-primary" id="send-alert-confirm" onclick="sendManualAlert()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        Send now
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Admin: manage engineer passwords ────────────────────── -->
+<div class="modal-backdrop" id="admin-pw-backdrop" onclick="if(event.target===this)closeAdminPwModal()">
+  <div class="modal" style="max-width:460px">
+    <h2>Manage passwords</h2>
+    <p>Set new passwords for engineers. Changes take effect on their next login.</p>
+
+    <div class="pw-card">
+      <div class="pw-card-header">
+        <div class="pw-avatar">AE</div>
+        <div><div class="pw-card-name">Ayush E P</div><div class="pw-card-role">Login: ayush</div></div>
+      </div>
+      <div class="form-row">
+        <label>New password</label>
+        <input class="form-inp" type="password" id="admin-pw-ayush" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+        <div class="form-error" id="admin-pw-ayush-err"></div>
+      </div>
+    </div>
+
+    <div class="pw-card">
+      <div class="pw-card-header">
+        <div class="pw-avatar">SW</div>
+        <div><div class="pw-card-name">Swethaswan</div><div class="pw-card-role">Login: swethaswan</div></div>
+      </div>
+      <div class="form-row">
+        <label>New password</label>
+        <input class="form-inp" type="password" id="admin-pw-swethaswan" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+        <div class="form-error" id="admin-pw-swethaswan-err"></div>
+      </div>
+    </div>
+
+    <div class="form-hint" style="margin-bottom:1rem">Passwords are hashed and stored locally on this device only. Min 6 characters.</div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAdminPwModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAdminPasswords()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Engineer: change own password ───────────────────────── -->
+<div class="modal-backdrop" id="eng-pw-backdrop" onclick="if(event.target===this)closeChangePwModal()">
+  <div class="modal" style="max-width:400px">
+    <h2>Change your password</h2>
+    <p>Enter your current password to confirm, then set a new one.</p>
+    <div class="form-row">
+      <label>Current password</label>
+      <input class="form-inp" type="password" id="eng-pw-current" placeholder="Your current password" autocomplete="current-password"/>
+      <div class="form-error" id="eng-pw-current-err"></div>
+    </div>
+    <div class="form-row">
+      <label>New password</label>
+      <input class="form-inp" type="password" id="eng-pw-new" placeholder="At least 6 characters" autocomplete="new-password"/>
+    </div>
+    <div class="form-row">
+      <label>Confirm new password</label>
+      <input class="form-inp" type="password" id="eng-pw-confirm" placeholder="Repeat new password" autocomplete="new-password"/>
+      <div class="form-error" id="eng-pw-confirm-err"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeChangePwModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEngineerPassword()">Update password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Admin settings modal ────────────────────────────────── -->
+<div class="modal-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettingsModal()">
+  <div class="modal" style="max-width:500px">
+    <h2>Admin Settings</h2>
+    <p>Changes are saved to the server and sync across all devices instantly.</p>
+
+    <div class="settings-info" id="settings-sync-status">
+      <span id="settings-sync-icon">⏳</span> Loading current credentials from server…
+    </div>
+
+    <!-- Engineer credentials -->
+    <div class="settings-section">
+      <div class="settings-section-title">Engineer credentials</div>
+
+      <div class="user-cred-card">
+        <div class="user-cred-header">
+          <div class="user-cred-avatar">AE</div>
+          <div>
+            <div class="user-cred-name">Ayush E P</div>
+            <div class="user-cred-login" id="ayush-current-login">Current login: ayush</div>
+          </div>
+        </div>
+        <div class="user-cred-fields">
+          <div class="cred-field">
+            <label>Username</label>
+            <input class="cred-inp" type="text" id="cred-ayush-username" placeholder="e.g. ayush" autocomplete="off" maxlength="32"/>
+            <div class="cred-hint">3–32 characters, no spaces</div>
+          </div>
+          <div class="cred-field">
+            <label>New password</label>
+            <input class="cred-inp" type="password" id="cred-ayush-password" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="user-cred-card">
+        <div class="user-cred-header">
+          <div class="user-cred-avatar">SW</div>
+          <div>
+            <div class="user-cred-name">Swethaswan</div>
+            <div class="user-cred-login" id="swethaswan-current-login">Current login: swethaswan</div>
+          </div>
+        </div>
+        <div class="user-cred-fields">
+          <div class="cred-field">
+            <label>Username</label>
+            <input class="cred-inp" type="text" id="cred-swethaswan-username" placeholder="e.g. swethaswan" autocomplete="off" maxlength="32"/>
+          </div>
+          <div class="cred-field">
+            <label>New password</label>
+            <input class="cred-inp" type="password" id="cred-swethaswan-password" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin's own password -->
+    <div class="settings-section">
+      <div class="settings-section-title">Your password (admin)</div>
+      <div class="admin-pw-section">
+        <div class="user-cred-fields">
+          <div class="cred-field">
+            <label>Current password</label>
+            <input class="cred-inp" type="password" id="admin-current-pw" placeholder="Confirm current password" autocomplete="current-password"/>
+          </div>
+          <div class="cred-field">
+            <label>New password</label>
+            <input class="cred-inp" type="password" id="admin-new-pw" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+          </div>
+        </div>
+        <div class="cred-hint" style="margin-top:6px">You must enter your current password to save any changes.</div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeSettingsModal()">Cancel</button>
+      <button class="btn btn-primary" id="settings-save-btn" onclick="saveSettings()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 2L6 12l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Save &amp; sync
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── Constants & data ─────────────────────────────────────────
+const SITE_MAP = [
+  {site:"GIPL_Paliyekkara_Toll_Plaza",engineer:"Ayush E P"},
+  {site:"Kumbalam_Toll_Plaza",engineer:"Swethaswan"},
+  {site:"Kottayam_ICD_Kerala",engineer:"Ayush E P"},
+  {site:"International_Container_Transhipment_TerminalKochi",engineer:"Swethaswan"},
+  {site:"Cochin_SEZ",engineer:"Swethaswan"},
+  {site:"GDKL_CFS(Kerala)",engineer:"Swethaswan"},
+  {site:"MIV_CFS(Kerala)",engineer:"Swethaswan"},
+  {site:"Cochin_Port_Trust_CFS_(Kerala)",engineer:"Swethaswan"},
+  {site:"KSIE_CFS (Kerala)",engineer:"Swethaswan"},
+  {site:"Ponnarin Mangalam Toll Plaza Cochin",engineer:"Swethaswan"},
+  {site:"Chakiat Agencies Private Limited Cochin",engineer:"Swethaswan"},
+  {site:"Bay Container Terminal Pvt Ltd Cochin",engineer:"Swethaswan"},
+  {site:"Empire Container Terminal Cochin",engineer:"Swethaswan"},
+  {site:"Reefco Container Services (India) Pvt Ltd Cochin",engineer:"Swethaswan"},
+  {site:"MARINE CONTAINER LOGISTICS 1",engineer:"Swethaswan"},
+  {site:"MARINE CONTAINER LOGISTICS 2",engineer:"Swethaswan"},
+  {site:"Blueocean Container Terminals (I) Pvt Ltd 1 Cochin",engineer:"Swethaswan"},
+  {site:"MIV Empty Yard Cochin",engineer:"Swethaswan"},
+  {site:"KINFRA Export Promotion Industrial Park Kakkanad",engineer:"Ayush E P"},
+  {site:"KINFRA Small Industries Park Mazhuvannur Ernakulam",engineer:"Ayush E P"},
+  {site:"KINFRA Industrial Park Koratty Thrissur",engineer:"Ayush E P"},
+  {site:"KINFRA IITP Palakad",engineer:"Ayush E P"},
+  {site:"KINFRA Mega Food Park Kozhipara Palakkad",engineer:"Ayush E P"},
+  {site:"KINFRA Industrial Park Adoor",engineer:"Ayush E P"},
+  {site:"KINFRA Industrial Park kunnamthanam",engineer:"Ayush E P"},
+  {site:"KINFRA Industrial Park Wayanad",engineer:"Ayush E P"},
+  {site:"KINFRA Techno Industrial  Park Kakkancherry  Malappuram SEZ",engineer:"Ayush E P"},
+  {site:"KINFRA Small Industries Park Thalassery Kannur",engineer:"Ayush E P"},
+  {site:"KINFRA Textile Centre Nadukani Thaliparambu Kannur",engineer:"Ayush E P"},
+  {site:"Bhavani Shipping Services Kerala",engineer:"Swethaswan"},
+  {site:"MBK Logistix Pvt Ltd Cochin",engineer:"Swethaswan"},
+  {site:"Sristar Container Services LLP Cochin",engineer:"Swethaswan"},
+  {site:"Petta CFS",engineer:"Swethaswan"},
+  {site:"KINFRA Kalamassery",engineer:"Ayush E P"},
+  {site:"EMMAY LOGISTICS (INDIA) PRIVATE LIMITED",engineer:"Ayush E P"},
+  {site:"Pampampallam Toll Plaza Kerala",engineer:"Ayush E P"},
+  {site:"Nest Electronics City NeST Hitek Park",engineer:"Ayush E P"},
+  {site:"Panniyankara Toll Plaza Kerala",engineer:"Ayush E P"},
+  {site:"Accelerated Freeze Drying Co Ltd",engineer:"Swethaswan"},
+  {site:"Accelerated Freeze Drying Co Ltd Frozen Store Ezhupunna",engineer:"Swethaswan"},
+  {site:"Accelerated Freeze Drying Co Ltd Frozen Foods Ezhupunna",engineer:"Swethaswan"},
+  {site:"KSIDC Industrial Growth Centre Pallippuram Cherthala Kerala",engineer:"Swethaswan"},
+  {site:"KSIDC Mega Food Park Pallipuram Kerala",engineer:"Swethaswan"},
+  {site:"SIDCO Industrial Estate Kollakadavu Kerala",engineer:"Ayush E P"},
+  {site:"KSIDC Life Science Park Trivandrum Kerala",engineer:"Ayush E P"},
+  {site:"Development Plot Athani Kerala",engineer:"Ayush E P"},
+  {site:"Industrial Development Plot Ananthapuram",engineer:"Ayush E P"},
+  {site:"KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala",engineer:"Ayush E P"},
+  {site:"AM Fisheries Private Limited Kerala",engineer:"Swethaswan"},
+  {site:"Development plot Kunnamthanam kerala",engineer:"Ayush E P"},
+  {site:"KSIDC Investment zone Palakkad Kerala",engineer:"Ayush E P"}
+];
+
+const MAC_ASSET_MAP = {"C4:7D:CC:68:28:F9":"IN/OUT LHS","C4:7D:CC:68:29:2C":"IN/OUT RHS","C4:7D:CC:72:B7:DC":"IN/OUT LHS","C4:7D:CC:65:78:04":"IN/OUT RHS","00:16:25:15:92:4D":"IN/OUT LHS","00:16:25:15:1C:1B":"IN/OUT RHS","00:16:25:15:1C:AA":"IN/OUT LHS","C4:7D:CC:68:29:22":"IN/OUT LHS","C4:7D:CC:68:2D:69":"IN/OUT RHS","84:24:8D:F1:40:35":"IN/OUT LHS","84:24:8D:F1:45:A6":"IN/OUT RHS","84:24:8D:FC:B0:19":"IN LHS","84:24:8D:FC:AF:A4":"OUT LHS","84:24:8D:FC:AF:A6":"IN RHS","84:24:8D:F2:48:61":"OUT RHS","00:8D:F4:D0:00:53":"IN / LHS","00:8D:F4:D0:00:9E":"IN / RHS","00:8D:F4:D0:00:59":"OUT / LHS","00:8D:F4:D0:00:08":"OUT / RHS","00:16:25:15:1C:CC":"Gate 1 L.H.S","00:16:25:15:1C:D8":"Gate 1 R.H.S","00:16:25:15:1C:3A":"Gate 2 L.H.S","00:16:25:15:1C:CD":"Gate 2 R.H.S","84:24:8D:F1:40:EE":"IN LHS","84:24:8D:F1:18:D5":"OUT LHS","84:24:8D:F1:18:BB":"IN RHS","84:24:8D:F1:40:96":"OUT RHS","84:24:8D:F5:6B:26":"Lane 1","84:24:8D:F5:4B:B8":"Lane 2","84:24:8D:F7:81:62":"Lane 3","84:24:8D:F5:4B:BD":"Lane 4","84:24:8D:F0:F2:D8":"Lane 5","84:24:8D:F5:46:E9":"Lane 6","84:24:8D:F5:43:10":"Lane 7","84:24:8D:FD:DC:18":"Lane 8","84:24:8D:F5:46:EB":"Lane 9","84:24:8D:F5:6B:3F":"Lane 10","84:24:8D:F5:6B:36":"Lane 11","84:24:8D:F5:6B:27":"Lane 12","84:24:8D:F5:76:5A":"Lane 13","84:24:8D:F1:3E:DB":"IN LHS","84:24:8D:F1:3F:1B":"IN RHS","00:16:25:15:22:83":"Gate 1 LHS","00:16:25:15:22:55":"Gate 1 RHS","00:16:25:15:21:E0":"Gate 2 LHS","00:16:25:15:23:AD":"Gate 2 RHS","00:16:25:15:22:BF":"IN/OUT LHS","00:16:25:15:22:54":"IN/OUT RHS","00:16:25:15:22:5D":"Gate 1 LHS","00:8D:F4:D0:11:DD":"Gate 1 RHS","00:16:25:15:23:19":"Gate 2 LHS","00:16:25:15:23:16":"Gate 2 RHS","00:16:25:15:22:BD":"IN/OUT LHS","00:16:25:15:23:13":"IN/OUT RHS","00:8D:F4:D0:00:86":"IN / LHS","00:8D:F4:D0:00:95":"IN / RHS","00:8D:F4:D0:02:A2":"OUT / LHS","00:8D:F4:D0:00:8C":"OUT / RHS","00:16:25:15:23:1B":"LHS","00:16:25:15:23:15":"Middle","00:16:25:15:23:24":"RHS","00:16:25:15:23:0B":"Gate 1 LHS","00:16:25:15:22:86":"Gate 1 RHS","00:16:25:15:23:59":"Gate 2 LHS","00:16:25:15:23:BF":"Gate 2 RHS","00:16:25:15:22:9F":"IN/OUT LHS","00:16:25:15:23:2D":"IN/OUT RHS","00:16:25:15:24:08":"Gate 1 LHS","00:16:25:15:24:07":"Gate 1 RHS","00:16:25:15:24:0B":"Gate 2 LHS","00:16:25:15:24:09":"Gate 2 RHS","00:16:25:15:22:63":"IN/OUT LHS","00:16:25:15:23:2C":"IN/OUT RHS","00:16:25:15:21:DB":"IN/OUT LHS","00:16:25:15:24:06":"IN/OUT RHS","00:16:25:15:24:01":"LHS","00:16:25:15:23:E1":"Middle","00:16:25:15:24:04":"RHS","84:24:8D:FB:5A:E0":"IN/OUT LHS","84:24:8D:F3:27:4A":"IN/OUT RHS","84:24:8D:F1:40:86":"IN/OUT LHS","84:24:8D:F1:40:DA":"IN/OUT RHS","84:24:8D:F0:F6:56":"IN/OUT MIDDLE","84:24:8D:F5:3E:BD":"Lane 1","84:24:8D:F6:08:04":"Lane 2","84:24:8D:F0:F5:CB":"Lane 3","84:24:8D:F5:6B:6F":"Lane 4","84:24:8D:F3:25:F0":"Lane 5","84:24:8D:F5:6B:2E":"Lane 6","84:24:8D:F5:6B:43":"Lane 7","84:24:8D:F6:08:6F":"Lane 8","84:24:8D:F5:6B:67":"Lane 9","00:16:25:15:1D:58":"Gate 2 L.H.S","00:16:25:15:1D:5A":"Gate 2 R.H.S","00:16:25:15:1D:5B":"Gate 1 L.H.S","00:16:25:15:1D:5D":"Gate 1 R.H.S","C4:7D:CC:72:BD:0A":"IN/OUT LHS","C4:7D:CC:72:BE:AF":"IN/OUT RHS","84:24:8D:F0:F6:DC":"IN LHS","84:24:8D:F1:41:1A":"OUT LHS","84:24:8D:F1:0D:04":"IN RHS","84:24:8D:F1:2F:6A":"OUT RHS","10:07:23:6E:0D:0F":"Lane 1","10:07:23:6E:10:A3":"Lane 2","10:07:23:6E:0F:65":"Lane 3","10:07:23:6E:0F:F7":"Lane 4","10:07:23:6E:0F:56":"Lane 5","10:07:23:6E:0D:0B":"Lane 6","10:07:23:6E:0F:E6":"Lane 7","10:07:23:6E:0F:5B":"Lane 8","10:07:23:6E:0D:35":"Lane 9","10:07:23:6E:0D:C3":"Lane 10","10:07:23:6E:0D:AB":"Lane 11","C4:7D:CC:72:BE:47":"IN/OUT LHS","C4:7D:CC:72:B9:21":"IN/OUT RHS","00:16:25:15:1D:52":"Lane 1","00:16:25:15:1D:0F":"Lane 2","00:16:25:15:1D:4E":"Lane 3","00:16:25:15:1D:4C":"Lane 4","00:16:25:15:1D:4F":"Lane 5","00:16:25:15:1D:0D":"Lane 6","00:16:25:15:1C:F8":"Lane 7","00:16:25:15:1C:F2":"Lane 8","00:16:25:15:1C:2D":"Lane 9","00:16:25:15:1C:44":"Lane 10","00:16:25:15:1C:31":"Lane 11","C4:7D:CC:68:2D:77":"IN/OUT LHS","C4:7D:CC:68:29:69":"IN/OUT RHS","C4:7D:CC:72:BD:02":"IN/OUT LHS","C4:7D:CC:72:BE:58":"IN/OUT RHS","10:07:23:6E:10:F7":"IN LHS","10:07:23:6E:10:B9":"IN RHS","10:07:23:6E:0E:8A":"OUT LHS","10:07:23:6E:0E:34":"OUT RHS","00:8D:F4:D0:02:33":"Lane 1","00:8D:F4:D0:02:2D":"Lane 2","00:8D:F4:D0:03:D4":"Lane 3","00:8D:F4:D0:02:03":"Lane 4","00:8D:F4:D0:01:AF":"Lane 5","00:8D:F4:D0:01:73":"Lane 6","00:8D:F4:D0:02:4A":"Lane 7","00:8D:F4:D0:02:84":"Lane 8","00:8D:F4:D0:02:45":"Lane 9","00:8D:F4:D0:01:79":"Lane 10","00:8D:F4:D0:01:9A":"Lane 11","00:8D:F4:D0:02:57":"Lane 12","00:8D:F4:D0:02:18":"Lane 13","00:8D:F4:D0:03:02":"Lane 14","00:8D:F4:D0:02:FF":"Lane 15","00:8D:F4:D0:01:94":"Lane 16","00:8D:F4:D0:02:27":"Lane 17","10:07:23:6E:10:AF":"LHS","10:07:23:6E:10:D9":"RHS","10:07:23:6E:10:6B":"LHS","10:07:23:6E:11:8B":"RHS","00:16:25:15:21:07":"LHS","00:16:25:15:1F:DC":"RHS","00:8D:F4:D0:0B:33":"IN/LHS","00:8D:F4:D0:0B:20":"IN/RHS","00:8D:F4:D0:0B:5F":"OUT/LHS","00:8D:F4:D0:0B:2B":"OUT/RHS","00:8D:F4:D0:0B:67":"IN/OUT LHS","00:8D:F4:D0:0B:66":"IN/OUT RHS","00:8D:F4:D0:0B:75":"IN/OUT LHS","00:8D:F4:D0:0B:76":"IN/OUT RHS","00:8D:F4:D0:0B:1C":"IN/LHS","00:8D:F4:D0:0B:42":"IN/RHS","00:8D:F4:D0:0B:34":"OUT/LHS","00:8D:F4:D0:0B:41":"OUT/RHS","00:8D:F4:D0:0B:79":"Gate 1 LHS","00:8D:F4:D0:0B:7B":"Gate 1 RHS","00:8D:F4:D0:0B:08":"Gate 2 IN/LHS","00:8D:F4:D0:0B:47":"Gate 2 IN/RHS","00:8D:F4:D0:0B:78":"Gate 2 OUT/LHS","00:8D:F4:D0:0B:49":"Gate 2 OUT/RHS","00:8D:F4:D0:0B:29":"IN/OUT LHS","00:8D:F4:D0:0B:1F":"IN/OUT RHS","00:8D:F4:D0:0B:48":"IN/OUT RHS","00:8D:F4:D0:0A:BF":"IN/OUT LHS","00:8D:F4:D0:0A:BE":"IN/OUT RHS","00:8D:F4:D0:0B:2A":"IN/OUT LHS","00:8D:F4:D0:0B:50":"IN/OUT RHS","00:8D:F4:D0:0B:9A":"Gate1/LHS","00:8D:F4:D0:0F:13":"Gate1/RHS","10:07:23:6E:0D:F1":"Gate2/RHS"};
+
+const LOCS = SITE_MAP.map(s => s.site);
+
+// Storage keys
+const K = {
+  ENG:   'dsc_engineers_v1',
+  REM:   'dsc_remarks_v1',
+  DATA:  'dsc_lastdata_v1',
+  RES:   'dsc_resolved_v1',
+  NOTIF: 'dsc_notif_inbox_v1',
+  NOTIF_READ: 'dsc_notif_read_v1',
+  LOG:   'dsc_activity_log_v1',
+  CREDS: 'dsc_creds_v1'
+};
+const K_AUTH      = 'dsc_auth_v1';
+const K_AUTH_TS   = 'dsc_auth_ts_v1';
+const K_AUTH_US   = 'dsc_auth_user_v1';
+const K_SETUP     = 'dsc_setup_done_v1';
+const K_INSTALL   = 'dsc_install_dismissed';
+const AUTH_TTL    = 24 * 60 * 60 * 1000;
+
+const USER_ENGINEER = { ayush: 'Ayush E P', swethaswan: 'Swethaswan', admin: null };
+
+// Push config
+const VAPID_PUBLIC_KEY = 'BM057CxdrUyUjD7ymRq3DBrp1A2FkClluEmaz2YwOhYkpMaGypps3CFzJcx9sUjE-LG9TXtiuweFhLiaLmhueZQ';
+const WORKER_URL = 'https://device-status-worker.dswkochi.workers.dev';
+
+// App state
+let devices = [], filter = 'all', sort = 'days_desc', tab = 'active', deferredInstall = null;
+
+// ── localStorage helpers ─────────────────────────────────────
+const lj = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch { return d; } };
+const sj = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+const ls = k => localStorage.getItem(k);
+const lset = (k, v) => localStorage.setItem(k, v);
+const lrm = k => localStorage.removeItem(k);
+
+const eng  = () => lj(K.ENG, {});
+const rem  = () => lj(K.REM, {});
+const res  = () => lj(K.RES, {});
+const esc  = s => (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const nk   = s => s.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+
+// ── Auth ─────────────────────────────────────────────────────
+// Pure-JS SHA-256 — works on any origin including http:// LAN IPs.
+// crypto.subtle only works on HTTPS/localhost so we can't rely on it.
+function sha256(msg) {
+  function rightRotate(v, a) { return (v >>> a) | (v << (32 - a)); }
+  const K256 = [
+    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+  ];
+  let h = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const bytes = new TextEncoder().encode(msg);
+  const len = bytes.length;
+  const bitLen = len * 8;
+  const padLen = (len % 64 < 56) ? (56 - len % 64) : (120 - len % 64);
+  const padded = new Uint8Array(len + padLen + 8);
+  padded.set(bytes);
+  padded[len] = 0x80;
+  for (let i = 0; i < 8; i++) padded[padded.length - 1 - i] = (bitLen / Math.pow(2, i * 8)) & 0xff;
+  for (let offset = 0; offset < padded.length; offset += 64) {
+    const w = new Array(64);
+    for (let i = 0; i < 16; i++)
+      w[i] = (padded[offset+i*4]<<24)|(padded[offset+i*4+1]<<16)|(padded[offset+i*4+2]<<8)|padded[offset+i*4+3];
+    for (let i = 16; i < 64; i++) {
+      const s0 = rightRotate(w[i-15],7)^rightRotate(w[i-15],18)^(w[i-15]>>>3);
+      const s1 = rightRotate(w[i-2],17)^rightRotate(w[i-2],19)^(w[i-2]>>>10);
+      w[i] = (w[i-16]+s0+w[i-7]+s1) | 0;
+    }
+    let [a,b,c,d,e,f,g,hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const S1 = rightRotate(e,6)^rightRotate(e,11)^rightRotate(e,25);
+      const ch = (e&f)^(~e&g);
+      const temp1 = (hh+S1+ch+K256[i]+w[i])|0;
+      const S0 = rightRotate(a,2)^rightRotate(a,13)^rightRotate(a,22);
+      const maj = (a&b)^(a&c)^(b&c);
+      const temp2 = (S0+maj)|0;
+      hh=g; g=f; f=e; e=(d+temp1)|0; d=c; c=b; b=a; a=(temp1+temp2)|0;
+    }
+    h[0]=(h[0]+a)|0; h[1]=(h[1]+b)|0; h[2]=(h[2]+c)|0; h[3]=(h[3]+d)|0;
+    h[4]=(h[4]+e)|0; h[5]=(h[5]+f)|0; h[6]=(h[6]+g)|0; h[7]=(h[7]+hh)|0;
+  }
+  return h.map(v => (v >>> 0).toString(16).padStart(8,'0')).join('');
+}
+
+function getCurrentUser() { return ls(K_AUTH_US) || ''; }
+function isEngineer(u) { return u === 'ayush' || u === 'swethaswan'; }
+function isAdmin(u) { return u === 'admin'; }
+
+function isAuthValid() {
+  const ts = ls(K_AUTH_TS), ok = ls(K_AUTH);
+  if (!ok || !ts) return false;
+  return (Date.now() - parseInt(ts)) < AUTH_TTL;
+}
+
+function clearSession() {
+  lrm(K_AUTH); lrm(K_AUTH_TS); lrm(K_AUTH_US);
+}
+
+function applyRoleUI(user) {
+  const admin  = isAdmin(user);
+  const eng_u  = isEngineer(user);
+  const pill = document.getElementById('user-pill');
+  const disp = document.getElementById('user-display');
+  if (pill) pill.style.display = user ? 'flex' : 'none';
+  if (disp) disp.textContent = user || '';
+  const alertBtn    = document.getElementById('send-alert-btn');
+  const notifBtn    = document.getElementById('notif-btn');
+  const notifTab    = document.getElementById('tab-n');
+  const logTab      = document.getElementById('tab-l');
+  const settingsBtn = document.getElementById('settings-btn');
+  if (alertBtn)    alertBtn.style.display    = admin ? 'inline-flex' : 'none';
+  if (notifBtn)    notifBtn.style.display    = eng_u ? 'inline-flex' : 'none';
+  if (notifTab)    notifTab.style.display    = eng_u ? 'inline-flex' : 'none';
+  if (logTab)      logTab.style.display      = admin ? 'inline-flex' : 'none';
+  if (settingsBtn) settingsBtn.style.display = admin ? 'inline-flex' : 'none';
+  // Engineer summary cards — only show if admin and data is loaded
+  const engRow = document.getElementById('eng-summary-row');
+  if (engRow) engRow.style.display = (admin && devices.length) ? 'grid' : 'none';
+  if (eng_u) { updateUnreadBadge(); loadNotifInbox(); }
+}
+
+function checkAuth() {
+  const user = getCurrentUser();
+  if (!isAuthValid() || !user) {
+    clearSession();
+    document.getElementById('login-screen').style.display = 'flex';
+    // hide all role UI while logged out
+    applyRoleUI('');
+  } else {
+    document.getElementById('login-screen').style.display = 'none';
+    applyRoleUI(user);
+  }
+}
+
+// In-memory credential cache loaded from KV on startup
+// { ayush: {username, hash}, swethaswan: {username, hash}, admin: {username, hash} }
+let credCache = null;
+
+// Default hashes (used if KV has nothing yet)
+const DEFAULT_HASHES = {
+  admin:      { username: 'admin',      hash: 'c2bc3a7a8e9ce3e9f6a922eb2efe8489bb67a5c4df099c6ce01a182916619951' },
+  ayush:      { username: 'ayush',      hash: '59849abefbee3410c7b46e1f19c9eb10a09c311fd11b608453fe67f143309261' },
+  swethaswan: { username: 'swethaswan', hash: '1c5a132fefb0d6aabb1aa08510215ecc65c6b228a00aee3a7a89255f5f85757f' }
+};
+
+// Fetch credentials from KV on app load — silently falls back to defaults
+async function fetchCredentials() {
+  try {
+    const r = await fetch(WORKER_URL + '/get-credentials');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (data.ok && data.credentials && Object.keys(data.credentials).length) {
+      credCache = data.credentials;
+      // Also persist to localStorage as offline fallback
+      sj(K.CREDS, credCache);
+    }
+  } catch (e) {
+    // Offline — load from localStorage cache if available
+    const stored = lj(K.CREDS, null);
+    if (stored) credCache = stored;
+  }
+}
+
+// Resolve username → { username, hash } from cache or defaults
+function getCredEntry(loginUsername) {
+  // Try matching by stored username (which may have changed)
+  if (credCache) {
+    for (const [key, entry] of Object.entries(credCache)) {
+      if (entry.username && entry.username.toLowerCase() === loginUsername) {
+        return { key, ...entry };
+      }
+    }
+  }
+  // Fall back: match original key names
+  if (DEFAULT_HASHES[loginUsername]) {
+    return { key: loginUsername, ...DEFAULT_HASHES[loginUsername] };
+  }
+  return null;
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim().toLowerCase();
+  const p = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!u || !p) { errEl.textContent = 'Please enter both fields.'; errEl.style.display = 'block'; return; }
+  const entry = getCredEntry(u);
+  if (!entry) { errEl.textContent = 'Incorrect username or password'; errEl.style.display = 'block'; return; }
+  const hash = sha256(u + ':' + p);
+  if (hash === entry.hash) {
+    lset(K_AUTH, '1');
+    lset(K_AUTH_TS, Date.now().toString());
+    lset(K_AUTH_US, entry.key); // store the canonical key (admin/ayush/swethaswan)
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('login-pass').value = '';
+    applyRoleUI(entry.key);
+    checkPushStatus();
+  } else {
+    errEl.textContent = 'Incorrect username or password';
+    errEl.style.display = 'block';
+    document.getElementById('login-pass').value = '';
+  }
+}
+
+function doLogout() {
+  clearSession();
+  tab = 'active';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  applyRoleUI('');
+  showToast('Logged out');
+}
+
+// ── Admin settings modal ─────────────────────────────────────
+async function openSettingsModal() {
+  // Reset fields
+  ['ayush','swethaswan'].forEach(u => {
+    const unEl = document.getElementById('cred-'+u+'-username');
+    const pwEl = document.getElementById('cred-'+u+'-password');
+    if (unEl) { unEl.value = ''; unEl.classList.remove('error'); }
+    if (pwEl) { pwEl.value = ''; pwEl.classList.remove('error'); }
+  });
+  document.getElementById('admin-current-pw').value = '';
+  document.getElementById('admin-new-pw').value = '';
+
+  const statusEl = document.getElementById('settings-sync-status');
+  const iconEl   = document.getElementById('settings-sync-icon');
+  statusEl.style.display = 'block';
+  iconEl.textContent = '⏳';
+  statusEl.innerHTML = '<span id="settings-sync-icon">⏳</span> Loading current credentials from server…';
+
+  document.getElementById('settings-backdrop').classList.add('open');
+
+  // Fetch latest from KV and populate username placeholders
+  try {
+    const r = await fetch(WORKER_URL + '/get-credentials');
+    const data = await r.json();
+    if (data.ok && data.credentials) {
+      credCache = data.credentials;
+      sj(K.CREDS, credCache);
+      // Show current usernames as placeholders
+      ['ayush','swethaswan'].forEach(u => {
+        const entry = data.credentials[u];
+        const unEl = document.getElementById('cred-'+u+'-username');
+        const lbl  = document.getElementById(u+'-current-login');
+        if (entry && unEl)  unEl.placeholder = entry.username || u;
+        if (entry && lbl)   lbl.textContent  = 'Current login: ' + (entry.username || u);
+      });
+      statusEl.innerHTML = '<span style="color:var(--green-text)">✅</span> Credentials loaded from server. Leave a field blank to keep it unchanged.';
+    } else {
+      statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Using default credentials. Changes will sync once saved.';
+    }
+  } catch (e) {
+    statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Could not reach server — changes will be saved when connection restores.';
+  }
+}
+
+function closeSettingsModal() {
+  document.getElementById('settings-backdrop').classList.remove('open');
+}
+
+async function saveSettings() {
+  const btn = document.getElementById('settings-save-btn');
+
+  // Read admin current password (required to authorise any change)
+  const adminCurrentPw = document.getElementById('admin-current-pw').value.trim();
+  const adminNewPw     = document.getElementById('admin-new-pw').value.trim();
+
+  if (!adminCurrentPw) {
+    showToast('Enter your current password to save changes');
+    document.getElementById('admin-current-pw').classList.add('error');
+    return;
+  }
+  document.getElementById('admin-current-pw').classList.remove('error');
+
+  // Hash the admin's current password for server verification
+  const adminCurrentHash = sha256('admin:' + adminCurrentPw);
+
+  // Build credentials payload — only include entries that have changes
+  const credentials = {};
+  let hasChanges = false;
+
+  for (const u of ['ayush','swethaswan']) {
+    const unVal = document.getElementById('cred-'+u+'-username').value.trim();
+    const pwVal = document.getElementById('cred-'+u+'-password').value.trim();
+    const existing = credCache && credCache[u] ? credCache[u] : DEFAULT_HASHES[u];
+
+    let newUsername = unVal || existing.username;
+    let newHash     = existing.hash;
+
+    // Validate username if changed
+    if (unVal && (unVal.length < 3 || /\s/.test(unVal))) {
+      showToast('Username for ' + u + ' must be 3+ characters with no spaces');
+      document.getElementById('cred-'+u+'-username').classList.add('error');
+      return;
+    }
+    document.getElementById('cred-'+u+'-username').classList.remove('error');
+
+    // Hash new password if provided
+    if (pwVal) {
+      if (pwVal.length < 6) {
+        showToast('Password for ' + u + ' must be at least 6 characters');
+        document.getElementById('cred-'+u+'-password').classList.add('error');
+        return;
+      }
+      document.getElementById('cred-'+u+'-password').classList.remove('error');
+      newHash = sha256(newUsername.toLowerCase() + ':' + pwVal);
+    }
+
+    if (unVal || pwVal) hasChanges = true;
+    credentials[u] = { username: newUsername, hash: newHash };
+  }
+
+  // Handle admin's own password change
+  if (adminNewPw) {
+    if (adminNewPw.length < 6) { showToast('New admin password must be at least 6 characters'); return; }
+    hasChanges = true;
+  }
+
+  if (!hasChanges) { showToast('No changes to save'); return; }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    // Save engineer credentials
+    if (Object.keys(credentials).length) {
+      const r = await fetch(WORKER_URL + '/set-credentials', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminHash: adminCurrentHash, credentials })
+      });
+      const data = await r.json();
+      if (!data.ok) {
+        showToast(data.error === 'Unauthorised' ? 'Wrong admin password' : ('Error: ' + data.error));
+        btn.disabled = false; btn.textContent = 'Save & sync'; return;
+      }
+      // Update local cache
+      if (!credCache) credCache = {};
+      Object.assign(credCache, credentials);
+      sj(K.CREDS, credCache);
+    }
+
+    // Save admin password if changed
+    if (adminNewPw) {
+      const adminNewHash = sha256('admin:' + adminNewPw);
+      const r2 = await fetch(WORKER_URL + '/set-admin-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentHash: adminCurrentHash, newHash: adminNewHash })
+      });
+      const d2 = await r2.json();
+      if (!d2.ok) {
+        showToast(d2.error || 'Failed to update admin password');
+        btn.disabled = false; btn.textContent = 'Save & sync'; return;
+      }
+      if (!credCache) credCache = {};
+      credCache.admin = { username: 'admin', hash: adminNewHash };
+      sj(K.CREDS, credCache);
+    }
+
+    logActivity('admin', 'remark', 'Updated credentials via settings');
+    closeSettingsModal();
+    showToast('Credentials saved and synced ✓');
+  } catch (e) {
+    showToast('Could not reach server: ' + e.message);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 2L6 12l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save &amp; sync';
+}
+
+// ── Location / CSV helpers ───────────────────────────────────
+function norms(s) {
+  return s.toLowerCase().replace(/[_\-]/g, ' ').replace(/[().,]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function matchLoc(csvLoc) {
+  if (!csvLoc) return false;
+  const c = norms(csvLoc);
+  if (c.length < 5) return false;
+  return SITE_MAP.some(entry => {
+    const s = norms(entry.site);
+    if (s.length < 5) return false;
+    return c === s || c.includes(s) || (s.includes(c) && c.length >= s.length * 0.75);
+  });
+}
+function getEngineerForLoc(csvLoc) {
+  if (!csvLoc) return '';
+  const c = norms(csvLoc);
+  if (c.length < 5) return '';
+  let best = null, bestLen = 0;
+  SITE_MAP.forEach(entry => {
+    const s = norms(entry.site);
+    if (s.length < 5) return;
+    const matched = c === s || c.includes(s) || (s.includes(c) && c.length >= s.length * 0.75);
+    if (matched && s.length > bestLen) { best = entry; bestLen = s.length; }
+  });
+  return best ? best.engineer : '';
+}
+function getAssetId(macId) {
+  return macId ? (MAC_ASSET_MAP[macId.toUpperCase()] || '') : '';
+}
+function pd(s) {
+  if (!s) return null;
+  s = s.trim().replace(/^"|"$/g, '').trim();
+  let m = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})[\s,T]+(\d{1,2}):(\d{2}):(\d{2})/);
+  if (m) return new Date(+m[3], +m[2]-1, +m[1], +m[4], +m[5], +m[6]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[\s,T]+(\d{1,2}):(\d{2}):(\d{2})/);
+  if (m) return new Date(+m[3], +m[1]-1, +m[2], +m[4], +m[5], +m[6]);
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[\s,T]+(\d{1,2}):(\d{2}):(\d{2})/);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +m[6]);
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+function calcD(d) { return d ? Math.max(0, Math.floor((Date.now() - d) / 864e5)) : null; }
+function calcH(d) { return d ? Math.max(0, (Date.now() - d) / 36e5) : null; }
+function prio(d) { if (d === null) return 'u'; if (d <= 1) return 't'; if (d <= 7) return 'h'; return 'c'; }
+function parseLine(l) {
+  const r = []; let c = '', q = false;
+  for (let i = 0; i < l.length; i++) {
+    const ch = l[i];
+    if (ch === '"') { q = !q; } else if (ch === ',' && !q) { r.push(c); c = ''; } else c += ch;
+  }
+  r.push(c); return r;
+}
+
+// ── CSV parsing ──────────────────────────────────────────────
+function parseCSV(txt) {
+  const lines = txt.split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const hdr = parseLine(lines[0]).map(h => h.replace(/^"|"$/g, '').trim());
+  const KNOWN = {
+    loc:  ['LOCATION_NAME','Location_Name','location_name','LocationName'],
+    sync: ['LastSync','Last_Sync','last_sync','LAST_SYNC','LastSyncTime'],
+    id:   ['MAC_ID','mac_id','ASSET_ID','asset_id','DeviceID','Device_ID']
+  };
+  function findCol(candidates) {
+    for (let ci = 0; ci < candidates.length; ci++) {
+      const idx = hdr.findIndex(h => h === candidates[ci]);
+      if (idx >= 0) return idx;
+    }
+    const kw = candidates[0].toLowerCase();
+    return hdr.findIndex(h => h.toLowerCase().includes(kw.replace(/_/g, '')));
+  }
+  let iLoc = findCol(KNOWN.loc);
+  let iSync = findCol(KNOWN.sync);
+  let iId   = findCol(KNOWN.id);
+  if (iLoc  < 0) iLoc  = 4;
+  if (iSync < 0) iSync = 2;
+  if (iId   < 0) iId   = 0;
+  const out = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const cols = parseLine(line);
+    if (!cols || cols.length <= iLoc) continue;
+    const loc = (cols[iLoc] || '').replace(/^"|"$/g, '').trim();
+    if (!loc || !matchLoc(loc)) continue;
+    const sr = (cols[iSync] || '').replace(/^"|"$/g, '').trim();
+    const sd = pd(sr);
+    const days = calcD(sd ? sd.getTime() : null);
+    const rawId = String(cols[iId] || i).replace(/^"|"$/g, '').trim();
+    const autoEng = getEngineerForLoc(loc);
+    const hours = calcH(sd ? sd.getTime() : null);
+    const assetId = getAssetId(rawId);
+    out.push({ uid: rawId + '_' + nk(loc), id: rawId, assetId, sr, sd, days, hours, p: prio(days), loc, autoEng });
+  }
+  return out;
+}
+
+// ── Fetch ────────────────────────────────────────────────────
+async function fetchCSV() {
+  const btn = document.getElementById('fetch-btn');
+  const lbl = document.getElementById('fetch-label');
+  btn.disabled = true; lbl.textContent = 'Fetching…';
+  clearErr();
+  try {
+    const r = await fetch('https://devicehealth.ldb.co.in:8181/api/DeviceStatus/DownloadAndProcess');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    devices = parseCSV(await r.text());
+    const ts = Date.now();
+    sj(K.DATA, { ts, devices });
+    loaded(new Date(ts), false);
+    showToast('Data refreshed — ' + devices.length + ' devices');
+  } catch (e) {
+    const c = lj(K.DATA, null);
+    if (c && c.devices && c.devices.length) {
+      devices = c.devices;
+      loaded(new Date(c.ts), true);
+      const age = Math.round((Date.now() - c.ts) / 36e5);
+      showErr('Live fetch failed (' + e.message + '). Cached data — ' + age + 'h old.', 'stale', true);
+    } else {
+      showErr('Could not fetch data: ' + e.message, 'warn', true);
+    }
+  }
+  btn.disabled = false; lbl.textContent = 'Fetch Latest';
+}
+
+function autoAssignEngineers() {
+  const e = eng(); let changed = false;
+  SITE_MAP.forEach(entry => {
+    const k = nk(entry.site);
+    if (entry.engineer && !e[k]) { e[k] = entry.engineer; changed = true; }
+  });
+  if (changed) sj(K.ENG, e);
+}
+
+function loaded(ts, cached) {
+  autoAssignEngineers();
+  const age = Math.round((Date.now() - ts.getTime()) / 36e5);
+  document.getElementById('last-fetched').textContent =
+    (cached ? 'Cached ' : 'Fetched ') +
+    ts.toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  document.getElementById('stale-badge').style.display = age >= 24 ? 'inline' : 'none';
+  document.getElementById('stats-row').style.display = 'grid';
+  document.getElementById('main-ui').style.display = 'block';
+  document.getElementById('empty-state').style.display = 'none';
+  updStats(); renderActive(); renderResolved();
+}
+
+// ── Stats & filtering ────────────────────────────────────────
+function active()   { const rv = res(); return devices.filter(d => !rv[d.uid]); }
+function resolved() { const rv = res(); return devices.filter(d => !!rv[d.uid]); }
+
+function updStats() {
+  const a = active(), rv = resolved();
+  document.getElementById('s-total').textContent = a.length;
+  document.getElementById('s-crit').textContent  = a.filter(d => d.p === 'c').length;
+  document.getElementById('s-high').textContent  = a.filter(d => d.p === 'h').length;
+  document.getElementById('s-temp').textContent  = a.filter(d => d.p === 't').length;
+  document.getElementById('s-res').textContent   = rv.length;
+  const tabR = document.getElementById('tab-r');
+  if (tabR) tabR.textContent = 'Resolved (' + rv.length + ')';
+
+  // Engineer summary cards — only meaningful for admin
+  if (isAdmin(getCurrentUser())) {
+    const engRow = document.getElementById('eng-summary-row');
+    if (engRow) engRow.style.display = 'grid';
+    ['Ayush E P','Swethaswan'].forEach(engName => {
+      const key = engName === 'Ayush E P' ? 'a' : 's';
+      const myActive   = a.filter(d  => getEngineerForLoc(d.loc) === engName);
+      const myResolved = rv.filter(d => getEngineerForLoc(d.loc) === engName);
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      set('ec-'+key+'-crit', myActive.filter(d => d.p === 'c').length);
+      set('ec-'+key+'-high', myActive.filter(d => d.p === 'h').length);
+      set('ec-'+key+'-temp', myActive.filter(d => d.p === 't').length);
+      set('ec-'+key+'-res',  myResolved.length);
+    });
+  }
+}
+
+function setFilter(f, el) {
+  filter = f;
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const s = document.getElementById('eng-filter-sel');
+  if (s) s.value = '';
+  renderActive();
+}
+function setEngFilter(v) {
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+  document.getElementById('pill-all').classList.add('active');
+  filter = v ? 'eng:' + v : 'all';
+  renderActive();
+}
+function setSort(v) { sort = v; renderActive(); }
+
+function switchTab(t) {
+  tab = t;
+  ['active','resolved','notifs','log'].forEach(id => {
+    const tabEl = document.getElementById('tab-' + id[0]);
+    const panel = document.getElementById('panel-' + id);
+    if (tabEl) tabEl.classList.toggle('active', id === t);
+    if (panel) panel.style.display = id === t ? 'block' : 'none';
+  });
+  if (t === 'notifs') { markNotifsRead(); renderNotifInbox(); }
+  if (t === 'log')    { renderActivityLog(); }
+}
+
+function applySearch(data, query) {
+  if (!query) return data;
+  const q = query.toLowerCase();
+  const e = eng();
+  return data.filter(d => {
+    const engName = (e[nk(d.loc)] || '').toLowerCase();
+    return d.loc.toLowerCase().includes(q) || d.id.toLowerCase().includes(q) ||
+           engName.includes(q) || (rem()[d.uid] || '').toLowerCase().includes(q);
+  });
+}
+
+function getSorted() {
+  let d = active();
+  if (filter !== 'all') {
+    d = d.filter(x => {
+      if (filter === 'critical') return x.p === 'c';
+      if (filter === 'high')     return x.p === 'h';
+      if (filter === 'temp')     return x.p === 't';
+      if (filter.startsWith('eng:')) return getEngineerForLoc(x.loc) === filter.slice(4);
+      return true;
+    });
+  }
+  const q = document.getElementById('search-active') ? document.getElementById('search-active').value : '';
+  d = applySearch(d, q);
+  d.sort((a, b) => {
+    if (sort === 'days_desc') return (b.hours != null ? b.hours : -1) - (a.hours != null ? a.hours : -1);
+    if (sort === 'days_asc')  return (a.hours != null ? a.hours : 999999) - (b.hours != null ? b.hours : 999999);
+    if (sort === 'sync_desc') return (b.sd ? b.sd.getTime() : 0) - (a.sd ? a.sd.getTime() : 0);
+    if (sort === 'sync_asc')  return (a.sd ? a.sd.getTime() : 0) - (b.sd ? b.sd.getTime() : 0);
+    return (b.hours != null ? b.hours : -1) - (a.hours != null ? a.hours : -1);
+  });
+  return d;
+}
+
+// ── Render helpers ───────────────────────────────────────────
+function dotH(p) {
+  const cls = { c:'dot-c', h:'dot-h', t:'dot-t', r:'dot-r' };
+  return '<span class="dot ' + (cls[p] || '') + '"></span>';
+}
+function badgeH(p) {
+  const map = { c:['badge-c','Critical'], h:['badge-h','High'], t:['badge-t','Temp'], u:['badge-r','Unknown'] };
+  const [cls, lbl] = map[p] || map.u;
+  return '<span class="badge ' + cls + '">' + lbl + '</span>';
+}
+function daysH(d) {
+  if (d === null || d === undefined) return '<span class="days" style="color:var(--text3)">—</span>';
+  const cls = d <= 1 ? 'days-t' : d <= 7 ? 'days-h' : 'days-c';
+  return '<span class="days ' + cls + '">' + d + 'd</span>';
+}
+
+// ── Render active ────────────────────────────────────────────
+function renderActive() {
+  const data = getSorted(), e = eng(), r = rem();
+  const el = document.getElementById('active-tbl');
+  const countEl = document.getElementById('active-count');
+  const total = active().length;
+  if (data.length !== total || document.getElementById('search-active').value) {
+    countEl.style.display = 'block';
+    countEl.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + total + ' active issues';
+  } else { countEl.style.display = 'none'; }
+  if (!data.length) { el.innerHTML = '<div class="empty">No devices match.</div>'; return; }
+  el.innerHTML = '<div class="table-wrap"><table>' +
+    '<thead><tr>' +
+    '<th style="width:32px">#</th>' +
+    '<th style="width:22%">Location</th>' +
+    '<th style="width:12%">MAC ID</th>' +
+    '<th style="width:8%">Asset ID</th>' +
+    '<th style="width:13%">Last sync</th>' +
+    '<th style="width:5%;text-align:center">Down</th>' +
+    '<th style="width:9%">Priority</th>' +
+    '<th style="width:10%">Engineer</th>' +
+    '<th style="width:8%">Remarks</th>' +
+    '<th style="width:9%"></th>' +
+    '</tr></thead><tbody>' +
+    data.map((d, i) => {
+      const ek = nk(d.loc), ev = e[ek] || '', rv = r[d.uid] || '';
+      const uid = esc(d.uid), loc = esc(d.loc), days = d.days || 0;
+      const alertBtn = isAdmin(getCurrentUser())
+        ? '<button class="btn-row-alert" onclick="openAlertFromRow(\'' + uid + '\',\'' + loc + '\',' + days + ')" title="Send alert about this device">' +
+          '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+          '</button>' : '';
+      return '<tr>' +
+        '<td style="color:var(--text2);font-size:11px">' + (i+1) + '</td>' +
+        '<td><div class="loc-cell">' + dotH(d.p) + '<span class="loc-text" title="' + esc(d.loc) + '">' + esc(d.loc) + '</span></div></td>' +
+        '<td style="font-size:11px;color:var(--text2);font-family:monospace">' + esc(d.id) + '</td>' +
+        '<td style="font-size:11.5px;color:var(--text2)">' + (esc(d.assetId) || '—') + '</td>' +
+        '<td style="font-size:11px;color:var(--text2);white-space:nowrap">' + (esc(d.sr) || '—') + '</td>' +
+        '<td style="text-align:center">' + daysH(d.days) + '</td>' +
+        '<td>' + badgeH(d.p) + '</td>' +
+        '<td><input class="einput" type="text" placeholder="Engineer" value="' + esc(ev) + '" data-key="' + esc(ek) + '" onchange="saveEng(this)" onblur="saveEng(this)"/></td>' +
+        '<td><input class="einput" type="text" placeholder="Remark" value="' + esc(rv) + '" data-uid="' + esc(d.uid) + '" onchange="saveRem(this)" onblur="saveRem(this)"/></td>' +
+        '<td style="white-space:nowrap">' +
+          '<button class="btn-res" onclick="resolve(\'' + esc(d.uid) + '\')">Resolve</button>' +
+          alertBtn +
+        '</td>' +
+        '</tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+// ── Render resolved ──────────────────────────────────────────
+function renderResolved() {
+  const q = document.getElementById('search-resolved') ? document.getElementById('search-resolved').value : '';
+  const all = resolved();
+  const data = applySearch(all, q);
+  const rv = res(), e = eng(), r = rem();
+  const el = document.getElementById('resolved-tbl');
+  const countEl = document.getElementById('resolved-count');
+  if (q) { countEl.style.display = 'block'; countEl.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + all.length + ' resolved'; }
+  else { countEl.style.display = 'none'; }
+  if (!data.length) { el.innerHTML = '<div class="empty" style="padding:2rem">' + (q ? 'No matches.' : 'No resolved devices yet.') + '</div>'; return; }
+  el.innerHTML = '<div class="table-wrap"><table>' +
+    '<thead><tr>' +
+    '<th style="width:32px">#</th>' +
+    '<th style="width:20%">Location</th>' +
+    '<th style="width:12%">MAC ID</th>' +
+    '<th style="width:8%">Asset ID</th>' +
+    '<th style="width:6%;text-align:center">Down</th>' +
+    '<th style="width:13%">Engineer</th>' +
+    '<th style="width:17%">Remarks</th>' +
+    '<th style="width:16%">Resolved at</th>' +
+    '<th style="width:8%"></th>' +
+    '</tr></thead><tbody>' +
+    data.map((d, i) => {
+      const ek = nk(d.loc), ev = e[ek] || '', rmv = r[d.uid] || '';
+      const rat = rv[d.uid] ? new Date(rv[d.uid]).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+      return '<tr class="resolved-row">' +
+        '<td style="color:var(--text2);font-size:11px">' + (i+1) + '</td>' +
+        '<td><div class="loc-cell">' + dotH('r') + '<span class="loc-text" title="' + esc(d.loc) + '">' + esc(d.loc) + '</span></div></td>' +
+        '<td style="font-size:11px;color:var(--text2);font-family:monospace">' + esc(d.id) + '</td>' +
+        '<td style="font-size:11.5px;color:var(--text2)">' + (esc(d.assetId) || '—') + '</td>' +
+        '<td style="text-align:center">' + daysH(d.days) + '</td>' +
+        '<td style="font-size:12px;color:var(--text2)">' + (esc(ev) || '—') + '</td>' +
+        '<td style="font-size:12px;color:var(--text2)">' + (esc(rmv) || '—') + '</td>' +
+        '<td><span class="ts">' + rat + '</span></td>' +
+        '<td><button class="btn-reopen" onclick="reopen(\'' + esc(d.uid) + '\')">Reopen</button></td>' +
+        '</tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+function saveEng(el) { const e = eng(); e[el.dataset.key] = el.value.trim(); sj(K.ENG, e); }
+function saveRem(el) {
+  const r = rem();
+  const old = r[el.dataset.uid] || '';
+  const newVal = el.value.trim();
+  if (newVal !== old) {
+    r[el.dataset.uid] = newVal;
+    sj(K.REM, r);
+    if (newVal) {
+      // Find device loc for log message
+      const d = devices.find(x => x.uid === el.dataset.uid);
+      logActivity(getCurrentUser(), 'remark', 'Remarked on <strong>' + esc(d ? d.loc : el.dataset.uid) + '</strong>: ' + esc(newVal));
+    }
+  }
+}
+function resolve(uid) {
+  const r = res(); r[uid] = Date.now(); sj(K.RES, r);
+  const d = devices.find(x => x.uid === uid);
+  logActivity(getCurrentUser(), 'resolve', 'Resolved <strong>' + esc(d ? d.loc : uid) + '</strong>');
+  updStats(); renderActive(); renderResolved(); showToast('Marked as resolved');
+}
+function reopen(uid) {
+  const r = res(); delete r[uid]; sj(K.RES, r);
+  const d = devices.find(x => x.uid === uid);
+  logActivity(getCurrentUser(), 'reopen', 'Reopened <strong>' + esc(d ? d.loc : uid) + '</strong>');
+  updStats(); renderActive(); renderResolved(); switchTab('active'); showToast('Reopened');
+}
+
+// ── Engineer modal ───────────────────────────────────────────
+function openSetup() {
+  const e = eng();
+  document.getElementById('eng-list').innerHTML = SITE_MAP.map(entry => {
+    const k = nk(entry.site), v = e[k] || entry.engineer || '';
+    return '<div class="eng-row"><div class="eng-lbl" title="' + esc(entry.site) + '">' + esc(entry.site) + '</div>' +
+           '<input class="eng-inp" type="text" placeholder="Name" value="' + esc(v) + '" data-key="' + esc(k) + '"/></div>';
+  }).join('');
+  document.getElementById('modal-backdrop').classList.add('open');
+}
+function closeSetup() { document.getElementById('modal-backdrop').classList.remove('open'); }
+function handleBackdropClick(e) { if (e.target === document.getElementById('modal-backdrop')) closeSetup(); }
+function saveEngineers() {
+  const e = eng();
+  document.querySelectorAll('#eng-list .eng-inp').forEach(i => { e[i.dataset.key] = i.value.trim(); });
+  sj(K.ENG, e); closeSetup();
+  if (devices.length) { renderActive(); renderResolved(); }
+  showToast('Engineer assignments saved');
+}
+
+// ── Error / toast ────────────────────────────────────────────
+function showErr(msg, type, closable) {
+  document.getElementById('error-area').innerHTML =
+    '<div class="error-bar error-' + type + '">' + msg +
+    (closable ? '<button class="error-close" onclick="clearErr()">✕</button>' : '') + '</div>';
+}
+function clearErr() { document.getElementById('error-area').innerHTML = ''; }
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── Export ───────────────────────────────────────────────────
+function getExportRows(which) {
+  const e = eng(), r = rem(), rv = res();
+  const pLabel = { c:'Critical', h:'High', t:'Possibly Temporary', u:'Unknown' };
+  if (which === 'active') {
+    return getSorted().map(d => ({
+      Location: d.loc, 'MAC ID': d.id, 'Asset ID': d.assetId || '',
+      'Last Sync': d.sr, 'Down Days': d.days ?? '', Priority: pLabel[d.p] || '',
+      Engineer: e[nk(d.loc)] || '', Remarks: r[d.uid] || '', Status: 'Active'
+    }));
+  } else {
+    const q = document.getElementById('search-resolved') ? document.getElementById('search-resolved').value : '';
+    return applySearch(resolved(), q).map(d => ({
+      Location: d.loc, 'MAC ID': d.id, 'Asset ID': d.assetId || '',
+      'Last Sync': d.sr, 'Down Days': d.days ?? '', Priority: pLabel[d.p] || '',
+      Engineer: e[nk(d.loc)] || '', Remarks: r[d.uid] || '',
+      'Resolved At': rv[d.uid] ? new Date(rv[d.uid]).toLocaleString('en-IN') : '', Status: 'Resolved'
+    }));
+  }
+}
+function exportCSV(which) {
+  const rows = getExportRows(which);
+  if (!rows.length) { showToast('Nothing to export'); return; }
+  const keys = Object.keys(rows[0]);
+  const escape = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const csv = [keys.map(escape).join(','), ...rows.map(r => keys.map(k => escape(r[k])).join(','))].join('\r\n');
+  dlBlob(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }), 'device-status-' + which + '-' + new Date().toISOString().slice(0,10) + '.csv');
+  showToast('CSV exported');
+}
+function exportExcel(which) {
+  const rows = getExportRows(which);
+  if (!rows.length) { showToast('Nothing to export'); return; }
+  const keys = Object.keys(rows[0]);
+  const toXML = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const prioColor = { Critical:'FFCDD2', High:'FFE0B2', 'Possibly Temporary':'DCEDC8', Unknown:'F5F5F5' };
+  const hdrStyle = '<Style ss:ID="hdr"><Font ss:Bold="1"/><Interior ss:Color="#E0E0E0" ss:Pattern="Solid"/></Style>';
+  let xml = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>\n' +
+    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n' +
+    '<Styles>' + hdrStyle + '</Styles>\n' +
+    '<Worksheet ss:Name="' + (which === 'active' ? 'Active Issues' : 'Resolved') + '"><Table>\n' +
+    '<Row>' + keys.map(k => '<Cell ss:StyleID="hdr"><Data ss:Type="String">' + toXML(k) + '</Data></Cell>').join('') + '</Row>\n' +
+    rows.map(r => '<Row>' + keys.map(k => '<Cell><Data ss:Type="' + (typeof r[k] === 'number' ? 'Number' : 'String') + '">' + toXML(r[k]) + '</Data></Cell>').join('') + '</Row>').join('\n') +
+    '\n</Table></Worksheet></Workbook>';
+  dlBlob(new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' }), 'device-status-' + which + '-' + new Date().toISOString().slice(0,10) + '.xls');
+  showToast('Excel exported');
+}
+function dlBlob(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ── Offline ──────────────────────────────────────────────────
+function updateOffline() { document.getElementById('offline-badge').style.display = navigator.onLine ? 'none' : 'inline'; }
+window.addEventListener('online', updateOffline);
+window.addEventListener('offline', updateOffline);
+updateOffline();
+
+// ── PWA install ──────────────────────────────────────────────
+function detectPlatform() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (/iphone|ipad|ipod/.test(ua)) return 'ios';
+  if (/android/.test(ua)) return 'android';
+  return 'desktop';
+}
+function isInStandaloneMode() { return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; }
+function dismissInstall() { lset(K_INSTALL, '1'); document.getElementById('install-banner').style.display = 'none'; }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; if (!ls(K_INSTALL)) document.getElementById('install-banner').style.display = 'block'; });
+function installApp() {
+  if (deferredInstall) {
+    deferredInstall.prompt();
+    deferredInstall.userChoice.then(r => { if (r.outcome === 'accepted') { deferredInstall = null; dismissInstall(); showToast('App installed!'); } });
+  }
+}
+window.addEventListener('appinstalled', () => { document.getElementById('install-banner').style.display = 'none'; showToast('App installed!'); });
+
+// Register service worker
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+// ── Push notifications ───────────────────────────────────────
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = window.atob(base64);
+  const arr = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; ++i) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+
+async function togglePushSubscription() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) { showToast('Push not supported on this browser'); return; }
+  const reg = await navigator.serviceWorker.ready;
+  const existing = await reg.pushManager.getSubscription();
+  if (existing) {
+    await existing.unsubscribe();
+    await fetch(WORKER_URL + '/unsubscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user: getCurrentUser(), endpoint: existing.endpoint }) }).catch(() => {});
+    updateNotifBtn(false);
+    showToast('Notifications disabled');
+  } else {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { showToast('Notification permission denied'); return; }
+    try {
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) });
+      const user = getCurrentUser();
+      await fetch(WORKER_URL + '/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user, engineer: USER_ENGINEER[user] || user, subscription: sub.toJSON() }) });
+      updateNotifBtn(true);
+      showToast('Notifications enabled');
+    } catch (e) { showToast('Could not enable notifications: ' + e.message); }
+  }
+}
+
+function updateNotifBtn(subscribed) {
+  const btn = document.getElementById('notif-btn');
+  const lbl = document.getElementById('notif-label');
+  if (!btn) return;
+  if (subscribed) { btn.classList.add('subscribed'); lbl.textContent = 'Notifying'; }
+  else { btn.classList.remove('subscribed'); lbl.textContent = 'Notify'; }
+}
+
+async function checkPushStatus() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try { const reg = await navigator.serviceWorker.ready; const sub = await reg.pushManager.getSubscription(); updateNotifBtn(!!sub); } catch (e) {}
+}
+
+// ── In-app alert bar ─────────────────────────────────────────
+let inAppAlertTimer = null;
+function showInAppAlert(title, body) {
+  const bar = document.getElementById('inapp-alert');
+  document.getElementById('inapp-alert-title').textContent = title;
+  document.getElementById('inapp-alert-body').textContent = body;
+  bar.classList.add('show');
+  clearTimeout(inAppAlertTimer);
+  inAppAlertTimer = setTimeout(dismissInAppAlert, 10000);
+}
+function dismissInAppAlert() { document.getElementById('inapp-alert').classList.remove('show'); clearTimeout(inAppAlertTimer); }
+
+// Listen for push messages from service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data && e.data.type === 'PUSH_RECEIVED') {
+      showInAppAlert(e.data.title, e.data.body);
+      storeIncomingNotif(e.data.title, e.data.body);
+    }
+  });
+}
+
+// ── Notification inbox ───────────────────────────────────────
+function getNotifInbox()      { return lj(K.NOTIF, []); }
+function saveNotifInbox(arr)  { sj(K.NOTIF, arr); }
+
+function updateUnreadBadge() {
+  const inbox    = getNotifInbox();
+  const lastRead = parseInt(ls(K.NOTIF_READ) || '0');
+  const count    = inbox.filter(n => new Date(n.sentAt).getTime() > lastRead).length;
+  const badge    = document.getElementById('notif-badge');
+  if (!badge) return;
+  if (count > 0) { badge.textContent = count > 99 ? '99+' : count; badge.style.display = 'inline-flex'; }
+  else           { badge.style.display = 'none'; }
+}
+
+function markNotifsRead() { lset(K.NOTIF_READ, Date.now().toString()); updateUnreadBadge(); }
+
+function renderNotifInbox() {
+  const inbox   = getNotifInbox();
+  const listEl  = document.getElementById('notif-inbox-list');
+  const countEl = document.getElementById('notif-inbox-count');
+  if (!listEl) return;
+  if (!inbox.length) {
+    if (countEl) countEl.textContent = 'No notifications';
+    listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">🔔</div>No notifications yet.<br/>Admin will send alerts here when needed.</div>';
+    return;
+  }
+  if (countEl) countEl.textContent = inbox.length + ' notification' + (inbox.length !== 1 ? 's' : '');
+  const lastRead = parseInt(ls(K.NOTIF_READ) || '0');
+  listEl.innerHTML = inbox.map(n => {
+    const isNew = new Date(n.sentAt).getTime() > lastRead;
+    const dt = new Date(n.sentAt).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    return '<div class="notif-item">' +
+      '<div class="notif-icon-wrap">' +
+        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="var(--accent)" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+      '</div>' +
+      '<div class="notif-content">' +
+        (isNew ? '<div class="notif-unread-dot" style="float:right"></div>' : '') +
+        '<div class="notif-title">' + esc(n.title) + '</div>' +
+        '<div class="notif-body">' + esc(n.body) + '</div>' +
+        '<div class="notif-meta"><span>' + dt + '</span><span>From: ' + esc(n.sentBy || 'admin') + '</span></div>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function clearNotifInbox() {
+  if (!confirm('Clear all notifications?')) return;
+  saveNotifInbox([]); markNotifsRead(); renderNotifInbox(); showToast('Notifications cleared');
+}
+
+function storeIncomingNotif(title, body) {
+  const inbox = getNotifInbox();
+  inbox.unshift({ id: Date.now() + '_push', title, body, sentAt: new Date().toISOString(), sentBy: 'admin' });
+  if (inbox.length > 200) inbox.length = 200;
+  saveNotifInbox(inbox); updateUnreadBadge();
+  if (tab === 'notifs') renderNotifInbox();
+}
+
+async function loadNotifInbox() {
+  const user = getCurrentUser();
+  if (!user || !isEngineer(user)) return;
+  try {
+    const res = await fetch(WORKER_URL + '/inbox?user=' + encodeURIComponent(user));
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !Array.isArray(data.inbox)) return;
+    const local = getNotifInbox();
+    const all = [...data.inbox, ...local];
+    const seen = new Set(); const merged = [];
+    for (const n of all) { if (!seen.has(n.id)) { seen.add(n.id); merged.push(n); } }
+    merged.sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt));
+    if (merged.length > 200) merged.length = 200;
+    saveNotifInbox(merged); updateUnreadBadge();
+    if (tab === 'notifs') renderNotifInbox();
+  } catch (e) { /* silently fail — local works */ }
+}
+
+// ── Manual alert (admin) ─────────────────────────────────────
+function openAlertModal() {
+  ['ayush','swethaswan'].forEach(u => {
+    const cb = document.getElementById('rec-' + u);
+    const row = document.getElementById('rec-row-' + u);
+    if (cb) cb.checked = false;
+    if (row) row.classList.remove('selected');
+  });
+  document.getElementById('alert-title-inp').value = '';
+  document.getElementById('alert-body-inp').value = '';
+  document.getElementById('alert-preview').style.display = 'none';
+  document.getElementById('alert-backdrop').classList.add('open');
+}
+function closeAlertModal() { document.getElementById('alert-backdrop').classList.remove('open'); }
+function toggleRecipient(u) {
+  const cb = document.getElementById('rec-' + u);
+  const row = document.getElementById('rec-row-' + u);
+  if (!cb || !row) return;
+  cb.checked = !cb.checked;
+  row.classList.toggle('selected', cb.checked);
+  updateAlertPreview();
+}
+function updateAlertPreview() {
+  const tv = document.getElementById('alert-title-inp').value.trim();
+  const bv = document.getElementById('alert-body-inp').value.trim();
+  const prev = document.getElementById('alert-preview');
+  if (tv || bv) {
+    prev.style.display = 'block';
+    document.getElementById('preview-title-txt').textContent = '📢 ' + (tv || '(no title)');
+    document.getElementById('preview-body-txt').textContent = bv || '(no message)';
+  } else { prev.style.display = 'none'; }
+}
+async function sendManualAlert() {
+  const title = document.getElementById('alert-title-inp').value.trim();
+  const body  = document.getElementById('alert-body-inp').value.trim();
+  if (!title) { showToast('Please enter a title'); return; }
+  if (!body)  { showToast('Please enter a message'); return; }
+  const recipients = ['ayush','swethaswan'].filter(u => document.getElementById('rec-' + u) && document.getElementById('rec-' + u).checked);
+  if (!recipients.length) { showToast('Select at least one recipient'); return; }
+  const btn = document.getElementById('send-alert-confirm');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  try {
+    const r = await fetch(WORKER_URL + '/manual-alert', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: '📢 ' + title, body, recipients, sender: getCurrentUser() })
+    });
+    const data = await r.json();
+    if (data.ok && data.sent > 0) {
+      const recipNames = recipients.map(u => USER_ENGINEER[u] || u).join(', ');
+      logActivity(getCurrentUser(), 'alert', 'Sent alert to <strong>' + esc(recipNames) + '</strong>: ' + esc(title));
+      closeAlertModal();
+      showToast('Alert sent to ' + data.sent + ' engineer' + (data.sent > 1 ? 's' : ''));
+    } else if (data.ok && data.sent === 0) {
+      const recipNames = recipients.map(u => USER_ENGINEER[u] || u).join(', ');
+      logActivity(getCurrentUser(), 'alert', 'Stored alert for <strong>' + esc(recipNames) + '</strong> (no push subscription): ' + esc(title));
+      closeAlertModal();
+      showToast('Alert stored — engineer must enable Notify to receive push');
+    } else {
+      showToast('Failed: ' + (data.error || 'Unknown error'));
+    }
+  } catch (e) { showToast('Could not reach server: ' + e.message); }
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg> Send now';
+  }
+}
+
+// ── Row alert button (admin) ─────────────────────────────────
+// Opens the alert modal pre-filled for the device's engineer
+function openAlertFromRow(uid, locName, days) {
+  // Decode escaped HTML entities back to plain text for the fields
+  const tmp = document.createElement('textarea');
+  tmp.innerHTML = locName;
+  const loc = tmp.value;
+
+  // Determine which engineer owns this device
+  const engName = getEngineerForLoc(loc);
+  const engUser = engName === 'Ayush E P' ? 'ayush' : engName === 'Swethaswan' ? 'swethaswan' : null;
+
+  // Reset modal
+  ['ayush','swethaswan'].forEach(u => {
+    const cb = document.getElementById('rec-' + u);
+    const row = document.getElementById('rec-row-' + u);
+    if (cb) cb.checked = false;
+    if (row) row.classList.remove('selected');
+  });
+
+  // Pre-select the right engineer
+  if (engUser) {
+    const cb = document.getElementById('rec-' + engUser);
+    const row = document.getElementById('rec-row-' + engUser);
+    if (cb) cb.checked = true;
+    if (row) row.classList.add('selected');
+  }
+
+  // Pre-fill title and body
+  const titleInp = document.getElementById('alert-title-inp');
+  const bodyInp  = document.getElementById('alert-body-inp');
+  if (titleInp) titleInp.value = 'Device down — ' + loc;
+  if (bodyInp)  bodyInp.value  = loc + ' has been down for ' + days + ' day' + (days !== 1 ? 's' : '') + '. Please check and update status.';
+
+  updateAlertPreview();
+  document.getElementById('alert-backdrop').classList.add('open');
+}
+
+// ── Activity log ─────────────────────────────────────────────
+function logActivity(user, type, message) {
+  const log = lj(K.LOG, []);
+  log.unshift({ user: user || 'unknown', type, message, ts: Date.now() });
+  if (log.length > 500) log.length = 500;
+  sj(K.LOG, log);
+  if (tab === 'log') renderActivityLog();
+}
+
+function renderActivityLog() {
+  const log    = lj(K.LOG, []);
+  const listEl = document.getElementById('log-list');
+  const lblEl  = document.getElementById('log-count-lbl');
+  if (!listEl) return;
+  if (lblEl) lblEl.textContent = log.length ? log.length + ' event' + (log.length !== 1 ? 's' : '') : 'Activity log';
+  if (!log.length) {
+    listEl.innerHTML = '<div class="log-empty">No activity recorded yet.</div>';
+    return;
+  }
+  const typeIcon = { resolve:'✅', reopen:'↩️', alert:'📢', remark:'✏️' };
+  listEl.innerHTML = log.map(entry => {
+    const dt = new Date(entry.ts).toLocaleString('en-IN', {
+      day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit'
+    });
+    const icon = typeIcon[entry.type] || '•';
+    return '<div class="log-item">' +
+      '<span class="log-dot ' + esc(entry.type) + '"></span>' +
+      '<div class="log-text"><span style="font-size:11px;margin-right:4px">' + icon + '</span>' + entry.message +
+        '<span style="font-size:10.5px;color:var(--text3);margin-left:6px">by ' + esc(entry.user) + '</span>' +
+      '</div>' +
+      '<div class="log-meta">' + dt + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function clearActivityLog() {
+  if (!confirm('Clear the entire activity log? This cannot be undone.')) return;
+  sj(K.LOG, []);
+  renderActivityLog();
+  showToast('Activity log cleared');
+}
+
+// ── Onboarding ───────────────────────────────────────────────
+let pendingEngMap = {};
+function fuzzyMatch(a, b) {
+  a = a.toLowerCase().replace(/[^a-z0-9]/g, '');
+  b = b.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!a || !b) return false;
+  return a.includes(b) || b.includes(a) || levenshtein(a, b) <= Math.floor(Math.max(a.length, b.length) * 0.25);
+}
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m+1 }, (_, i) => Array.from({ length: n+1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+    dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+function parseEngFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    const isCSV = file.name.toLowerCase().endsWith('.csv');
+    reader.onload = e => {
+      try {
+        let rows = [];
+        if (isCSV) {
+          rows = e.target.result.split(/\r?\n/).map(l => l.split(',').map(c => c.replace(/^"|"$/g,'').trim())).filter(r => r.length >= 2 && r[0]);
+        } else {
+          const wb = XLSX.read(e.target.result, { type: 'array' });
+          rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' })
+            .map(r => [String(r[0]||'').trim(), String(r[1]||'').trim()]).filter(r => r[0]);
+        }
+        if (rows.length && rows[0][0].toLowerCase().replace(/\s/g,'').includes('sitename')) rows.shift();
+        resolve(rows);
+      } catch (err) { reject(err); }
+    };
+    reader.onerror = () => reject(new Error('Could not read file'));
+    if (isCSV) reader.readAsText(file); else reader.readAsArrayBuffer(file);
+  });
+}
+async function handleFileSelect(input) { if (input.files && input.files[0]) await processEngFile(input.files[0]); }
+async function handleFileDrop(evt) {
+  evt.preventDefault(); document.getElementById('upload-zone').classList.remove('drag');
+  const file = evt.dataTransfer.files[0]; if (file) await processEngFile(file);
+}
+async function processEngFile(file) {
+  const sumEl = document.getElementById('upload-summary');
+  sumEl.style.display = 'block'; sumEl.innerHTML = '<span style="color:var(--text2);font-size:13px">Reading file…</span>';
+  try {
+    const rows = await parseEngFile(file);
+    pendingEngMap = {};
+    const matched = [], unmatched = [];
+    rows.forEach(row => {
+      const site = row[0], engineer = row[1];
+      if (!site || !engineer) return;
+      const hit = LOCS.find(loc => fuzzyMatch(loc, site));
+      if (hit) { pendingEngMap[nk(hit)] = engineer; matched.push({ site, engineer, loc: hit }); }
+      else { unmatched.push({ site, engineer }); }
+    });
+    const gapLocs = LOCS.filter(l => !pendingEngMap[nk(l)]);
+    sumEl.innerHTML =
+      '<div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--text)">' + rows.length + ' rows read · ' + matched.length + ' matched</div>' +
+      '<div style="margin-bottom:8px">' + (matched.length ? matched.map(m => '<span class="tag-matched">' + esc(m.site) + ' → ' + esc(m.engineer) + '</span>').join('') : '<span style="color:var(--text2);font-size:12px">No sites matched</span>') + '</div>' +
+      (unmatched.length ? '<div style="font-size:12px;color:var(--amber-text);margin-bottom:4px">' + unmatched.length + ' row(s) did not match any site</div>' : '') +
+      (gapLocs.length ? '<div style="font-size:12px;color:var(--text2)">' + gapLocs.length + ' site(s) still unassigned</div>' : '');
+    document.getElementById('btn-next-step').style.display = gapLocs.length ? 'inline-flex' : 'none';
+    document.getElementById('btn-finish-upload').style.display = gapLocs.length ? 'none' : 'inline-flex';
+  } catch (err) { sumEl.innerHTML = '<div style="color:var(--red-text);font-size:13px">Could not read file: ' + err.message + '</div>'; }
+}
+function goToGapsStep() {
+  const gapLocs = SITE_MAP.filter(e => !pendingEngMap[nk(e.site)] && !e.engineer).map(e => e.site);
+  const preFilled = SITE_MAP.filter(e => !!(pendingEngMap[nk(e.site)] || e.engineer));
+  document.getElementById('gaps-matched-note').innerHTML =
+    '<strong>' + preFilled.length + '</strong> site(s) auto-assigned. <strong>' + gapLocs.length + '</strong> need manual assignment.';
+  document.getElementById('gaps-list').innerHTML = gapLocs.map(loc =>
+    '<div class="gap-row"><div class="gap-lbl" title="' + esc(loc) + '">' + esc(loc) + '</div>' +
+    '<input class="gap-inp" type="text" placeholder="Engineer name" data-key="' + esc(nk(loc)) + '"/></div>'
+  ).join('');
+  document.getElementById('onboard-step-upload').style.display = 'none';
+  document.getElementById('onboard-step-gaps').style.display = 'block';
+}
+function goBackToUpload() { document.getElementById('onboard-step-gaps').style.display = 'none'; document.getElementById('onboard-step-upload').style.display = 'block'; }
+function finishOnboarding() {
+  const e = eng();
+  Object.keys(pendingEngMap).forEach(k => { e[k] = pendingEngMap[k]; });
+  document.querySelectorAll('#gaps-list .gap-inp').forEach(inp => { if (inp.value.trim()) e[inp.dataset.key] = inp.value.trim(); });
+  sj(K.ENG, e); lset(K_SETUP, '1');
+  document.getElementById('onboard').style.display = 'none';
+  if (devices.length) { renderActive(); renderResolved(); }
+  showToast('Engineer assignments saved');
+}
+function skipOnboarding() { lset(K_SETUP, '1'); document.getElementById('onboard').style.display = 'none'; }
+function reopenUploadFromModal() {
+  closeSetup(); pendingEngMap = {};
+  document.getElementById('upload-summary').style.display = 'none';
+  document.getElementById('btn-next-step').style.display = 'none';
+  document.getElementById('btn-finish-upload').style.display = 'none';
+  document.getElementById('onboard-step-gaps').style.display = 'none';
+  document.getElementById('onboard-step-upload').style.display = 'block';
+  document.getElementById('onboard').style.display = 'flex';
+}
+
+// ── Init ─────────────────────────────────────────────────────
+(function init() {
+  // Load credentials from KV first (async, non-blocking)
+  // Falls back to localStorage cache then hardcoded defaults
+  fetchCredentials();
+  checkAuth();
+  autoAssignEngineers();
+  checkPushStatus();
+  if (!ls(K_SETUP)) document.getElementById('onboard').style.display = 'flex';
+  const c = lj(K.DATA, null);
+  if (c && c.devices && c.devices.length) {
+    devices = c.devices;
+    loaded(new Date(c.ts), true);
+    const age = Math.round((Date.now() - c.ts) / 36e5);
+    showErr(
+      age >= 24
+        ? 'Data is ' + age + 'h old — press Fetch Latest to refresh.'
+        : 'Cached data from ' + new Date(c.ts).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) + '. Press Fetch Latest to refresh.',
+      age >= 24 ? 'stale' : 'info', true
+    );
+  }
+})();
+</script>
+</body>
+</html>
