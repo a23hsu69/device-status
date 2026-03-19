@@ -1839,8 +1839,36 @@ function renderNotifInbox() {
 }
 
 function clearNotifInbox() {
-  if (!confirm('Clear all notifications?')) return;
-  saveNotifInbox([]); markNotifsRead(); renderNotifInbox(); showToast('Notifications cleared');
+  const lbl = document.getElementById('notif-inbox-count');
+  if (!lbl) return;
+  if (lbl.dataset.confirming === '1') {
+    // Second tap — confirmed, proceed
+    lbl.dataset.confirming = '0';
+    saveNotifInbox([]);
+    markNotifsRead();
+    renderNotifInbox();
+    showToast('Notifications cleared');
+    // Also wipe from KV so they don't return on next load
+    const user = getCurrentUser();
+    if (user && isEngineer(user)) {
+      fetch(WORKER_URL + '/clear-inbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user })
+      }).catch(() => {});
+    }
+  } else {
+    // First tap — ask for confirmation in-place
+    lbl.dataset.confirming = '1';
+    const original = lbl.textContent;
+    lbl.textContent = 'Tap "Clear all" again to confirm';
+    setTimeout(() => {
+      if (lbl.dataset.confirming === '1') {
+        lbl.dataset.confirming = '0';
+        lbl.textContent = original;
+      }
+    }, 3000);
+  }
 }
 
 function storeIncomingNotif(title, body) {
@@ -2011,10 +2039,29 @@ function renderActivityLog() {
 }
 
 function clearActivityLog() {
-  if (!confirm('Clear the entire activity log? This cannot be undone.')) return;
-  sj(K.LOG, []);
-  renderActivityLog();
-  showToast('Activity log cleared');
+  // Use a custom inline confirm instead of browser confirm()
+  // because confirm() is blocked in PWA standalone mode on some Android devices
+  const lbl = document.getElementById('log-count-lbl');
+  if (!lbl) return;
+  if (lbl.dataset.confirming === '1') {
+    // Second tap — confirmed
+    lbl.dataset.confirming = '0';
+    lbl.textContent = 'Activity log';
+    sj(K.LOG, []);
+    renderActivityLog();
+    showToast('Activity log cleared');
+  } else {
+    // First tap — ask for confirmation in-place
+    lbl.dataset.confirming = '1';
+    const original = lbl.textContent;
+    lbl.textContent = 'Tap "Clear log" again to confirm';
+    setTimeout(() => {
+      if (lbl.dataset.confirming === '1') {
+        lbl.dataset.confirming = '0';
+        lbl.textContent = original;
+      }
+    }, 3000);
+  }
 }
 
 // ── Onboarding ───────────────────────────────────────────────
