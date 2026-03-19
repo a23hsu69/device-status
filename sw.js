@@ -1,4 +1,4 @@
-const CACHE = 'dsc-v40';
+const CACHE = 'dsc-v42';
 const STATIC = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -41,55 +41,50 @@ self.addEventListener('fetch', e => {
 
 // ── Push notification handler ──────────────────────────────────
 self.addEventListener('push', e => {
-  console.log('[SW] Push received, data type:', e.data ? typeof e.data : 'none');
-
   e.waitUntil((async () => {
     let title = 'Device Status Alert';
-    let body = 'A device needs attention';
-    let tag = 'device-alert';
-    let url = self.registration.scope;
+    let body  = 'Tap to open the app';
+    let tag   = 'device-alert';
+    let url   = self.registration.scope;
 
+    // Parse payload — be very defensive, e.data can be null on some Androids
     if (e.data) {
-      const raw = e.data.text();
-      console.log('[SW] Raw push data:', raw.substring(0, 200));
       try {
-        const parsed = JSON.parse(raw);
-        title = parsed.title || title;
-        body = parsed.body || body;
-        tag = parsed.tag || tag;
-        url = parsed.url || url;
-        console.log('[SW] Parsed title:', title, 'body:', body);
-      } catch(err) {
-        console.log('[SW] Not JSON, using raw as body:', raw);
-        body = raw || body;
+        const raw = e.data.text();
+        if (raw && raw.trim().startsWith('{')) {
+          const parsed = JSON.parse(raw);
+          title = parsed.title || title;
+          body  = parsed.body  || body;
+          tag   = parsed.tag   || tag;
+          url   = parsed.url   || url;
+        } else if (raw && raw.trim()) {
+          body = raw.trim();
+        }
+      } catch (err) {
+        // Parsing failed — use defaults, still show notification
+        console.warn('[SW] Push data parse failed:', err.message);
       }
     }
 
-    const options = {
-      body: body,
-      icon: './icons/icon-192.png',
-      badge: './icons/favicon-32.png',
-      tag: tag,
-      renotify: true,
-      requireInteraction: true,
-      vibrate: [200, 100, 200],
-      data: { url: url, title: title, body: body },
+    // Always show — never skip even if data is empty
+    await self.registration.showNotification(title, {
+      body,
+      icon:              './icons/icon-192.png',
+      badge:             './icons/favicon-32.png',
+      tag,
+      renotify:          true,
+      requireInteraction: false,   // false = auto-dismiss after a few seconds on Android
+      vibrate:           [200, 100, 200],
+      data:              { url, title, body },
       actions: [
-        { action: 'open', title: 'Open app' },
-        { action: 'dismiss', title: 'Dismiss' }
+        { action: 'open',    title: 'Open app' },
+        { action: 'dismiss', title: 'Dismiss'  }
       ]
-    };
+    });
 
-    await self.registration.showNotification(title, options);
-    console.log('[SW] Notification shown:', title);
-
-    // Notify all open clients to show in-app alert bar
+    // Also notify any open app windows to show the in-app alert bar
     const clients = await self.clients.matchAll({ type: 'window' });
-    clients.forEach(client => client.postMessage({
-      type: 'PUSH_RECEIVED',
-      title: title,
-      body: body
-    }));
+    clients.forEach(client => client.postMessage({ type: 'PUSH_RECEIVED', title, body }));
   })());
 });
 

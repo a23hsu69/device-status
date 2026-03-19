@@ -261,7 +261,7 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .log-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
 .log-item:last-child{border-bottom:none}
 .log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.log-dot.resolve{background:var(--green-dot)}.log-dot.reopen{background:var(--amber-dot)}.log-dot.alert{background:var(--accent)}.log-dot.remark{background:var(--text3)}
+.log-dot.resolve{background:var(--green-dot)}.log-dot.reopen{background:var(--amber-dot)}.log-dot.alert{background:var(--accent)}.log-dot.remark{background:var(--text3)}.log-dot.ack{background:#3b82f6}.log-dot.report{background:var(--blue-dot,#3b82f6)}
 .log-text{flex:1;font-size:12px;color:var(--text);line-height:1.5}
 .log-text strong{font-weight:600}
 .log-meta{font-size:10.5px;color:var(--text3);white-space:nowrap;margin-top:1px;flex-shrink:0}
@@ -301,6 +301,95 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .admin-pw-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1rem}
 .admin-pw-section-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px}
 
+/* ── Reports tab ── */
+.report-list{padding:1rem 1.25rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.report-type-card{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:1rem;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px}
+.report-type-card:hover{border-color:var(--accent);background:var(--accent-bg)}
+.report-type-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.report-type-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.report-type-desc{font-size:11px;color:var(--text2);line-height:1.4}
+.report-wizard{padding:1.25rem}
+.report-wizard-header{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
+.report-wizard-back{background:none;border:none;cursor:pointer;color:var(--text2);font-size:13px;font-family:var(--font);display:flex;align-items:center;gap:4px;padding:0}
+.report-wizard-back:hover{color:var(--text)}
+.report-wizard-title{font-size:16px;font-weight:700;color:var(--text)}
+.report-field{margin-bottom:14px}
+.report-field label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.report-select,.report-inp,.report-textarea{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
+.report-select:focus,.report-inp:focus,.report-textarea:focus{border-color:var(--accent)}
+.report-textarea{resize:vertical;min-height:80px}
+.device-checkboxes{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:8px}
+.device-checkbox-row{display:flex;align-items:flex-start;gap:8px;padding:4px;border-radius:4px;cursor:pointer}
+.device-checkbox-row:hover{background:var(--bg2)}
+.device-checkbox-row input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.device-checkbox-label{font-size:12px;color:var(--text)}
+.device-checkbox-sub{font-size:10.5px;color:var(--text3);margin-top:1px}
+.carrier-options{display:flex;gap:8px}
+.carrier-btn{flex:1;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:13px;font-family:var(--font);color:var(--text2);text-align:center;transition:all .12s}
+.carrier-btn.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+.report-preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px;color:var(--text2);font-family:monospace;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;margin-bottom:1rem;line-height:1.6}
+.report-preview-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.sim-toggle{display:flex;gap:8px;margin-bottom:12px}
+.sim-toggle-btn{flex:1;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:12px;font-family:var(--font);color:var(--text2);text-align:center;transition:all .12s}
+.sim-toggle-btn.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+/* reports history in log */
+.log-dot.report{background:var(--blue-dot,#3b82f6)}
+.log-item.expandable{cursor:pointer}
+.log-item.expandable:hover .log-text{color:var(--accent)}
+.log-expand-body{display:none;margin-top:8px;padding:10px;background:var(--bg2);border-radius:var(--radius);font-size:11.5px;color:var(--text2);white-space:pre-wrap;line-height:1.6;border-left:3px solid var(--accent)}
+.log-expand-body.open{display:block}
+.log-expand-btn{font-size:10.5px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);margin-top:4px}
+
+/* ── Engineer management (in settings) ── */
+.eng-mgmt-list{margin-bottom:12px}
+.eng-mgmt-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px}
+.eng-mgmt-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0}
+.eng-mgmt-name{flex:1;font-size:13px;font-weight:600;color:var(--text)}
+.eng-mgmt-login{font-size:11px;color:var(--text3)}
+.btn-remove-eng{background:none;border:1px solid var(--border2);border-radius:var(--radius);padding:3px 8px;font-size:11px;cursor:pointer;color:var(--text3);font-family:var(--font)}
+.btn-remove-eng:hover{background:var(--red-bg);color:var(--red-text);border-color:var(--red-dot)}
+.role-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0}
+.role-badge.admin{background:#fef3c7;color:#92400e}
+.role-badge.engineer{background:var(--accent-bg);color:var(--accent)}
+@media(prefers-color-scheme:dark){.role-badge.admin{background:#2d1f0a;color:#fcd34d}}
+.add-eng-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-top:8px}
+.add-eng-form-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px}
+.add-eng-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+@media(max-width:500px){.add-eng-grid{grid-template-columns:1fr}}
+
+/* ── Mail contacts ── */
+.contact-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px}
+.contact-row-info{flex:1;min-width:0}
+.contact-row-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-row-email{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-role-badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.contact-role-badge.to{background:var(--accent-bg);color:var(--accent)}
+.contact-role-badge.cc{background:var(--bg3);color:var(--text2)}
+.btn-remove-contact{background:none;border:1px solid var(--border2);border-radius:var(--radius);padding:3px 8px;font-size:11px;cursor:pointer;color:var(--text3);font-family:var(--font);flex-shrink:0}
+.btn-remove-contact:hover{background:var(--red-bg);color:var(--red-text);border-color:var(--red-dot)}
+.add-contact-grid{display:grid;grid-template-columns:1fr 1fr 80px auto;gap:8px;align-items:end;margin-top:8px}
+@media(max-width:520px){.add-contact-grid{grid-template-columns:1fr 1fr;}}
+.mail-compose-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1rem}
+.mail-compose-box-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.mail-field-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mail-field-row label{font-size:11px;font-weight:600;color:var(--text2);width:24px;flex-shrink:0;text-transform:uppercase}
+.mail-field-inp{flex:1;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 9px;font-size:12.5px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
+.mail-field-inp:focus{border-color:var(--accent)}
+
+/* ── Acknowledge feature ── */
+.btn-ack{font-size:11px;padding:4px 9px;border-radius:20px;background:var(--bg);border:1px solid var(--border2);color:var(--text2);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:500;transition:all .12s}
+.btn-ack:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.btn-ack.acked{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);cursor:default}
+.ack-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-light);border-radius:20px;padding:2px 7px;white-space:nowrap;flex-shrink:0}
+.ack-chip svg{flex-shrink:0}
+
+/* ── Contact selector in wizard ── */
+.contact-sel-group{display:flex;flex-direction:column;gap:6px}
+.contact-sel-row{display:flex;align-items:center;gap:6px}
+.contact-sel-row label{font-size:11px;font-weight:600;color:var(--text2);width:24px;flex-shrink:0;text-transform:uppercase}
+.contact-sel-row select{flex:1;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 9px;font-size:12.5px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;cursor:pointer}
+.contact-sel-row select:focus{border-color:var(--accent)}
+
 /* install banner */
 .install-bar{background:var(--accent);color:#fff;padding:10px 1.25rem;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
 .install-bar button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius);padding:6px 14px;font-size:13px;cursor:pointer;font-family:var(--font);font-weight:500}
@@ -336,7 +425,7 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
       <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
-    <div class="login-footer">LDB Device Monitoring · v3.0 · Sessions expire after 24 hours</div>
+    <div class="login-footer">LDB Device Monitoring · v4.1 · Sessions expire after 24 hours</div>
   </div>
 </div>
 
@@ -360,7 +449,7 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
     <div>
       <div class="topbar-title">
         Device Status
-        <span class="version-tag">v3.0</span>
+        <span class="version-tag">v4.1</span>
         <span class="offline-badge" id="offline-badge" style="display:none">Offline</span>
         <span class="stale-badge" id="stale-badge" style="display:none">Stale</span>
       </div>
@@ -389,8 +478,8 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
     <button class="btn btn-icon" id="settings-btn" onclick="openSettingsModal()" title="Settings" style="display:none">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <!-- engineer assignment -->
-    <button class="btn btn-icon" onclick="openSetup()" title="Assign engineers">
+    <!-- engineer assignment — admin only -->
+    <button class="btn btn-icon" id="assign-eng-btn" onclick="openSetup()" title="Assign engineers" style="display:none">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 8a3 3 0 100-6 3 3 0 000 6zM2 14s-1 0-1-1 1-4 6-4c.5 0 1 0 1.5.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M13 11v4M11 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
     <!-- fetch -->
@@ -462,6 +551,11 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
         </button>
         <!-- Activity log: only shown to admin via JS -->
         <button class="tab" id="tab-l" onclick="switchTab('log')" style="display:none">Activity Log</button>
+        <!-- Reports tab: only shown to engineers via JS -->
+        <button class="tab" id="tab-rep" onclick="switchTab('reports')" style="display:none">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M4 7h8M4 10h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.3"/></svg>
+          Reports
+        </button>
       </div>
 
       <!-- Active panel -->
@@ -545,6 +639,52 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
           <div class="log-empty">No activity recorded yet.</div>
         </div>
       </div>
+
+      <!-- Reports panel — engineers only -->
+      <div id="panel-reports" style="display:none">
+        <!-- Report type selector (default view) -->
+        <div id="report-type-selector">
+          <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)">
+            <div style="font-size:12px;color:var(--text2)">Select a report type to get started. The form will be pre-filled with your site and device data.</div>
+          </div>
+          <div class="report-list">
+            <div class="report-type-card" onclick="openReportWizard('accident')">
+              <div class="report-type-icon">🚨</div>
+              <div><div class="report-type-name">Accident</div><div class="report-type-desc">Report an accident at a site. Includes reinstallation notice.</div></div>
+            </div>
+            <div class="report-type-card" onclick="openReportWizard('renovation')">
+              <div class="report-type-icon">🏗️</div>
+              <div><div class="report-type-name">Site Renovation</div><div class="report-type-desc">Site is undergoing renovation, device(s) affected.</div></div>
+            </div>
+            <div class="report-type-card" onclick="openReportWizard('electrical')">
+              <div class="report-type-icon">⚡</div>
+              <div><div class="report-type-name">Electrical Issue</div><div class="report-type-desc">Electrical wiring issue causing device downtime.</div></div>
+            </div>
+            <div class="report-type-card" onclick="openReportWizard('rma')">
+              <div class="report-type-icon">🔧</div>
+              <div><div class="report-type-name">RMA Request</div><div class="report-type-desc">Reader, Router, Reader adapter, Router adapter — faulty component return.</div></div>
+            </div>
+            <div class="report-type-card" onclick="openReportWizard('sim')">
+              <div class="report-type-icon">📶</div>
+              <div><div class="report-type-name">SIM Faulty</div><div class="report-type-desc">SIM fault with carrier details. Supports replacement format.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report wizard (shown after type selected) -->
+        <div id="report-wizard" style="display:none">
+          <div class="report-wizard">
+            <div class="report-wizard-header">
+              <button class="report-wizard-back" onclick="closeReportWizard()">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back
+              </button>
+              <div class="report-wizard-title" id="wizard-title">Report</div>
+            </div>
+            <div id="wizard-body"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -612,17 +752,10 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 <!-- ── Manual alert modal ──────────────────────────────────── -->
 <div class="modal-backdrop" id="alert-backdrop" onclick="if(event.target===this)closeAlertModal()">
   <div class="modal" style="max-width:460px">
-    <h2>Send alert to engineers</h2>
-    <p>Push a notification to one or both engineers instantly.</p>
+    <h2>Send alert</h2>
+    <p>Push a notification to one or more users instantly.</p>
     <div class="alert-field"><label>Recipients</label></div>
-    <div class="alert-recipient" id="rec-row-ayush" onclick="toggleRecipient('ayush')">
-      <input type="checkbox" id="rec-ayush"/>
-      <div><div class="alert-recipient-name">Ayush E P</div><div class="alert-recipient-sub">KINFRA sites &amp; toll plazas</div></div>
-    </div>
-    <div class="alert-recipient" id="rec-row-swethaswan" onclick="toggleRecipient('swethaswan')">
-      <input type="checkbox" id="rec-swethaswan"/>
-      <div><div class="alert-recipient-name">Swethaswan</div><div class="alert-recipient-sub">Container terminals &amp; CFS sites</div></div>
-    </div>
+    <div id="alert-recipients-list"><!-- populated dynamically --></div>
     <div class="alert-field" style="margin-top:14px">
       <label>Title</label>
       <input type="text" id="alert-title-inp" placeholder="e.g. Urgent: Site visit required" maxlength="60" oninput="updateAlertPreview()"/>
@@ -711,58 +844,50 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 
 <!-- ── Admin settings modal ────────────────────────────────── -->
 <div class="modal-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettingsModal()">
-  <div class="modal" style="max-width:500px">
+  <div class="modal" style="max-width:520px">
     <h2>Admin Settings</h2>
-    <p>Changes are saved to the server and sync across all devices instantly.</p>
+    <p>Credential changes sync to the server instantly across all devices.</p>
 
     <div class="settings-info" id="settings-sync-status">
       <span id="settings-sync-icon">⏳</span> Loading current credentials from server…
     </div>
 
-    <!-- Engineer credentials -->
+    <!-- Engineer management -->
     <div class="settings-section">
-      <div class="settings-section-title">Engineer credentials</div>
-
-      <div class="user-cred-card">
-        <div class="user-cred-header">
-          <div class="user-cred-avatar">AE</div>
-          <div>
-            <div class="user-cred-name">Ayush E P</div>
-            <div class="user-cred-login" id="ayush-current-login">Current login: ayush</div>
+      <div class="settings-section-title">Engineers</div>
+      <div class="eng-mgmt-list" id="eng-mgmt-list"><!-- populated by JS --></div>
+      <!-- Add new user form -->
+      <div class="add-eng-form">
+        <div class="add-eng-form-title">➕ Add new user</div>
+        <div class="add-eng-grid">
+          <div class="cred-field">
+            <label>Full name</label>
+            <input class="cred-inp" type="text" id="new-eng-name" placeholder="e.g. Rahul K" maxlength="40"/>
           </div>
-        </div>
-        <div class="user-cred-fields">
           <div class="cred-field">
             <label>Username</label>
-            <input class="cred-inp" type="text" id="cred-ayush-username" placeholder="e.g. ayush" autocomplete="off" maxlength="32"/>
-            <div class="cred-hint">3–32 characters, no spaces</div>
+            <input class="cred-inp" type="text" id="new-eng-username" placeholder="e.g. rahul" autocomplete="off" maxlength="32"/>
           </div>
           <div class="cred-field">
-            <label>New password</label>
-            <input class="cred-inp" type="password" id="cred-ayush-password" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+            <label>Password</label>
+            <input class="cred-inp" type="password" id="new-eng-password" placeholder="Min 6 chars" autocomplete="new-password"/>
           </div>
         </div>
+        <div class="cred-field" style="margin-top:8px;max-width:180px">
+          <label>Role</label>
+          <select class="cred-inp" id="new-eng-role">
+            <option value="engineer">Engineer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="addNewEngineer()">Add user</button>
       </div>
+    </div>
 
-      <div class="user-cred-card">
-        <div class="user-cred-header">
-          <div class="user-cred-avatar">SW</div>
-          <div>
-            <div class="user-cred-name">Swethaswan</div>
-            <div class="user-cred-login" id="swethaswan-current-login">Current login: swethaswan</div>
-          </div>
-        </div>
-        <div class="user-cred-fields">
-          <div class="cred-field">
-            <label>Username</label>
-            <input class="cred-inp" type="text" id="cred-swethaswan-username" placeholder="e.g. swethaswan" autocomplete="off" maxlength="32"/>
-          </div>
-          <div class="cred-field">
-            <label>New password</label>
-            <input class="cred-inp" type="password" id="cred-swethaswan-password" placeholder="Leave blank to keep current" autocomplete="new-password"/>
-          </div>
-        </div>
-      </div>
+    <!-- Change passwords for existing engineers -->
+    <div class="settings-section">
+      <div class="settings-section-title">Change engineer passwords</div>
+      <div id="eng-pw-change-list"><!-- populated by JS --></div>
     </div>
 
     <!-- Admin's own password -->
@@ -772,14 +897,30 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
         <div class="user-cred-fields">
           <div class="cred-field">
             <label>Current password</label>
-            <input class="cred-inp" type="password" id="admin-current-pw" placeholder="Confirm current password" autocomplete="current-password"/>
+            <input class="cred-inp" type="password" id="admin-current-pw" placeholder="Required to save" autocomplete="current-password"/>
           </div>
           <div class="cred-field">
             <label>New password</label>
-            <input class="cred-inp" type="password" id="admin-new-pw" placeholder="Leave blank to keep current" autocomplete="new-password"/>
+            <input class="cred-inp" type="password" id="admin-new-pw" placeholder="Leave blank to keep" autocomplete="new-password"/>
           </div>
         </div>
-        <div class="cred-hint" style="margin-top:6px">You must enter your current password to save any changes.</div>
+        <div class="cred-hint" style="margin-top:6px">Your current password is required to save any changes.</div>
+      </div>
+    </div>
+
+    <!-- Mail contacts -->
+    <div class="settings-section">
+      <div class="settings-section-title">Mail contacts</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">These contacts are pre-filled in the To and CC fields when engineers send reports. Engineers can edit before sending.</p>
+      <div id="contacts-list"><!-- populated by JS --></div>
+      <div class="add-eng-form" style="margin-top:8px">
+        <div class="add-eng-form-title">➕ Add contact</div>
+        <div class="add-contact-grid">
+          <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-contact-name" placeholder="e.g. NEC Client" maxlength="40"/></div>
+          <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-contact-email" placeholder="e.g. client@nec.com"/></div>
+          <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-contact-role"><option value="to">To</option><option value="cc">CC</option></select></div>
+          <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addContact()">Add</button></div>
+        </div>
       </div>
     </div>
 
@@ -862,14 +1003,16 @@ const LOCS = SITE_MAP.map(s => s.site);
 
 // Storage keys
 const K = {
-  ENG:   'dsc_engineers_v1',
-  REM:   'dsc_remarks_v1',
-  DATA:  'dsc_lastdata_v1',
-  RES:   'dsc_resolved_v1',
-  NOTIF: 'dsc_notif_inbox_v1',
-  NOTIF_READ: 'dsc_notif_read_v1',
-  LOG:   'dsc_activity_log_v1',
-  CREDS: 'dsc_creds_v1'
+  ENG:      'dsc_engineers_v1',
+  REM:      'dsc_remarks_v1',
+  DATA:     'dsc_lastdata_v1',
+  RES:      'dsc_resolved_v1',
+  NOTIF:    'dsc_notif_inbox_v1',
+  NOTIF_READ:'dsc_notif_read_v1',
+  LOG:      'dsc_activity_log_v1',
+  CREDS:    'dsc_creds_v1',
+  CONTACTS: 'dsc_contacts_v1',
+  ACK:      'dsc_ack_v1'
 };
 const K_AUTH      = 'dsc_auth_v1';
 const K_AUTH_TS   = 'dsc_auth_ts_v1';
@@ -950,8 +1093,20 @@ function sha256(msg) {
 }
 
 function getCurrentUser() { return ls(K_AUTH_US) || ''; }
-function isEngineer(u) { return u === 'ayush' || u === 'swethaswan'; }
-function isAdmin(u) { return u === 'admin'; }
+
+function getUserRole(u) {
+  if (!u) return null;
+  // Original admin account is always admin
+  if (u === 'admin') return 'admin';
+  const creds = credCache || lj(K.CREDS, {});
+  if (creds && creds[u]) return creds[u].role || 'engineer';
+  // Hardcoded fallback
+  if (u === 'ayush' || u === 'swethaswan') return 'engineer';
+  return null;
+}
+
+function isEngineer(u) { return getUserRole(u) === 'engineer'; }
+function isAdmin(u)    { return getUserRole(u) === 'admin'; }
 
 function isAuthValid() {
   const ts = ls(K_AUTH_TS), ok = ls(K_AUTH);
@@ -974,12 +1129,16 @@ function applyRoleUI(user) {
   const notifBtn    = document.getElementById('notif-btn');
   const notifTab    = document.getElementById('tab-n');
   const logTab      = document.getElementById('tab-l');
+  const repTab      = document.getElementById('tab-rep');
   const settingsBtn = document.getElementById('settings-btn');
+  const assignBtn   = document.getElementById('assign-eng-btn');
   if (alertBtn)    alertBtn.style.display    = admin ? 'inline-flex' : 'none';
   if (notifBtn)    notifBtn.style.display    = eng_u ? 'inline-flex' : 'none';
   if (notifTab)    notifTab.style.display    = eng_u ? 'inline-flex' : 'none';
   if (logTab)      logTab.style.display      = admin ? 'inline-flex' : 'none';
+  if (repTab)      repTab.style.display      = eng_u ? 'inline-flex' : 'none';
   if (settingsBtn) settingsBtn.style.display = admin ? 'inline-flex' : 'none';
+  if (assignBtn)   assignBtn.style.display   = admin ? 'inline-flex' : 'none';
   // Engineer summary cards — only show if admin and data is loaded
   const engRow = document.getElementById('eng-summary-row');
   if (engRow) engRow.style.display = (admin && devices.length) ? 'grid' : 'none';
@@ -1005,9 +1164,9 @@ let credCache = null;
 
 // Default hashes (used if KV has nothing yet)
 const DEFAULT_HASHES = {
-  admin:      { username: 'admin',      hash: 'c2bc3a7a8e9ce3e9f6a922eb2efe8489bb67a5c4df099c6ce01a182916619951' },
-  ayush:      { username: 'ayush',      hash: '59849abefbee3410c7b46e1f19c9eb10a09c311fd11b608453fe67f143309261' },
-  swethaswan: { username: 'swethaswan', hash: '1c5a132fefb0d6aabb1aa08510215ecc65c6b228a00aee3a7a89255f5f85757f' }
+  admin:      { username: 'admin',      hash: 'c2bc3a7a8e9ce3e9f6a922eb2efe8489bb67a5c4df099c6ce01a182916619951', role: 'admin'    },
+  ayush:      { username: 'ayush',      hash: '59849abefbee3410c7b46e1f19c9eb10a09c311fd11b608453fe67f143309261', role: 'engineer' },
+  swethaswan: { username: 'swethaswan', hash: '1c5a132fefb0d6aabb1aa08510215ecc65c6b228a00aee3a7a89255f5f85757f', role: 'engineer' }
 };
 
 // Fetch credentials from KV on app load — silently falls back to defaults
@@ -1018,14 +1177,21 @@ async function fetchCredentials() {
     const data = await r.json();
     if (data.ok && data.credentials && Object.keys(data.credentials).length) {
       credCache = data.credentials;
-      // Also persist to localStorage as offline fallback
       sj(K.CREDS, credCache);
     }
   } catch (e) {
-    // Offline — load from localStorage cache if available
     const stored = lj(K.CREDS, null);
     if (stored) credCache = stored;
   }
+  // Also fetch contacts so engineers always have admin's latest list
+  try {
+    const r2 = await fetch(WORKER_URL + '/get-contacts');
+    if (!r2.ok) return;
+    const d2 = await r2.json();
+    if (d2.ok && Array.isArray(d2.contacts)) {
+      sj(K.CONTACTS, d2.contacts);
+    }
+  } catch (e) { /* offline — use local cache */ }
 }
 
 // Resolve username → { username, hash } from cache or defaults
@@ -1081,56 +1247,164 @@ function doLogout() {
 
 // ── Admin settings modal ─────────────────────────────────────
 async function openSettingsModal() {
-  // Reset fields
-  ['ayush','swethaswan'].forEach(u => {
-    const unEl = document.getElementById('cred-'+u+'-username');
-    const pwEl = document.getElementById('cred-'+u+'-password');
-    if (unEl) { unEl.value = ''; unEl.classList.remove('error'); }
-    if (pwEl) { pwEl.value = ''; pwEl.classList.remove('error'); }
+  // Reset
+  ['admin-current-pw','admin-new-pw','new-eng-name','new-eng-username','new-eng-password'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; if (el.classList) el.classList.remove('error'); }
   });
-  document.getElementById('admin-current-pw').value = '';
-  document.getElementById('admin-new-pw').value = '';
 
   const statusEl = document.getElementById('settings-sync-status');
-  const iconEl   = document.getElementById('settings-sync-icon');
-  statusEl.style.display = 'block';
-  iconEl.textContent = '⏳';
-  statusEl.innerHTML = '<span id="settings-sync-icon">⏳</span> Loading current credentials from server…';
+  statusEl.innerHTML = '<span id="settings-sync-icon">⏳</span> Loading credentials from server…';
 
   document.getElementById('settings-backdrop').classList.add('open');
 
-  // Fetch latest from KV and populate username placeholders
+  // Fetch credentials from KV
   try {
     const r = await fetch(WORKER_URL + '/get-credentials');
     const data = await r.json();
     if (data.ok && data.credentials) {
       credCache = data.credentials;
       sj(K.CREDS, credCache);
-      // Show current usernames as placeholders
-      ['ayush','swethaswan'].forEach(u => {
-        const entry = data.credentials[u];
-        const unEl = document.getElementById('cred-'+u+'-username');
-        const lbl  = document.getElementById(u+'-current-login');
-        if (entry && unEl)  unEl.placeholder = entry.username || u;
-        if (entry && lbl)   lbl.textContent  = 'Current login: ' + (entry.username || u);
-      });
-      statusEl.innerHTML = '<span style="color:var(--green-text)">✅</span> Credentials loaded from server. Leave a field blank to keep it unchanged.';
+      statusEl.innerHTML = '<span style="color:var(--green-text)">✅</span> Credentials loaded from server.';
     } else {
-      statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Using default credentials. Changes will sync once saved.';
+      statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Using defaults — changes will sync on save.';
     }
   } catch (e) {
-    statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Could not reach server — changes will be saved when connection restores.';
+    statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Offline — changes saved locally only.';
+  }
+
+  // Fetch contacts from KV
+  try {
+    const r2 = await fetch(WORKER_URL + '/get-contacts');
+    const d2  = await r2.json();
+    if (d2.ok && Array.isArray(d2.contacts)) {
+      sj(K.CONTACTS, d2.contacts);
+    }
+  } catch (e) { /* use local cache */ }
+
+  renderEngMgmtList();
+  renderContactsList();
+}
+
+function renderEngMgmtList() {
+  const allUsers = getAllUserList();
+  const listEl   = document.getElementById('eng-mgmt-list');
+  if (listEl) {
+    listEl.innerHTML = allUsers.map(u => {
+      const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      const isCore   = u.key === 'admin';
+      const role     = u.role || 'engineer';
+      return '<div class="eng-mgmt-row">' +
+        '<div class="eng-mgmt-avatar">' + initials + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="eng-mgmt-name">' + esc(u.name) + '</div>' +
+          '<div class="eng-mgmt-login">Login: ' + esc(u.username) + '</div>' +
+        '</div>' +
+        '<span class="role-badge ' + role + '">' + (role === 'admin' ? 'Admin' : 'Engineer') + '</span>' +
+        (!isCore
+          ? '<button class="btn-remove-eng" style="margin-left:4px" onclick="changeUserRole(\'' + esc(u.key) + '\',\'' + role + '\')">' +
+              (role === 'admin' ? '→ Engineer' : '→ Admin') + '</button>' +
+            '<button class="btn-remove-eng" style="margin-left:4px" onclick="removeEngineer(\'' + esc(u.key) + '\')">Remove</button>'
+          : '<span style="font-size:10px;color:var(--text3);padding:3px 6px;flex-shrink:0">Core</span>') +
+      '</div>';
+    }).join('') || '<div style="font-size:12px;color:var(--text2);padding:8px">No users yet.</div>';
+  }
+  // Password change inputs — all non-core users
+  const changeable = allUsers.filter(u => u.key !== 'admin');
+  const pwListEl = document.getElementById('eng-pw-change-list');
+  if (pwListEl) {
+    pwListEl.innerHTML = changeable.map(u => {
+      return '<div class="user-cred-card" style="margin-bottom:8px">' +
+        '<div class="user-cred-header">' +
+          '<div class="user-cred-avatar">' + u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) + '</div>' +
+          '<div>' +
+            '<div class="user-cred-name">' + esc(u.name) + '</div>' +
+            '<div class="user-cred-login">Login: ' + esc(u.username) + ' · ' + (u.role === 'admin' ? 'Admin' : 'Engineer') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cred-field">' +
+          '<label>New password</label>' +
+          '<input class="cred-inp" type="password" id="pw-' + esc(u.key) + '" placeholder="Leave blank to keep current" autocomplete="new-password"/>' +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 }
 
-function closeSettingsModal() {
-  document.getElementById('settings-backdrop').classList.remove('open');
+// All users (admin + engineers + any promoted admins) from credCache + defaults
+function getAllUserList() {
+  const creds = credCache || lj(K.CREDS, {});
+  const list  = [];
+  // Original admin always first
+  list.push({ key: 'admin', name: 'Admin', username: creds.admin?.username || 'admin', role: 'admin' });
+  // Core engineers
+  ['ayush','swethaswan'].forEach(k => {
+    const entry = creds[k];
+    const role  = entry?.role || DEFAULT_HASHES[k]?.role || 'engineer';
+    list.push({ key: k, name: entry?.name || (k === 'ayush' ? 'Ayush E P' : 'Swethaswan'), username: entry?.username || k, role });
+  });
+  // Dynamic users
+  Object.entries(creds).forEach(([key, val]) => {
+    if (['admin','ayush','swethaswan'].includes(key)) return;
+    if (val && (val.role === 'engineer' || val.role === 'admin')) {
+      list.push({ key, name: val.name || key, username: val.username || key, role: val.role });
+    }
+  });
+  return list;
 }
+
+// Engineers only (for alert recipients, report filters, site assignment)
+function getEngineerList() {
+  return getAllUserList().filter(u => u.role === 'engineer');
+}
+
+function changeUserRole(key, currentRole) {
+  if (!credCache) credCache = {};
+  const newRole = currentRole === 'admin' ? 'engineer' : 'admin';
+  if (!credCache[key]) {
+    const def = DEFAULT_HASHES[key];
+    credCache[key] = { username: def?.username || key, hash: def?.hash || '', name: key };
+  }
+  credCache[key].role = newRole;
+  sj(K.CREDS, credCache);
+  renderEngMgmtList();
+  showToast('Role changed to ' + newRole + ' — tap Save & sync to push to server');
+}
+
+function addNewEngineer() {
+  const name     = document.getElementById('new-eng-name').value.trim();
+  const username = document.getElementById('new-eng-username').value.trim().toLowerCase();
+  const password = document.getElementById('new-eng-password').value.trim();
+  const roleEl   = document.getElementById('new-eng-role');
+  const role     = roleEl ? roleEl.value : 'engineer';
+  if (!name)          { showToast('Enter a name'); return; }
+  if (!username || username.length < 3 || /\s/.test(username)) { showToast('Username: 3+ chars, no spaces'); return; }
+  if (!password || password.length < 6) { showToast('Password must be 6+ characters'); return; }
+  if (!credCache) credCache = {};
+  credCache[username] = { username, name, hash: sha256(username + ':' + password), role };
+  sj(K.CREDS, credCache);
+  document.getElementById('new-eng-name').value = '';
+  document.getElementById('new-eng-username').value = '';
+  document.getElementById('new-eng-password').value = '';
+  if (roleEl) roleEl.value = 'engineer';
+  renderEngMgmtList();
+  showToast(name + ' added as ' + role + ' — tap Save & sync to push to server');
+}
+
+function removeEngineer(key) {
+  if (!credCache) return;
+  if (!credCache[key]) return;
+  const name = credCache[key].name || key;
+  delete credCache[key];
+  sj(K.CREDS, credCache);
+  renderEngMgmtList();
+  showToast(name + ' removed — tap Save & sync to push to server');
+}
+
+function closeSettingsModal() { document.getElementById('settings-backdrop').classList.remove('open'); }
 
 async function saveSettings() {
   const btn = document.getElementById('settings-save-btn');
-
-  // Read admin current password (required to authorise any change)
   const adminCurrentPw = document.getElementById('admin-current-pw').value.trim();
   const adminNewPw     = document.getElementById('admin-new-pw').value.trim();
 
@@ -1141,71 +1415,47 @@ async function saveSettings() {
   }
   document.getElementById('admin-current-pw').classList.remove('error');
 
-  // Hash the admin's current password for server verification
   const adminCurrentHash = sha256('admin:' + adminCurrentPw);
-
-  // Build credentials payload — only include entries that have changes
   const credentials = {};
   let hasChanges = false;
 
-  for (const u of ['ayush','swethaswan']) {
-    const unVal = document.getElementById('cred-'+u+'-username').value.trim();
-    const pwVal = document.getElementById('cred-'+u+'-password').value.trim();
-    const existing = credCache && credCache[u] ? credCache[u] : DEFAULT_HASHES[u];
-
-    let newUsername = unVal || existing.username;
-    let newHash     = existing.hash;
-
-    // Validate username if changed
-    if (unVal && (unVal.length < 3 || /\s/.test(unVal))) {
-      showToast('Username for ' + u + ' must be 3+ characters with no spaces');
-      document.getElementById('cred-'+u+'-username').classList.add('error');
-      return;
-    }
-    document.getElementById('cred-'+u+'-username').classList.remove('error');
-
-    // Hash new password if provided
+  // Build credentials from all engineers
+  const allEngineers = getEngineerList();
+  for (const eng_entry of allEngineers) {
+    const pwEl = document.getElementById('pw-' + eng_entry.key);
+    const pwVal = pwEl ? pwEl.value.trim() : '';
+    const existing = credCache && credCache[eng_entry.key] ? credCache[eng_entry.key] : { username: eng_entry.username, hash: DEFAULT_HASHES[eng_entry.key]?.hash || '' };
+    let newHash = existing.hash;
     if (pwVal) {
-      if (pwVal.length < 6) {
-        showToast('Password for ' + u + ' must be at least 6 characters');
-        document.getElementById('cred-'+u+'-password').classList.add('error');
-        return;
-      }
-      document.getElementById('cred-'+u+'-password').classList.remove('error');
-      newHash = sha256(newUsername.toLowerCase() + ':' + pwVal);
+      if (pwVal.length < 6) { showToast('Password for ' + eng_entry.name + ' must be 6+ chars'); return; }
+      newHash = sha256(eng_entry.username + ':' + pwVal);
+      hasChanges = true;
     }
-
-    if (unVal || pwVal) hasChanges = true;
-    credentials[u] = { username: newUsername, hash: newHash };
+    credentials[eng_entry.key] = { username: eng_entry.username, name: eng_entry.name, hash: newHash, role: 'engineer' };
+    if (credCache && credCache[eng_entry.key] && credCache[eng_entry.key].role === 'engineer' && eng_entry.key !== 'ayush' && eng_entry.key !== 'swethaswan') {
+      hasChanges = true; // new engineer added
+    }
   }
 
-  // Handle admin's own password change
-  if (adminNewPw) {
-    if (adminNewPw.length < 6) { showToast('New admin password must be at least 6 characters'); return; }
-    hasChanges = true;
-  }
-
+  if (adminNewPw) { if (adminNewPw.length < 6) { showToast('New admin password must be 6+ chars'); return; } hasChanges = true; }
   if (!hasChanges) { showToast('No changes to save'); return; }
 
   btn.disabled = true; btn.textContent = 'Saving…';
 
   try {
     // Save engineer credentials
-    if (Object.keys(credentials).length) {
-      const r = await fetch(WORKER_URL + '/set-credentials', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminHash: adminCurrentHash, credentials })
-      });
-      const data = await r.json();
-      if (!data.ok) {
-        showToast(data.error === 'Unauthorised' ? 'Wrong admin password' : ('Error: ' + data.error));
-        btn.disabled = false; btn.textContent = 'Save & sync'; return;
-      }
-      // Update local cache
-      if (!credCache) credCache = {};
-      Object.assign(credCache, credentials);
-      sj(K.CREDS, credCache);
+    const r = await fetch(WORKER_URL + '/set-credentials', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminHash: adminCurrentHash, credentials })
+    });
+    const data = await r.json();
+    if (!data.ok) {
+      showToast(data.error === 'Unauthorised' ? 'Wrong admin password' : ('Error: ' + data.error));
+      btn.disabled = false; btn.textContent = 'Save & sync'; return;
     }
+    if (!credCache) credCache = {};
+    Object.assign(credCache, credentials);
+    sj(K.CREDS, credCache);
 
     // Save admin password if changed
     if (adminNewPw) {
@@ -1215,11 +1465,7 @@ async function saveSettings() {
         body: JSON.stringify({ currentHash: adminCurrentHash, newHash: adminNewHash })
       });
       const d2 = await r2.json();
-      if (!d2.ok) {
-        showToast(d2.error || 'Failed to update admin password');
-        btn.disabled = false; btn.textContent = 'Save & sync'; return;
-      }
-      if (!credCache) credCache = {};
+      if (!d2.ok) { showToast(d2.error || 'Failed to update admin password'); btn.disabled = false; btn.textContent = 'Save & sync'; return; }
       credCache.admin = { username: 'admin', hash: adminNewHash };
       sj(K.CREDS, credCache);
     }
@@ -1432,14 +1678,16 @@ function setSort(v) { sort = v; renderActive(); }
 
 function switchTab(t) {
   tab = t;
-  ['active','resolved','notifs','log'].forEach(id => {
-    const tabEl = document.getElementById('tab-' + id[0]);
-    const panel = document.getElementById('panel-' + id);
+  const panels = ['active','resolved','notifs','log','reports'];
+  panels.forEach(id => {
+    const tabEl  = document.getElementById('tab-' + (id === 'reports' ? 'rep' : id === 'active' ? 'a' : id === 'resolved' ? 'r' : id === 'notifs' ? 'n' : 'l'));
+    const panel  = document.getElementById('panel-' + id);
     if (tabEl) tabEl.classList.toggle('active', id === t);
     if (panel) panel.style.display = id === t ? 'block' : 'none';
   });
-  if (t === 'notifs') { markNotifsRead(); renderNotifInbox(); }
-  if (t === 'log')    { renderActivityLog(); }
+  if (t === 'notifs')  { markNotifsRead(); renderNotifInbox(); }
+  if (t === 'log')     { renderActivityLog(); loadKvReports(); loadAdminInbox(); }
+  if (t === 'reports') { closeReportWizard(); }
 }
 
 function applySearch(data, query) {
@@ -1498,6 +1746,9 @@ function renderActive() {
   const el = document.getElementById('active-tbl');
   const countEl = document.getElementById('active-count');
   const total = active().length;
+  const acks = lj(K.ACK, {});
+  const user = getCurrentUser();
+  const admin = isAdmin(user);
   if (data.length !== total || document.getElementById('search-active').value) {
     countEl.style.display = 'block';
     countEl.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + total + ' active issues';
@@ -1506,26 +1757,46 @@ function renderActive() {
   el.innerHTML = '<div class="table-wrap"><table>' +
     '<thead><tr>' +
     '<th style="width:32px">#</th>' +
-    '<th style="width:22%">Location</th>' +
-    '<th style="width:12%">MAC ID</th>' +
-    '<th style="width:8%">Asset ID</th>' +
-    '<th style="width:13%">Last sync</th>' +
+    '<th style="width:20%">Location</th>' +
+    '<th style="width:11%">MAC ID</th>' +
+    '<th style="width:7%">Asset ID</th>' +
+    '<th style="width:12%">Last sync</th>' +
     '<th style="width:5%;text-align:center">Down</th>' +
-    '<th style="width:9%">Priority</th>' +
-    '<th style="width:10%">Engineer</th>' +
-    '<th style="width:8%">Remarks</th>' +
-    '<th style="width:9%"></th>' +
+    '<th style="width:8%">Priority</th>' +
+    '<th style="width:9%">Engineer</th>' +
+    '<th style="width:7%">Remarks</th>' +
+    '<th style="width:11%"></th>' +
     '</tr></thead><tbody>' +
     data.map((d, i) => {
       const ek = nk(d.loc), ev = e[ek] || '', rv = r[d.uid] || '';
       const uid = esc(d.uid), loc = esc(d.loc), days = d.days || 0;
-      const alertBtn = isAdmin(getCurrentUser())
+      const ackData = acks[d.uid];
+
+      // Alert button — admin only
+      const alertBtn = admin
         ? '<button class="btn-row-alert" onclick="openAlertFromRow(\'' + uid + '\',\'' + loc + '\',' + days + ')" title="Send alert about this device">' +
           '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
           '</button>' : '';
+
+      // Acknowledge button — engineers only
+      const engUser = isEngineer(user);
+      const myAck   = ackData && ackData.user === user;
+      const ackBtn  = engUser
+        ? (myAck
+            ? '<span class="btn-ack acked">✓ On it</span>'
+            : '<button class="btn-ack" onclick="acknowledgeDevice(\'' + uid + '\',\'' + loc + '\')" title="Acknowledge this device">I\'m on it</button>')
+        : '';
+
+      // Ack chip — shown to admin when someone has acknowledged
+      const ackChip = admin && ackData
+        ? '<div class="ack-chip" style="margin-top:3px">' +
+            '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            esc(ackData.user) + ' · ' + timeAgo(ackData.ts) +
+          '</div>' : '';
+
       return '<tr>' +
         '<td style="color:var(--text2);font-size:11px">' + (i+1) + '</td>' +
-        '<td><div class="loc-cell">' + dotH(d.p) + '<span class="loc-text" title="' + esc(d.loc) + '">' + esc(d.loc) + '</span></div></td>' +
+        '<td><div class="loc-cell">' + dotH(d.p) + '<span class="loc-text" title="' + esc(d.loc) + '">' + esc(d.loc) + '</span>' + ackChip + '</div></td>' +
         '<td style="font-size:11px;color:var(--text2);font-family:monospace">' + esc(d.id) + '</td>' +
         '<td style="font-size:11.5px;color:var(--text2)">' + (esc(d.assetId) || '—') + '</td>' +
         '<td style="font-size:11px;color:var(--text2);white-space:nowrap">' + (esc(d.sr) || '—') + '</td>' +
@@ -1533,9 +1804,14 @@ function renderActive() {
         '<td>' + badgeH(d.p) + '</td>' +
         '<td><input class="einput" type="text" placeholder="Engineer" value="' + esc(ev) + '" data-key="' + esc(ek) + '" onchange="saveEng(this)" onblur="saveEng(this)"/></td>' +
         '<td><input class="einput" type="text" placeholder="Remark" value="' + esc(rv) + '" data-uid="' + esc(d.uid) + '" onchange="saveRem(this)" onblur="saveRem(this)"/></td>' +
-        '<td style="white-space:nowrap">' +
-          '<button class="btn-res" onclick="resolve(\'' + esc(d.uid) + '\')">Resolve</button>' +
-          alertBtn +
+        '<td style="white-space:nowrap;vertical-align:middle">' +
+          '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">' +
+            '<div style="display:flex;gap:4px;align-items:center">' +
+              '<button class="btn-res" onclick="resolve(\'' + esc(d.uid) + '\')">Resolve</button>' +
+              alertBtn +
+            '</div>' +
+            ackBtn +
+          '</div>' +
         '</td>' +
         '</tr>';
     }).join('') +
@@ -1592,7 +1868,6 @@ function saveRem(el) {
     r[el.dataset.uid] = newVal;
     sj(K.REM, r);
     if (newVal) {
-      // Find device loc for log message
       const d = devices.find(x => x.uid === el.dataset.uid);
       logActivity(getCurrentUser(), 'remark', 'Remarked on <strong>' + esc(d ? d.loc : el.dataset.uid) + '</strong>: ' + esc(newVal));
     }
@@ -1600,6 +1875,8 @@ function saveRem(el) {
 }
 function resolve(uid) {
   const r = res(); r[uid] = Date.now(); sj(K.RES, r);
+  // Clear acknowledgement when resolved
+  const acks = lj(K.ACK, {}); delete acks[uid]; sj(K.ACK, acks);
   const d = devices.find(x => x.uid === uid);
   logActivity(getCurrentUser(), 'resolve', 'Resolved <strong>' + esc(d ? d.loc : uid) + '</strong>');
   updStats(); renderActive(); renderResolved(); showToast('Marked as resolved');
@@ -1609,6 +1886,58 @@ function reopen(uid) {
   const d = devices.find(x => x.uid === uid);
   logActivity(getCurrentUser(), 'reopen', 'Reopened <strong>' + esc(d ? d.loc : uid) + '</strong>');
   updStats(); renderActive(); renderResolved(); switchTab('active'); showToast('Reopened');
+}
+
+// ── Acknowledge ──────────────────────────────────────────────
+function acknowledgeDevice(uid, loc) {
+  const user = getCurrentUser();
+  const acks = lj(K.ACK, {});
+  acks[uid] = { user, ts: Date.now() };
+  sj(K.ACK, acks);
+  renderActive();
+  logActivity(user, 'ack', 'Acknowledged <strong>' + esc(loc) + '</strong> — I\'m on it');
+  // Notify admin via Worker
+  fetch(WORKER_URL + '/manual-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: '✅ Device acknowledged',
+      body: user + ' is handling: ' + loc,
+      recipients: ['admin'],
+      sender: user
+    })
+  }).catch(() => {});
+  showToast('Acknowledged — admin has been notified');
+}
+
+// Acknowledge directly from a notification (alert sent by admin)
+function acknowledgeFromNotif(ackKey, alertTitle) {
+  const user = getCurrentUser();
+  const acks = lj(K.ACK, {});
+  acks[ackKey] = { user, ts: Date.now() };
+  sj(K.ACK, acks);
+  renderNotifInbox();
+  logActivity(user, 'ack', 'Acknowledged alert: <strong>' + esc(alertTitle) + '</strong>');
+  // Notify admin
+  fetch(WORKER_URL + '/manual-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: '✅ Alert acknowledged',
+      body: user + ' acknowledged: ' + alertTitle,
+      recipients: ['admin'],
+      sender: user
+    })
+  }).catch(() => {});
+  showToast('Acknowledged — admin has been notified');
+}
+
+function timeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60)  return diff + 's ago';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
 }
 
 // ── Engineer modal ───────────────────────────────────────────
@@ -1821,9 +2150,18 @@ function renderNotifInbox() {
   }
   if (countEl) countEl.textContent = inbox.length + ' notification' + (inbox.length !== 1 ? 's' : '');
   const lastRead = parseInt(ls(K.NOTIF_READ) || '0');
+  const acks = lj(K.ACK, {});
+  const user = getCurrentUser();
   listEl.innerHTML = inbox.map(n => {
-    const isNew = new Date(n.sentAt).getTime() > lastRead;
-    const dt = new Date(n.sentAt).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const isNew  = new Date(n.sentAt).getTime() > lastRead;
+    const dt     = new Date(n.sentAt).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    // Generate a stable ID from notification ID for ack lookup
+    const ackKey = 'notif_' + (n.id || n.sentAt);
+    const acked  = acks[ackKey] && acks[ackKey].user === user;
+    // Acknowledge button — lets engineer respond directly from notification
+    const ackBtn = acked
+      ? '<span class="btn-ack acked" style="margin-top:7px;display:inline-flex">✓ Acknowledged</span>'
+      : '<button class="btn-ack" style="margin-top:7px" onclick="acknowledgeFromNotif(\'' + esc(ackKey) + '\',\'' + esc(n.title) + '\')">I\'m on it</button>';
     return '<div class="notif-item">' +
       '<div class="notif-icon-wrap">' +
         '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="var(--accent)" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/></svg>' +
@@ -1833,8 +2171,9 @@ function renderNotifInbox() {
         '<div class="notif-title">' + esc(n.title) + '</div>' +
         '<div class="notif-body">' + esc(n.body) + '</div>' +
         '<div class="notif-meta"><span>' + dt + '</span><span>From: ' + esc(n.sentBy || 'admin') + '</span></div>' +
+        ackBtn +
       '</div>' +
-      '</div>';
+    '</div>';
   }).join('');
 }
 
@@ -1900,20 +2239,29 @@ async function loadNotifInbox() {
 
 // ── Manual alert (admin) ─────────────────────────────────────
 function openAlertModal() {
-  ['ayush','swethaswan'].forEach(u => {
-    const cb = document.getElementById('rec-' + u);
-    const row = document.getElementById('rec-row-' + u);
-    if (cb) cb.checked = false;
-    if (row) row.classList.remove('selected');
-  });
+  // Build recipient list from all users except the current sender
+  const sender  = getCurrentUser();
+  const allUsers = getAllUserList().filter(u => u.key !== sender);
+  const listEl  = document.getElementById('alert-recipients-list');
+  if (listEl) {
+    listEl.innerHTML = allUsers.map(u =>
+      '<div class="alert-recipient" id="rec-row-' + esc(u.key) + '" onclick="toggleRecipient(\'' + esc(u.key) + '\')">' +
+        '<input type="checkbox" id="rec-' + esc(u.key) + '"/>' +
+        '<div>' +
+          '<div class="alert-recipient-name">' + esc(u.name) + '</div>' +
+          '<div class="alert-recipient-sub">' + (u.role === 'admin' ? 'Admin' : 'Engineer') + ' · ' + esc(u.username) + '</div>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  }
   document.getElementById('alert-title-inp').value = '';
-  document.getElementById('alert-body-inp').value = '';
+  document.getElementById('alert-body-inp').value  = '';
   document.getElementById('alert-preview').style.display = 'none';
   document.getElementById('alert-backdrop').classList.add('open');
 }
 function closeAlertModal() { document.getElementById('alert-backdrop').classList.remove('open'); }
 function toggleRecipient(u) {
-  const cb = document.getElementById('rec-' + u);
+  const cb  = document.getElementById('rec-' + u);
   const row = document.getElementById('rec-row-' + u);
   if (!cb || !row) return;
   cb.checked = !cb.checked;
@@ -1921,13 +2269,13 @@ function toggleRecipient(u) {
   updateAlertPreview();
 }
 function updateAlertPreview() {
-  const tv = document.getElementById('alert-title-inp').value.trim();
-  const bv = document.getElementById('alert-body-inp').value.trim();
+  const tv   = document.getElementById('alert-title-inp').value.trim();
+  const bv   = document.getElementById('alert-body-inp').value.trim();
   const prev = document.getElementById('alert-preview');
   if (tv || bv) {
     prev.style.display = 'block';
     document.getElementById('preview-title-txt').textContent = '📢 ' + (tv || '(no title)');
-    document.getElementById('preview-body-txt').textContent = bv || '(no message)';
+    document.getElementById('preview-body-txt').textContent  = bv || '(no message)';
   } else { prev.style.display = 'none'; }
 }
 async function sendManualAlert() {
@@ -1935,7 +2283,12 @@ async function sendManualAlert() {
   const body  = document.getElementById('alert-body-inp').value.trim();
   if (!title) { showToast('Please enter a title'); return; }
   if (!body)  { showToast('Please enter a message'); return; }
-  const recipients = ['ayush','swethaswan'].filter(u => document.getElementById('rec-' + u) && document.getElementById('rec-' + u).checked);
+  // Collect checked recipients dynamically
+  const allUsers   = getAllUserList().filter(u => u.key !== getCurrentUser());
+  const recipients = allUsers.filter(u => {
+    const cb = document.getElementById('rec-' + u.key);
+    return cb && cb.checked;
+  }).map(u => u.key);
   if (!recipients.length) { showToast('Select at least one recipient'); return; }
   const btn = document.getElementById('send-alert-confirm');
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
@@ -1945,19 +2298,15 @@ async function sendManualAlert() {
       body: JSON.stringify({ title: '📢 ' + title, body, recipients, sender: getCurrentUser() })
     });
     const data = await r.json();
-    if (data.ok && data.sent > 0) {
-      const recipNames = recipients.map(u => USER_ENGINEER[u] || u).join(', ');
+    const recipNames = recipients.map(u => {
+      const found = getAllUserList().find(x => x.key === u);
+      return found ? found.name : u;
+    }).join(', ');
+    if (data.ok) {
       logActivity(getCurrentUser(), 'alert', 'Sent alert to <strong>' + esc(recipNames) + '</strong>: ' + esc(title));
       closeAlertModal();
-      showToast('Alert sent to ' + data.sent + ' engineer' + (data.sent > 1 ? 's' : ''));
-    } else if (data.ok && data.sent === 0) {
-      const recipNames = recipients.map(u => USER_ENGINEER[u] || u).join(', ');
-      logActivity(getCurrentUser(), 'alert', 'Stored alert for <strong>' + esc(recipNames) + '</strong> (no push subscription): ' + esc(title));
-      closeAlertModal();
-      showToast('Alert stored — engineer must enable Notify to receive push');
-    } else {
-      showToast('Failed: ' + (data.error || 'Unknown error'));
-    }
+      showToast(data.sent > 0 ? 'Alert sent to ' + data.sent + ' user' + (data.sent > 1 ? 's' : '') : 'Alert stored — recipients must enable Notify');
+    } else { showToast('Failed: ' + (data.error || 'Unknown error')); }
   } catch (e) { showToast('Could not reach server: ' + e.message); }
   if (btn) {
     btn.disabled = false;
@@ -1968,28 +2317,23 @@ async function sendManualAlert() {
 // ── Row alert button (admin) ─────────────────────────────────
 // Opens the alert modal pre-filled for the device's engineer
 function openAlertFromRow(uid, locName, days) {
-  // Decode escaped HTML entities back to plain text for the fields
   const tmp = document.createElement('textarea');
   tmp.innerHTML = locName;
   const loc = tmp.value;
 
-  // Determine which engineer owns this device
+  // Determine which user is assigned to this device
   const engName = getEngineerForLoc(loc);
-  const engUser = engName === 'Ayush E P' ? 'ayush' : engName === 'Swethaswan' ? 'swethaswan' : null;
+  const allUsers = getAllUserList();
+  const engUser  = allUsers.find(u => u.name === engName || u.key === engName);
 
-  // Reset modal
-  ['ayush','swethaswan'].forEach(u => {
-    const cb = document.getElementById('rec-' + u);
-    const row = document.getElementById('rec-row-' + u);
-    if (cb) cb.checked = false;
-    if (row) row.classList.remove('selected');
-  });
+  // Build recipient list first (populates the modal)
+  openAlertModal();
 
-  // Pre-select the right engineer
+  // Pre-select the assigned engineer
   if (engUser) {
-    const cb = document.getElementById('rec-' + engUser);
-    const row = document.getElementById('rec-row-' + engUser);
-    if (cb) cb.checked = true;
+    const cb  = document.getElementById('rec-' + engUser.key);
+    const row = document.getElementById('rec-row-' + engUser.key);
+    if (cb)  cb.checked = true;
     if (row) row.classList.add('selected');
   }
 
@@ -2000,13 +2344,12 @@ function openAlertFromRow(uid, locName, days) {
   if (bodyInp)  bodyInp.value  = loc + ' has been down for ' + days + ' day' + (days !== 1 ? 's' : '') + '. Please check and update status.';
 
   updateAlertPreview();
-  document.getElementById('alert-backdrop').classList.add('open');
 }
 
 // ── Activity log ─────────────────────────────────────────────
-function logActivity(user, type, message) {
+function logActivity(user, type, message, expandBody) {
   const log = lj(K.LOG, []);
-  log.unshift({ user: user || 'unknown', type, message, ts: Date.now() });
+  log.unshift({ user: user || 'unknown', type, message, expandBody: expandBody || null, ts: Date.now() });
   if (log.length > 500) log.length = 500;
   sj(K.LOG, log);
   if (tab === 'log') renderActivityLog();
@@ -2017,25 +2360,46 @@ function renderActivityLog() {
   const listEl = document.getElementById('log-list');
   const lblEl  = document.getElementById('log-count-lbl');
   if (!listEl) return;
-  if (lblEl) lblEl.textContent = log.length ? log.length + ' event' + (log.length !== 1 ? 's' : '') : 'Activity log';
+  if (lblEl && !lblEl.dataset.confirming) {
+    lblEl.textContent = log.length ? log.length + ' event' + (log.length !== 1 ? 's' : '') : 'Activity log';
+  }
   if (!log.length) {
     listEl.innerHTML = '<div class="log-empty">No activity recorded yet.</div>';
     return;
   }
-  const typeIcon = { resolve:'✅', reopen:'↩️', alert:'📢', remark:'✏️' };
-  listEl.innerHTML = log.map(entry => {
+  const typeIcon = { resolve:'✅', reopen:'↩️', alert:'📢', remark:'✏️', report:'📋', ack:'👷' };
+  listEl.innerHTML = log.map((entry, idx) => {
     const dt = new Date(entry.ts).toLocaleString('en-IN', {
       day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit'
     });
-    const icon = typeIcon[entry.type] || '•';
-    return '<div class="log-item">' +
+    const icon     = typeIcon[entry.type] || '•';
+    const hasBody  = !!entry.expandBody;
+    const expandId = 'expand-body-' + idx;
+    const btnId    = 'expand-btn-' + idx;
+    return '<div class="log-item' + (hasBody ? ' expandable' : '') + '">' +
       '<span class="log-dot ' + esc(entry.type) + '"></span>' +
-      '<div class="log-text"><span style="font-size:11px;margin-right:4px">' + icon + '</span>' + entry.message +
-        '<span style="font-size:10.5px;color:var(--text3);margin-left:6px">by ' + esc(entry.user) + '</span>' +
+      '<div style="flex:1">' +
+        '<div class="log-text">' +
+          '<span style="font-size:11px;margin-right:4px">' + icon + '</span>' +
+          entry.message +
+          '<span style="font-size:10.5px;color:var(--text3);margin-left:6px">by ' + esc(entry.user) + '</span>' +
+        '</div>' +
+        (hasBody
+          ? '<button class="log-expand-btn" id="' + btnId + '" onclick="toggleLogExpand(' + idx + ')">▸ Show report</button>' +
+            '<div class="log-expand-body" id="' + expandId + '">' + esc(entry.expandBody) + '</div>'
+          : '') +
       '</div>' +
       '<div class="log-meta">' + dt + '</div>' +
-      '</div>';
+    '</div>';
   }).join('');
+}
+
+function toggleLogExpand(idx) {
+  const body = document.getElementById('expand-body-' + idx);
+  const btn  = document.getElementById('expand-btn-'  + idx);
+  if (!body) return;
+  const isOpen = body.classList.toggle('open');
+  if (btn) btn.textContent = isOpen ? '▾ Hide report' : '▸ Show report';
 }
 
 function clearActivityLog() {
@@ -2161,6 +2525,614 @@ function reopenUploadFromModal() {
   document.getElementById('onboard-step-gaps').style.display = 'none';
   document.getElementById('onboard-step-upload').style.display = 'block';
   document.getElementById('onboard').style.display = 'flex';
+}
+
+// ── Mail contacts ─────────────────────────────────────────────
+// Default contacts pre-loaded if none configured yet
+const DEFAULT_CONTACTS = [
+  { id: 'c1', name: 'NEC Client',      email: 'client@nec.com',          role: 'to' },
+  { id: 'c2', name: 'BCL Management',  email: 'management@bcl.com',       role: 'cc' },
+  { id: 'c3', name: 'Ayush E P',       email: 'ayush@ldb.co.in',          role: 'cc' },
+];
+
+function getContacts() {
+  return lj(K.CONTACTS, DEFAULT_CONTACTS);
+}
+
+function saveContacts(list) {
+  sj(K.CONTACTS, list);
+  // Also push to KV so it syncs across devices
+  fetch(WORKER_URL + '/set-contacts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contacts: list })
+  }).catch(() => {});
+}
+
+function renderContactsList() {
+  const list = getContacts();
+  const el   = document.getElementById('contacts-list');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px">No contacts yet. Add one below.</div>';
+    return;
+  }
+  el.innerHTML = list.map(c =>
+    '<div class="contact-row">' +
+      '<div class="contact-row-info">' +
+        '<div class="contact-row-name">' + esc(c.name) + '</div>' +
+        '<div class="contact-row-email">' + esc(c.email) + '</div>' +
+      '</div>' +
+      '<span class="contact-role-badge ' + c.role + '">' + (c.role === 'to' ? 'To' : 'CC') + '</span>' +
+      '<button class="btn-remove-contact" onclick="removeContact(\'' + esc(c.id) + '\')">Remove</button>' +
+    '</div>'
+  ).join('');
+}
+
+function addContact() {
+  const name  = document.getElementById('new-contact-name').value.trim();
+  const email = document.getElementById('new-contact-email').value.trim();
+  const role  = document.getElementById('new-contact-role').value;
+  if (!name)  { showToast('Enter a contact name'); return; }
+  if (!email || !email.includes('@')) { showToast('Enter a valid email address'); return; }
+  const list = getContacts();
+  list.push({ id: 'c' + Date.now(), name, email, role });
+  saveContacts(list);
+  document.getElementById('new-contact-name').value  = '';
+  document.getElementById('new-contact-email').value = '';
+  renderContactsList();
+  showToast(name + ' added');
+}
+
+function removeContact(id) {
+  const list = getContacts().filter(c => c.id !== id);
+  saveContacts(list);
+  renderContactsList();
+  showToast('Contact removed');
+}
+
+// Contact dropdowns are built with defaults already selected inside previewAndSend().
+// This function is kept for compatibility but no longer needs to fill anything.
+function fillWizardMailFields() { /* dropdowns pre-populated in previewAndSend() */ }
+// K.REPORTS storage key added to K object below if not present
+// Each report stored as { id, type, title, body, sentAt, engineer }
+
+let currentReportType = null;
+
+function openReportWizard(type) {
+  currentReportType = type;
+  const titles = {
+    accident:    '🚨 Accident Report',
+    renovation:  '🏗️ Site Renovation Report',
+    electrical:  '⚡ Electrical Issue Report',
+    rma:         '🔧 RMA Request',
+    sim:         '📶 SIM Fault Report'
+  };
+  document.getElementById('wizard-title').textContent = titles[type] || 'Report';
+  document.getElementById('report-type-selector').style.display = 'none';
+  document.getElementById('report-wizard').style.display = 'block';
+  document.getElementById('wizard-body').innerHTML = buildWizardForm(type);
+  // Pre-fill To/CC from saved contacts after form is rendered
+  fillWizardMailFields();
+}
+
+function closeReportWizard() {
+  currentReportType = null;
+  document.getElementById('report-type-selector').style.display = 'block';
+  document.getElementById('report-wizard').style.display = 'none';
+}
+
+function buildWizardForm(type) {
+  const user    = getCurrentUser();
+  const today   = new Date().toISOString().slice(0, 10);
+  const siteSel = buildSiteSelector(user);
+
+  const commonTop = `
+    <div class="report-field">
+      <label>Site</label>
+      ${siteSel}
+    </div>
+    <div class="report-field">
+      <label>Device(s) affected</label>
+      <div class="device-checkboxes" id="wizard-devices">
+        <div style="font-size:12px;color:var(--text2)">Select a site first to see devices.</div>
+      </div>
+    </div>`;
+
+  const dateField = `
+    <div class="report-field">
+      <label>Date</label>
+      <input class="report-inp" type="date" id="wizard-date" value="${today}"/>
+    </div>`;
+
+  if (type === 'accident') {
+    return commonTop + dateField + `
+    <div class="report-field">
+      <label>Description of accident</label>
+      <textarea class="report-textarea" id="wizard-desc" placeholder="Describe what happened…"></textarea>
+    </div>
+    <div class="report-field">
+      <label>Reinstallation required?</label>
+      <select class="report-select" id="wizard-reinstall">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    ${previewAndSend()}`;
+  }
+
+  if (type === 'renovation') {
+    return commonTop + dateField + `
+    <div class="report-field">
+      <label>Additional notes (optional)</label>
+      <textarea class="report-textarea" id="wizard-desc" placeholder="Any additional context…" style="min-height:60px"></textarea>
+    </div>
+    ${previewAndSend()}`;
+  }
+
+  if (type === 'electrical') {
+    return commonTop + dateField + `
+    <div class="report-field">
+      <label>Description of electrical issue</label>
+      <textarea class="report-textarea" id="wizard-desc" placeholder="Describe the electrical issue…"></textarea>
+    </div>
+    ${previewAndSend()}`;
+  }
+
+  if (type === 'rma') {
+    return commonTop + `
+    <div class="report-field">
+      <label>Component type</label>
+      <select class="report-select" id="wizard-component-type" onchange="updateRmaModels(this.value)">
+        <option value="">— Select component —</option>
+        <option value="Reader">Reader</option>
+        <option value="Router">Router</option>
+        <option value="Reader Adapter">Reader Adapter</option>
+        <option value="Router Adapter">Router Adapter</option>
+      </select>
+    </div>
+    <div class="report-field" id="rma-model-field" style="display:none">
+      <label>Model / Make</label>
+      <select class="report-select" id="wizard-component-model"></select>
+    </div>
+    <div class="report-field">
+      <label>Notes (optional)</label>
+      <textarea class="report-textarea" id="wizard-desc" placeholder="Any additional details about the fault…" style="min-height:60px"></textarea>
+    </div>
+    ${previewAndSend()}`;
+  }
+
+  if (type === 'sim') {
+    return commonTop + `
+    <div class="report-field">
+      <label>Carrier</label>
+      <div class="carrier-options">
+        <button class="carrier-btn" onclick="selectCarrier(this,'Airtel')">Airtel</button>
+        <button class="carrier-btn" onclick="selectCarrier(this,'Vi')">Vi</button>
+        <button class="carrier-btn" onclick="selectCarrier(this,'Jio')">Jio</button>
+      </div>
+      <input type="hidden" id="wizard-carrier" value=""/>
+    </div>
+    <div class="report-field">
+      <label>Faulty SIM number <span style="color:var(--red-dot)">*</span></label>
+      <input class="report-inp" type="text" id="wizard-faulty-sim" placeholder="e.g. 8991102405900255000U"/>
+    </div>
+    <div class="report-field">
+      <label>Has the SIM been replaced?</label>
+      <div class="sim-toggle">
+        <button class="sim-toggle-btn selected" id="sim-no-replace" onclick="selectSimReplace(false)">No — faulty only</button>
+        <button class="sim-toggle-btn" id="sim-yes-replace" onclick="selectSimReplace(true)">Yes — replaced</button>
+      </div>
+    </div>
+    <div id="sim-replace-fields" style="display:none">
+      <div class="report-field">
+        <label>New SIM number <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label>
+        <input class="report-inp" type="text" id="wizard-sim-number" placeholder="e.g. 8939012345678 (if available)"/>
+      </div>
+    </div>
+    ${previewAndSend()}`;
+  }
+  return '';
+}
+
+function previewAndSend() {
+  // Build contact options from saved list
+  const contacts = getContacts();
+  const toOptions = '<option value="">— Select recipient —</option>' +
+    contacts.map(c => '<option value="' + esc(c.email) + '" ' + (c.role === 'to' ? 'selected' : '') + '>' + esc(c.name) + '</option>').join('');
+  const ccOptions = contacts.map(c =>
+    '<option value="' + esc(c.email) + '" ' + (c.role === 'cc' ? 'selected' : '') + '>' + esc(c.name) + '</option>'
+  ).join('');
+
+  return `
+    <div class="report-preview-title">Report preview</div>
+    <div class="report-preview" id="wizard-preview">Fill in the fields above to see the report.</div>
+    <div class="mail-compose-box">
+      <div class="mail-compose-box-title">Mail recipients</div>
+      <div class="contact-sel-group">
+        <div class="contact-sel-row">
+          <label>To</label>
+          <select id="wizard-to-sel">${toOptions}</select>
+        </div>
+        <div class="contact-sel-row">
+          <label>CC</label>
+          <select id="wizard-cc-sel" multiple size="3" style="height:auto">${ccOptions}</select>
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:6px">CC: hold Ctrl / ⌘ to select multiple. To edit contacts go to Settings.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="generateReportPreview()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1v10M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Preview report
+      </button>
+      <button class="btn btn-primary" onclick="sendReport()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        Send report
+      </button>
+    </div>`;
+}
+
+function buildSiteSelector(user) {
+  // Filter to engineer's own sites
+  const mySites = SITE_MAP.filter(s => {
+    const engName = USER_ENGINEER[user] || user;
+    return !user || s.engineer === engName || user === 'admin';
+  }).map(s => s.site);
+
+  const allSites = mySites.length ? mySites : SITE_MAP.map(s => s.site);
+  return '<select class="report-select" id="wizard-site" onchange="loadDevicesForSite(this.value)">' +
+    '<option value="">— Select site —</option>' +
+    allSites.map(s => '<option value="' + esc(s) + '">' + esc(s.replace(/_/g,' ')) + '</option>').join('') +
+    '</select>';
+}
+
+function loadDevicesForSite(site) {
+  const container = document.getElementById('wizard-devices');
+  if (!container) return;
+  if (!site) { container.innerHTML = '<div style="font-size:12px;color:var(--text2)">Select a site first.</div>'; return; }
+
+  // Find devices at this site from loaded data
+  const siteDevices = devices.filter(d => d.loc === site || norms(d.loc) === norms(site));
+  if (!siteDevices.length) {
+    container.innerHTML = '<div style="font-size:12px;color:var(--text2)">No device data for this site. Fetch Latest first, or enter details manually.</div>';
+    // Still allow manual entry
+    container.innerHTML += '<div class="report-field" style="margin-top:8px"><label>Manual MAC ID</label><input class="report-inp" type="text" id="wizard-manual-mac" placeholder="e.g. 84:24:8D:F1:40:35"/></div>';
+    return;
+  }
+
+  container.innerHTML = siteDevices.map(d => {
+    const assetLabel = d.assetId ? ' · ' + d.assetId : '';
+    const daysLabel  = d.days !== null ? ' · Down ' + d.days + 'd' : '';
+    return '<label class="device-checkbox-row">' +
+      '<input type="checkbox" name="wizard-device" value="' + esc(d.uid) + '" data-mac="' + esc(d.id) + '" data-asset="' + esc(d.assetId||'') + '" data-loc="' + esc(d.loc) + '"/>' +
+      '<div>' +
+        '<div class="device-checkbox-label">' + esc(d.id) + assetLabel + '</div>' +
+        '<div class="device-checkbox-sub">' + esc(d.loc) + daysLabel + '</div>' +
+      '</div>' +
+    '</label>';
+  }).join('');
+}
+
+function selectCarrier(btn, carrier) {
+  document.querySelectorAll('.carrier-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const inp = document.getElementById('wizard-carrier');
+  if (inp) inp.value = carrier;
+}
+
+let simReplaced = false;
+function selectSimReplace(replaced) {
+  simReplaced = replaced;
+  document.getElementById('sim-no-replace').classList.toggle('selected', !replaced);
+  document.getElementById('sim-yes-replace').classList.toggle('selected', replaced);
+  const fields = document.getElementById('sim-replace-fields');
+  if (fields) fields.style.display = replaced ? 'block' : 'none';
+}
+
+const RMA_MODELS = {
+  'Reader':         ['Impinj', 'Zebra', 'IDtech', 'Dristi'],
+  'Router':         ['Nirad N1000', 'Telcom', 'Robustel'],
+  'Reader Adapter': ['Standard Adapter'],
+  'Router Adapter': ['Standard Adapter']
+};
+
+function updateRmaModels(type) {
+  const modelField = document.getElementById('rma-model-field');
+  const modelSel   = document.getElementById('wizard-component-model');
+  if (!modelField || !modelSel) return;
+  if (!type) { modelField.style.display = 'none'; return; }
+  const models = RMA_MODELS[type] || [];
+  modelSel.innerHTML = models.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  // Only show model selector for Reader and Router (adapters have no meaningful model choice)
+  modelField.style.display = (type === 'Reader' || type === 'Router') ? 'block' : 'none';
+}
+
+function getWizardDevices() {
+  const checked = document.querySelectorAll('input[name="wizard-device"]:checked');
+  if (checked.length) {
+    return Array.from(checked).map(cb => ({ mac: cb.dataset.mac, asset: cb.dataset.asset, loc: cb.dataset.loc }));
+  }
+  // Manual entry fallback
+  const manualMac = document.getElementById('wizard-manual-mac');
+  if (manualMac && manualMac.value.trim()) {
+    const site = document.getElementById('wizard-site') ? document.getElementById('wizard-site').value : '';
+    return [{ mac: manualMac.value.trim(), asset: '', loc: site }];
+  }
+  return [];
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return new Date().toLocaleDateString('en-IN');
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+function buildReportContent(type) {
+  const site     = document.getElementById('wizard-site') ? document.getElementById('wizard-site').value.replace(/_/g,' ') : '';
+  const devs     = getWizardDevices();
+  const date     = document.getElementById('wizard-date') ? formatDate(document.getElementById('wizard-date').value) : formatDate(null);
+  const desc     = document.getElementById('wizard-desc') ? document.getElementById('wizard-desc').value.trim() : '';
+
+  // Build device bullet list — MAC ID + Asset ID per device
+  const devBullets = devs.length
+    ? devs.map(d => {
+        let line = '  • RFID Device MAC ID: ' + d.mac;
+        if (d.asset) line += ' | Asset ID: ' + d.asset;
+        return line;
+      }).join('\n')
+    : '  • (no device selected)';
+
+  // First device details for inline references
+  const firstDev  = devs[0] || { mac: '', asset: '' };
+  const devRef    = firstDev.asset ? firstDev.asset : firstDev.mac;
+
+  if (type === 'accident') {
+    const reinstall = document.getElementById('wizard-reinstall') ? document.getElementById('wizard-reinstall').value : 'Yes';
+    return {
+      subject: 'Incident Report – RFID Device Setup Affected at ' + site,
+      body:
+        'Dear Sir,\n\n' +
+        'I would like to inform you that an accident occurred at ' + site + ', which has affected the RFID device setup' + (devRef ? ' at ' + devRef : '') + '.\n\n' +
+        'Details of the incident:\n\n' +
+        devBullets + '\n' +
+        (desc ? '  • Cause: ' + desc + '\n' : '') +
+        '  • Reinstallation required: ' + reinstall + '\n\n' +
+        'Please find the details noted above for your reference. Kindly advise on the next steps for restoring connectivity once the situation is resolved.\n\n' 
+    };
+  }
+
+  if (type === 'renovation') {
+    return {
+      subject: 'Incident Report – Site Renovation Affecting RFID Setup at ' + site,
+      body:
+        'Dear Sir,\n\n' +
+        'I would like to inform you that ' + site + ' is currently undergoing renovation, which has affected the RFID device setup at this location.\n\n' +
+        'Details:\n\n' +
+        devBullets + '\n' +
+        '  • Status: Site under renovation — devices temporarily offline\n' +
+        '  • Reinstallation required upon completion of renovation work\n\n' +
+        (desc ? 'Additional notes:\n' + desc + '\n\n' : '') +
+        'Please find the details noted above for your reference. Kindly advise on the next steps for reinstallation once the renovation work is completed.\n\n' 
+    };
+  }
+
+  if (type === 'electrical') {
+    return {
+      subject: 'Incident Report – Electrical Issue Affecting RFID Device at ' + site,
+      body:
+        'Dear Sir,\n\n' +
+        'I would like to inform you that there is an electrical wiring issue at ' + site + ', which has caused the RFID device(s) at this location to go offline.\n\n' +
+        'Details:\n\n' +
+        devBullets + '\n' +
+        '  • Cause: Electrical wiring issue at the site\n' +
+        (desc ? '  • Description: ' + desc + '\n' : '') +
+        '  • Reinstallation required once the electrical issue is rectified\n\n' +
+        'Please find the details noted above for your reference. Kindly advise on the next steps for restoring connectivity once the electrical work is completed.\n\n' 
+    };
+  }
+
+  if (type === 'rma') {
+    const compType  = document.getElementById('wizard-component-type')  ? document.getElementById('wizard-component-type').value  : '';
+    const compModel = document.getElementById('wizard-component-model') ? document.getElementById('wizard-component-model').value : '';
+    const component = compModel && (compType === 'Reader' || compType === 'Router')
+      ? compType + ' (' + compModel + ')'
+      : compType;
+    return {
+      subject: 'RMA Request – ' + component + ' at ' + site,
+      body:
+        'Dear Sir,\n\n' +
+        'I would like to raise an RMA request for a faulty ' + component + ' at ' + site + '.\n\n' +
+        'Details of the faulty component:\n\n' +
+        devBullets + '\n' +
+        '  • Faulty component: ' + (compType || 'Not specified') + '\n' +
+        (compModel && (compType === 'Reader' || compType === 'Router') ? '  • Make / Model: ' + compModel + '\n' : '') +
+        (desc ? '  • Additional notes: ' + desc + '\n' : '') +
+        '\nPlease find the details noted above for your reference. Kindly arrange for the replacement or repair of the above component at the earliest.\n\n' 
+    };
+  }
+
+  if (type === 'sim') {
+    const carrier    = document.getElementById('wizard-carrier')    ? document.getElementById('wizard-carrier').value    : '';
+    const faultySim  = document.getElementById('wizard-faulty-sim') ? document.getElementById('wizard-faulty-sim').value.trim() : '';
+    const newSim     = document.getElementById('wizard-sim-number') ? document.getElementById('wizard-sim-number').value.trim() : '';
+
+    if (simReplaced) {
+      return {
+        subject: 'SIM Replacement Report – ' + (carrier ? carrier + ' SIM – ' : '') + site,
+        body:
+          'Dear Sir,\n\n' +
+          'I would like to inform you that the ' + (carrier || '') + ' SIM installed in the RFID device at ' + site + ' was found to be faulty and has been replaced.\n\n' +
+          'Details:\n\n' +
+          devBullets + '\n' +
+          '  • Carrier: ' + (carrier || 'Not specified') + '\n' +
+          '  • Faulty SIM number: ' + (faultySim || 'Not provided') + '\n' +
+          (newSim ? '  • Replacement SIM number: ' + newSim + '\n' : '  • Replacement SIM number: To be updated\n') +
+          '\nPlease update your records accordingly. Kindly confirm once the replacement has been noted at your end.\n\n' 
+      };
+    } else {
+      return {
+        subject: 'SIM Fault Report – ' + (carrier ? carrier + ' SIM – ' : '') + site,
+        body:
+          'Dear Sir,\n\n' +
+          'I would like to inform you that the ' + (carrier || '') + ' SIM installed in the RFID device at ' + site + ' has been found to be faulty. No replacement is currently available.\n\n' +
+          'Details:\n\n' +
+          devBullets + '\n' +
+          '  • Carrier: ' + (carrier || 'Not specified') + '\n' +
+          '  • Faulty SIM number: ' + (faultySim || 'Not provided') + '\n' +
+          '\nPlease do the needful at the earliest to restore connectivity at this site.\n\n' 
+      };
+    }
+  }
+
+  return { subject: '', body: '' };
+}
+
+function generateReportPreview() {
+  const type = currentReportType;
+  if (!type) return;
+  const site = document.getElementById('wizard-site') ? document.getElementById('wizard-site').value : '';
+  if (!site) { showToast('Please select a site first'); return; }
+  // Validate faulty SIM if SIM type
+  if (type === 'sim') {
+    const faultySim = document.getElementById('wizard-faulty-sim');
+    if (faultySim && !faultySim.value.trim()) { showToast('Please enter the faulty SIM number'); return; }
+  }
+  const { subject, body } = buildReportContent(type);
+  const prevEl = document.getElementById('wizard-preview');
+  if (prevEl) prevEl.textContent = 'Subject: ' + subject + '\n\n' + body;
+}
+
+function sendReport() {
+  const type = currentReportType;
+  if (!type) return;
+  const site = document.getElementById('wizard-site') ? document.getElementById('wizard-site').value : '';
+  if (!site) { showToast('Please select a site first'); return; }
+  const devs = getWizardDevices();
+  if (!devs.length) { showToast('Please select at least one device'); return; }
+
+  // Validate faulty SIM number required
+  if (type === 'sim') {
+    const faultySim = document.getElementById('wizard-faulty-sim');
+    if (faultySim && !faultySim.value.trim()) { showToast('Please enter the faulty SIM number'); return; }
+  }
+
+  const { subject, body } = buildReportContent(type);
+  if (!subject) { showToast('Could not generate report'); return; }
+
+  // Read To/CC from dropdowns
+  const toSel  = document.getElementById('wizard-to-sel');
+  const ccSel  = document.getElementById('wizard-cc-sel');
+  const toVal  = toSel  ? toSel.value.trim() : '';
+  const ccVals = ccSel  ? Array.from(ccSel.selectedOptions).map(o => o.value).filter(Boolean) : [];
+  const ccVal  = ccVals.join(', ');
+
+  // 1. Save to local activity log immediately
+  logActivity(getCurrentUser(), 'report', 'Filed <strong>' + esc(subject) + '</strong>', body);
+
+  // 2. Push report to Worker KV so admin sees it on their device
+  fetch(WORKER_URL + '/submit-report', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user: getCurrentUser(),
+      subject,
+      reportBody: body,
+      type,
+      ts: Date.now()
+    })
+  }).catch(() => {});
+
+  // 3. Show in-app photo reminder banner
+  showInAppAlert(
+    '📎 Remember to attach photos',
+    'If you have photos related to this incident, please attach them to the email before sending.'
+  );
+
+  // 4. Build mailto: with To, CC, subject, body and open mail app
+  let mailto = 'mailto:' + encodeURIComponent(toVal);
+  const params = [];
+  if (ccVal)    params.push('cc='      + encodeURIComponent(ccVal));
+  params.push('subject=' + encodeURIComponent(subject));
+  params.push('body='    + encodeURIComponent(body));
+  if (params.length) mailto += '?' + params.join('&');
+
+  setTimeout(() => { window.location.href = mailto; }, 600);
+}
+
+// ── KV report sync (admin only) ──────────────────────────────
+// When admin opens the Activity Log tab, fetch any reports
+// submitted by engineers from the Worker KV and merge into the log.
+async function loadKvReports() {
+  if (!isAdmin(getCurrentUser())) return;
+  try {
+    const r = await fetch(WORKER_URL + '/get-reports');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.ok || !Array.isArray(data.reports) || !data.reports.length) return;
+
+    const log = lj(K.LOG, []);
+    const existingIds = new Set(log.map(e => e.kvId).filter(Boolean));
+    let added = 0;
+
+    data.reports.forEach(rep => {
+      const kvId = rep.id || (rep.ts + '_' + rep.user);
+      if (existingIds.has(kvId)) return; // already in log
+      log.push({
+        user:       rep.user || 'engineer',
+        type:       'report',
+        message:    'Filed <strong>' + esc(rep.subject || 'Report') + '</strong>',
+        expandBody: rep.body || '',
+        ts:         rep.ts  || Date.now(),
+        kvId
+      });
+      added++;
+    });
+
+    if (added) {
+      // Sort newest first
+      log.sort((a, b) => b.ts - a.ts);
+      if (log.length > 500) log.length = 500;
+      sj(K.LOG, log);
+      renderActivityLog();
+    }
+  } catch (e) { /* silently fail — offline */ }
+}
+
+// ── Admin inbox sync ─────────────────────────────────────────
+// Pulls notifications sent TO admin (e.g. ack pings from engineers)
+// and merges them into the activity log.
+async function loadAdminInbox() {
+  if (!isAdmin(getCurrentUser())) return;
+  try {
+    const r = await fetch(WORKER_URL + '/inbox?user=admin');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.ok || !Array.isArray(data.inbox) || !data.inbox.length) return;
+    const log = lj(K.LOG, []);
+    const existingIds = new Set(log.map(e => e.kvId).filter(Boolean));
+    let added = 0;
+    data.inbox.forEach(n => {
+      const kvId = n.id;
+      if (existingIds.has(kvId)) return;
+      // Only merge ack-type notifications (sent by engineers)
+      if (n.sentBy === 'admin') return;
+      log.push({
+        user:    n.sentBy || 'engineer',
+        type:    'ack',
+        message: esc(n.title || 'Device acknowledged') + (n.body ? ' — ' + esc(n.body) : ''),
+        ts:      new Date(n.sentAt).getTime() || Date.now(),
+        kvId
+      });
+      added++;
+    });
+    if (added) {
+      log.sort((a, b) => b.ts - a.ts);
+      if (log.length > 500) log.length = 500;
+      sj(K.LOG, log);
+      renderActivityLog();
+    }
+  } catch (e) { /* offline */ }
 }
 
 // ── Init ─────────────────────────────────────────────────────
