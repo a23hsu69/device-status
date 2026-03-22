@@ -1,4 +1,4 @@
-const CACHE = 'dsc-v42';
+const CACHE = 'dsc-v45';
 const STATIC = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -17,16 +17,15 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  if (url.hostname === 'devicehealth.ldb.co.in') {
-    e.respondWith(fetch(e.request).catch(() => new Response('', { status: 503 })));
-    return;
-  }
+  // Never intercept external API calls — let browser handle them directly
+  if (url.hostname !== location.hostname && !url.hostname.endsWith('workers.dev')) return;
   if (e.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('.json')) {
     e.respondWith(
       fetch(e.request)
         .then(response => {
-          if (response && response.status === 200) {
-            caches.open(CACHE).then(c => c.put(e.request, response.clone()));
+          if (response && response.status === 200 && !response.bodyUsed) {
+            const toCache = response.clone();
+            caches.open(CACHE).then(c => c.put(e.request, toCache));
           }
           return response;
         })

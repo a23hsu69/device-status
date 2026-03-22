@@ -76,8 +76,15 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .card{background:var(--bg);border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
 
 /* tabs */
-.tab-bar{display:flex;border-bottom:1px solid var(--border);padding:0 1.25rem;background:var(--bg)}
-.tab{font-size:13px;font-weight:500;padding:12px 16px;cursor:pointer;color:var(--text2);border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent;font-family:var(--font);transition:color .12s;display:inline-flex;align-items:center;gap:6px}
+.tab-bar{display:flex;border-bottom:1px solid var(--border);padding:0 1.25rem;background:var(--bg);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;flex-wrap:nowrap}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{font-size:13px;font-weight:500;padding:12px 16px;cursor:pointer;color:var(--text2);border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent;font-family:var(--font);transition:color .12s;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+/* Resolved tab is lower priority — slightly muted */
+#tab-r{font-size:12px;padding:12px 12px;opacity:.8}
+/* Distant Visit tab — elevated prominence */
+#tab-visit{color:#ACD14F;font-weight:700}
+#tab-visit svg{color:#ACD14F}
+#tab-visit.active{border-bottom-color:#ACD14F !important;color:#ACD14F}
 .tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
 /* toolbar */
@@ -390,6 +397,130 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .contact-sel-row select{flex:1;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 9px;font-size:12.5px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;cursor:pointer}
 .contact-sel-row select:focus{border-color:var(--accent)}
 
+/* ── Leave requests admin card ── */
+.leave-requests-row{margin-bottom:1.25rem}
+.leave-requests-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.leave-req-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.leave-req-card{background:var(--bg);border-radius:var(--radius-lg);padding:.9rem 1rem;border:1px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:all .15s;position:relative}
+.leave-req-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.leave-req-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.leave-count{font-size:36px;font-weight:800;line-height:1;letter-spacing:-0.03em;margin-bottom:2px}
+.leave-count.c1{color:#22c55e}.leave-count.c2{color:#eab308}.leave-count.c3{color:#f97316}.leave-count.c4{color:#ef4444}
+.leave-count-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.leave-req-badge{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;text-transform:uppercase}
+.leave-req-badge.pending{background:var(--amber-bg);color:var(--amber-text)}
+.leave-req-badge.approved{background:var(--green-bg);color:var(--green-text)}
+/* Leave modal */
+.leave-modal-list{max-height:380px;overflow-y:auto}
+.leave-modal-item{padding:12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:4px}
+.leave-modal-item:last-child{border-bottom:none}
+.leave-modal-subject{font-size:13px;font-weight:600;color:var(--text)}
+.leave-modal-meta{font-size:11.5px;color:var(--text2)}
+.leave-modal-body{font-size:11px;color:var(--text2);background:var(--bg2);border-radius:var(--radius);padding:8px 10px;white-space:pre-wrap;font-family:monospace;max-height:160px;overflow-y:auto;margin-top:4px}
+.leave-modal-actions{display:flex;gap:6px;margin-top:6px}
+.btn-approve{font-size:11px;padding:3px 10px;border-radius:var(--radius);background:var(--green-bg);border:1px solid var(--green-dot);color:var(--green-text);cursor:pointer;font-family:var(--font);font-weight:600}
+.btn-decline{font-size:11px;padding:3px 10px;border-radius:var(--radius);background:var(--red-bg);border:1px solid var(--red-dot);color:var(--red-text);cursor:pointer;font-family:var(--font);font-weight:600}
+.btn-approve:hover{background:var(--green-dot);color:#fff}.btn-decline:hover{background:var(--red-dot);color:#fff}
+
+/* ── Mobile tap targets & device detail card ── */
+.btn-res{font-size:12px;padding:7px 14px;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-dot);color:var(--green-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600;min-height:36px}
+.btn-res:hover{background:var(--green-dot);color:#fff}
+.btn-reopen{font-size:11px;padding:5px 12px;border-radius:20px;background:var(--amber-bg);border:1px solid var(--amber-dot);color:var(--amber-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600}
+.btn-reopen:hover{background:var(--amber-dot);color:#fff}
+tr.device-row{cursor:pointer}
+/* ── Active issues table — polished rows ── */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius-lg);border:1px solid var(--border)}
+.table-wrap table{width:100%;border-collapse:collapse;min-width:340px}
+.table-wrap thead th{background:var(--bg2);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2}
+.table-wrap tbody tr.device-row td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .1s}
+.table-wrap tbody tr.device-row:last-of-type td{border-bottom:none}
+tr.device-row{cursor:pointer}
+tr.device-row:hover td{background:var(--bg2)}
+tr.device-row.detail-open td{background:var(--accent-bg)}
+/* Device detail drawer */
+.device-detail-row{background:var(--bg) !important}
+.device-detail-row td{padding:0 !important;border-top:2px solid var(--accent) !important;border-bottom:2px solid var(--accent) !important}
+.device-detail-inner{padding:1.1rem 1.25rem 1.25rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+@media(max-width:700px){.device-detail-inner{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.device-detail-inner{grid-template-columns:1fr 1fr}}
+.device-detail-item{background:var(--bg2);border-radius:10px;padding:.7rem .9rem;border:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
+.device-detail-lbl{font-size:9.5px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.device-detail-val{font-size:12.5px;color:var(--text);font-weight:600;word-break:break-all;line-height:1.4;font-family:inherit}
+.device-detail-val.mono{font-family:monospace;font-size:11.5px}
+.device-detail-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:.85rem;grid-column:1/-1;border-top:1px solid var(--border);margin-top:.1rem;align-items:center}
+.device-detail-actions .btn-res{font-size:13px;padding:9px 20px;border-radius:var(--radius-lg);min-height:38px}
+.device-detail-actions .btn-ack{font-size:13px;padding:9px 16px;min-height:38px}
+.device-detail-actions .btn-row-alert{padding:9px 11px;border-radius:var(--radius-lg);border:1px solid var(--border2);min-height:38px;display:inline-flex;align-items:center}
+.device-detail-hint{font-size:10.5px;color:var(--text3);margin-left:auto}
+
+/* ── Visit site search dropdown ── */
+.visit-search-wrap{position:relative}
+.visit-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;max-height:240px;overflow-y:auto;margin-top:4px}
+.visit-dropdown-item{padding:10px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--border)}
+.visit-dropdown-item:last-child{border-bottom:none}
+.visit-dropdown-item:hover,.visit-dropdown-item.focused{background:var(--accent-bg)}
+.visit-dropdown-item-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.visit-dropdown-item-meta{font-size:11px;color:var(--text2)}
+.visit-dropdown-empty{padding:12px 14px;font-size:12px;color:var(--text2);text-align:center}
+.visit-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.visit-tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-bg);border:1px solid var(--accent-light,var(--accent));border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--accent);white-space:nowrap}
+.visit-tag-remove{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0 0 0 2px;opacity:.7}
+.visit-tag-remove:hover{opacity:1}
+
+/* ── Distant visit tab ── */
+.visit-site-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.visit-site-row:last-child{border-bottom:none}
+.visit-site-name{flex:1;font-weight:500;color:var(--text)}
+.visit-site-type{font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;white-space:nowrap}
+.visit-site-km{font-size:12px;font-weight:600;color:var(--accent);min-width:60px;text-align:right;flex-shrink:0}
+.visit-site-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-site-edit{background:none;border:1px solid var(--border2);border-radius:var(--radius);padding:3px 8px;font-size:11px;cursor:pointer;color:var(--text2);font-family:var(--font)}
+.btn-site-edit:hover{border-color:var(--accent);color:var(--accent)}
+.btn-site-del{background:none;border:1px solid var(--border2);border-radius:var(--radius);padding:3px 8px;font-size:11px;cursor:pointer;color:var(--text3);font-family:var(--font)}
+.btn-site-del:hover{background:var(--red-bg);color:var(--red-text);border-color:var(--red-dot)}
+/* Visit site selector chips */
+.visit-site-selector{display:flex;flex-direction:column;gap:6px}
+.visit-site-chip{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius-lg);background:var(--bg);cursor:pointer;transition:all .12s;gap:8px}
+.visit-site-chip:hover{border-color:var(--accent);background:var(--accent-bg)}
+.visit-site-chip.selected{border-color:var(--accent);background:var(--accent-bg)}
+.visit-site-chip-info{flex:1;min-width:0}
+.visit-site-chip-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.visit-site-chip-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.visit-site-chip-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.visit-site-chip.selected .visit-site-chip-check{background:var(--accent);border-color:var(--accent)}
+/* Selected sites table for visit wizard */
+.visit-selected-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.visit-selected-table th{text-align:left;padding:6px 8px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--border)}
+.visit-selected-table td{padding:8px;border-bottom:1px solid var(--border);vertical-align:top}
+.visit-selected-table tr:last-child td{border-bottom:none}
+.visit-req-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.85rem 1rem;margin-bottom:8px}
+.visit-req-subject{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.visit-req-meta{font-size:11px;color:var(--text2)}
+
+/* ── RMA multi-component cards ── */
+.rma-component-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.85rem 1rem;margin-bottom:8px;position:relative}
+.rma-component-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rma-component-card-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.rma-component-remove{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;padding:2px 4px;border-radius:var(--radius)}
+.rma-component-remove:hover{color:var(--red-text);background:var(--red-bg)}
+.rma-component-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:460px){.rma-component-grid{grid-template-columns:1fr}}
+
+/* ── Photo evidence ── */
+.photo-checkbox-row{display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:12.5px;color:var(--text);line-height:1.5;padding:6px 0}
+.photo-checkbox-row input{margin-top:2px;accent-color:var(--accent);flex-shrink:0;width:15px;height:15px}
+.photo-hint{font-size:11px;color:var(--text3);margin-bottom:6px}
+
+/* ── Leave application wizard ── */
+.leave-day-toggle{display:flex;gap:8px;margin-bottom:12px}
+.leave-day-btn{flex:1;padding:9px 8px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:13px;font-family:var(--font);color:var(--text2);text-align:center;transition:all .12s;font-weight:500}
+.leave-day-btn.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+.leave-date-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:460px){.leave-date-row{grid-template-columns:1fr}}
+.leave-preview{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;margin-bottom:1rem;font-size:12px;font-family:Georgia,serif;line-height:1.8;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow-y:auto;color:var(--text)}
+.leave-preview-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.leave-preview-logo{height:28px;width:auto}
+
 /* install banner */
 .install-bar{background:var(--accent);color:#fff;padding:10px 1.25rem;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
 .install-bar button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius);padding:6px 14px;font-size:13px;cursor:pointer;font-family:var(--font);font-weight:500}
@@ -504,6 +635,29 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
   <div id="error-area"></div>
 
   <!-- Engineer summary cards — admin only, shown after data loaded -->
+  <!-- Leave requests — admin only -->
+  <div id="leave-requests-row" class="leave-requests-row" style="display:none">
+    <div class="leave-requests-title">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Leave Requests
+      <span id="leave-requests-count" style="font-size:10px;background:var(--amber-bg);color:var(--amber-text);padding:1px 7px;border-radius:20px;font-weight:700;display:none">0</span>
+    </div>
+    <div class="leave-req-cards" id="leave-req-cards">
+      <div style="font-size:12px;color:var(--text2);padding:8px">Loading leave requests…</div>
+    </div>
+  </div>
+
+  <!-- Leave detail modal -->
+  <div class="modal-backdrop" id="leave-modal-backdrop" onclick="if(event.target===this)closeLeaveModal()">
+    <div class="modal" style="max-width:500px">
+      <h2 id="leave-modal-title">Leave Requests</h2>
+      <div class="leave-modal-list" id="leave-modal-list"></div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeLeaveModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <div id="eng-summary-row" class="eng-summary" style="display:none">
     <div class="eng-card">
       <div class="eng-card-name">
@@ -555,6 +709,11 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
         <button class="tab" id="tab-rep" onclick="switchTab('reports')" style="display:none">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M4 7h8M4 10h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.3"/></svg>
           Reports
+        </button>
+        <!-- Distant Visit tab: shown to both engineers and admin -->
+        <button class="tab" id="tab-visit" onclick="switchTab('visit')" style="display:none">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          Distant Visit
         </button>
       </div>
 
@@ -668,6 +827,10 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
               <div class="report-type-icon">📶</div>
               <div><div class="report-type-name">SIM Faulty</div><div class="report-type-desc">SIM fault with carrier details. Supports replacement format.</div></div>
             </div>
+            <div class="report-type-card" onclick="openReportWizard('leave')">
+              <div class="report-type-icon">🗓️</div>
+              <div><div class="report-type-name">Leave Application</div><div class="report-type-desc">Generate a formal leave request mail in BCL format.</div></div>
+            </div>
           </div>
         </div>
 
@@ -685,10 +848,97 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
           </div>
         </div>
       </div>
+
+      <!-- Distant Visit panel -->
+      <div id="panel-visit" style="display:none">
+
+        <!-- ── ENGINEER VIEW ── -->
+        <div id="visit-eng-view">
+          <!-- Two action cards -->
+          <div id="visit-type-selector">
+            <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)">
+              <div style="font-size:12px;color:var(--text2)">Select the type of request to generate a pre-filled mail draft.</div>
+            </div>
+            <div class="report-list">
+              <div class="report-type-card" onclick="openVisitWizard('approval')">
+                <div class="report-type-icon">📋</div>
+                <div>
+                  <div class="report-type-name">Site Visit Approval</div>
+                  <div class="report-type-desc">Request approval to visit distant sites. Subject: Need approval for site visit on [date].</div>
+                </div>
+              </div>
+              <div class="report-type-card" onclick="openVisitWizard('advance')">
+                <div class="report-type-icon">💰</div>
+                <div>
+                  <div class="report-type-name">Advance Request</div>
+                  <div class="report-type-desc">Request travel expense advance for distant site visit. Subject: Advance request for site visit on [date].</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visit wizard (shown after type selected) -->
+          <div id="visit-wizard" style="display:none">
+            <div class="report-wizard">
+              <div class="report-wizard-header">
+                <button class="report-wizard-back" onclick="closeVisitWizard()">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Back
+                </button>
+                <div class="report-wizard-title" id="visit-wizard-title">Site Visit Request</div>
+              </div>
+              <div id="visit-wizard-body"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ADMIN VIEW ── -->
+        <div id="visit-admin-view" style="display:none">
+          <!-- Sites & KMs management -->
+          <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:12px;font-weight:600;color:var(--text)">Distant Sites & KMs</div>
+            <button class="btn btn-sm btn-primary" onclick="openAddSiteModal()">+ Add site</button>
+          </div>
+          <div id="admin-sites-list" style="padding:.75rem 1.25rem">
+            <div style="font-size:12px;color:var(--text2)">Loading sites…</div>
+          </div>
+
+          <!-- Visit requests from engineers -->
+          <div style="padding:.75rem 1.25rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);margin-top:.5rem">
+            <div style="font-size:12px;font-weight:600;color:var(--text)">Engineer Visit Requests</div>
+          </div>
+          <div id="admin-visit-requests" style="padding:.75rem 1.25rem">
+            <div style="font-size:12px;color:var(--text2)">Loading requests…</div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 
-  <div id="empty-state" class="empty">
+  <!-- Add/Edit site modal -->
+  <div class="modal-backdrop" id="add-site-modal-backdrop" onclick="if(event.target===this)closeAddSiteModal()">
+    <div class="modal" style="max-width:420px">
+      <h2 id="add-site-modal-title">Add distant site</h2>
+      <div class="report-field">
+        <label>Site name</label>
+        <input class="report-inp" type="text" id="new-site-name" placeholder="e.g. KINFRA Industrial Park Adoor"/>
+      </div>
+      <div class="report-field">
+        <label>Type (Toll Plaza / ITC / Sez / Industrial area…)</label>
+        <input class="report-inp" type="text" id="new-site-type" placeholder="e.g. Sez"/>
+      </div>
+      <div class="report-field">
+        <label>Distance (one side)</label>
+        <input class="report-inp" type="text" id="new-site-km" placeholder="e.g. 180 KM"/>
+      </div>
+      <input type="hidden" id="edit-site-idx" value=""/>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeAddSiteModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveDistantSite()">Save</button>
+      </div>
+    </div>
+  </div>
     <div style="font-size:32px;margin-bottom:10px">📡</div>
     <div>Press "Fetch Latest" to load device status</div>
     <div style="font-size:12px;margin-top:6px;color:var(--text2)">Works offline after first load</div>
@@ -910,8 +1160,8 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 
     <!-- Mail contacts -->
     <div class="settings-section">
-      <div class="settings-section-title">Mail contacts</div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">These contacts are pre-filled in the To and CC fields when engineers send reports. Engineers can edit before sending.</p>
+      <div class="settings-section-title">Mail contacts (Reports)</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Pre-filled in To/CC for incident reports, leave applications etc.</p>
       <div id="contacts-list"><!-- populated by JS --></div>
       <div class="add-eng-form" style="margin-top:8px">
         <div class="add-eng-form-title">➕ Add contact</div>
@@ -920,6 +1170,38 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
           <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-contact-email" placeholder="e.g. client@nec.com"/></div>
           <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-contact-role"><option value="to">To</option><option value="cc">CC</option></select></div>
           <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addContact()">Add</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distant visit approval contacts -->
+    <div class="settings-section">
+      <div class="settings-section-title">Distant Visit — Approval mail contacts</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Default To/CC for "Need approval for site visit" mails.</p>
+      <div id="visit-apr-contacts-list"><!-- populated by JS --></div>
+      <div class="add-eng-form" style="margin-top:8px">
+        <div class="add-eng-form-title">➕ Add contact</div>
+        <div class="add-contact-grid">
+          <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-vapr-name" placeholder="e.g. Sunil Swain" maxlength="40"/></div>
+          <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-vapr-email" placeholder="e.g. sunil@securepremises.com"/></div>
+          <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-vapr-role"><option value="to">To</option><option value="cc">CC</option></select></div>
+          <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addVisitContact('approval')">Add</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distant visit advance contacts -->
+    <div class="settings-section">
+      <div class="settings-section-title">Distant Visit — Advance request contacts</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Default To/CC for "Advance request for site visit" mails.</p>
+      <div id="visit-adv-contacts-list"><!-- populated by JS --></div>
+      <div class="add-eng-form" style="margin-top:8px">
+        <div class="add-eng-form-title">➕ Add contact</div>
+        <div class="add-contact-grid">
+          <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-vadv-name" placeholder="e.g. Deepak Sutar" maxlength="40"/></div>
+          <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-vadv-email" placeholder="e.g. deepak@securepremises.com"/></div>
+          <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-vadv-role"><option value="to">To</option><option value="cc">CC</option></select></div>
+          <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addVisitContact('advance')">Add</button></div>
         </div>
       </div>
     </div>
@@ -1027,6 +1309,13 @@ const USER_ENGINEER = { ayush: 'Ayush E P', swethaswan: 'Swethaswan', admin: nul
 const VAPID_PUBLIC_KEY = 'BM057CxdrUyUjD7ymRq3DBrp1A2FkClluEmaz2YwOhYkpMaGypps3CFzJcx9sUjE-LG9TXtiuweFhLiaLmhueZQ';
 const WORKER_URL = 'https://device-status-worker.dswkochi.workers.dev';
 
+// Gmail Apps Script Web App URLs — set after deploying the script
+// Each engineer deploys their own script under their Gmail account
+const GMAIL_SCRIPT_URLS = {
+  ayush:      'https://script.google.com/macros/s/AKfycbzXs1Q6C4g1IzqmqR0g9f5-UvDv_fVF6c2c-zJ577HsoCrU7L7KJZvMsdXpandXaxfm/exec', // paste Ayush's deployed Web App URL here
+  swethaswan: '', // paste Swethaswan's deployed Web App URL here
+};
+
 // App state
 let devices = [], filter = 'all', sort = 'days_desc', tab = 'active', deferredInstall = null;
 
@@ -1130,6 +1419,7 @@ function applyRoleUI(user) {
   const notifTab    = document.getElementById('tab-n');
   const logTab      = document.getElementById('tab-l');
   const repTab      = document.getElementById('tab-rep');
+  const visitTab    = document.getElementById('tab-visit');
   const settingsBtn = document.getElementById('settings-btn');
   const assignBtn   = document.getElementById('assign-eng-btn');
   if (alertBtn)    alertBtn.style.display    = admin ? 'inline-flex' : 'none';
@@ -1137,11 +1427,15 @@ function applyRoleUI(user) {
   if (notifTab)    notifTab.style.display    = eng_u ? 'inline-flex' : 'none';
   if (logTab)      logTab.style.display      = admin ? 'inline-flex' : 'none';
   if (repTab)      repTab.style.display      = eng_u ? 'inline-flex' : 'none';
+  if (visitTab)    visitTab.style.display    = (admin || eng_u) ? 'inline-flex' : 'none';
   if (settingsBtn) settingsBtn.style.display = admin ? 'inline-flex' : 'none';
   if (assignBtn)   assignBtn.style.display   = admin ? 'inline-flex' : 'none';
   // Engineer summary cards — only show if admin and data is loaded
-  const engRow = document.getElementById('eng-summary-row');
-  if (engRow) engRow.style.display = (admin && devices.length) ? 'grid' : 'none';
+  const engRow   = document.getElementById('eng-summary-row');
+  const leaveRow = document.getElementById('leave-requests-row');
+  if (engRow)   engRow.style.display   = (admin && devices.length) ? 'grid' : 'none';
+  if (leaveRow) leaveRow.style.display = admin ? 'block' : 'none';
+  if (admin) { loadLeaveRequests(); }
   if (eng_u) { updateUnreadBadge(); loadNotifInbox(); }
 }
 
@@ -1183,15 +1477,25 @@ async function fetchCredentials() {
     const stored = lj(K.CREDS, null);
     if (stored) credCache = stored;
   }
-  // Also fetch contacts so engineers always have admin's latest list
+  // Fetch report contacts
   try {
     const r2 = await fetch(WORKER_URL + '/get-contacts');
-    if (!r2.ok) return;
-    const d2 = await r2.json();
-    if (d2.ok && Array.isArray(d2.contacts)) {
-      sj(K.CONTACTS, d2.contacts);
+    if (r2.ok) {
+      const d2 = await r2.json();
+      if (d2.ok && Array.isArray(d2.contacts)) sj(K.CONTACTS, d2.contacts);
     }
-  } catch (e) { /* offline — use local cache */ }
+  } catch(e) {}
+  // Fetch visit contacts (approval + advance)
+  try {
+    for (const type of ['approval','advance']) {
+      const rv = await fetch(WORKER_URL + '/get-visit-contacts?type=' + type);
+      if (!rv.ok) continue;
+      const dv = await rv.json();
+      if (dv.ok && Array.isArray(dv.contacts) && dv.contacts.length) {
+        sj(type === 'advance' ? K_VISIT_CONTACTS_ADV : K_VISIT_CONTACTS_APR, dv.contacts);
+      }
+    }
+  } catch(e) { /* offline */ }
 }
 
 // Resolve username → { username, hash } from cache or defaults
@@ -1277,13 +1581,25 @@ async function openSettingsModal() {
   try {
     const r2 = await fetch(WORKER_URL + '/get-contacts');
     const d2  = await r2.json();
-    if (d2.ok && Array.isArray(d2.contacts)) {
-      sj(K.CONTACTS, d2.contacts);
-    }
+    if (d2.ok && Array.isArray(d2.contacts)) sj(K.CONTACTS, d2.contacts);
   } catch (e) { /* use local cache */ }
+
+  // Fetch visit contacts from KV
+  try {
+    for (const type of ['approval','advance']) {
+      const rv = await fetch(WORKER_URL + '/get-visit-contacts?type=' + type);
+      if (!rv.ok) continue;
+      const dv = await rv.json();
+      if (dv.ok && Array.isArray(dv.contacts) && dv.contacts.length) {
+        sj(type === 'advance' ? K_VISIT_CONTACTS_ADV : K_VISIT_CONTACTS_APR, dv.contacts);
+      }
+    }
+  } catch(e) {}
 
   renderEngMgmtList();
   renderContactsList();
+  renderVisitContactsList('approval');
+  renderVisitContactsList('advance');
 }
 
 function renderEngMgmtList() {
@@ -1585,8 +1901,19 @@ async function fetchCSV() {
   const lbl = document.getElementById('fetch-label');
   btn.disabled = true; lbl.textContent = 'Fetching…';
   clearErr();
+  // Fallback reset in case fetch hangs (service worker can't clone AbortSignal)
+  const safeguard = setTimeout(() => {
+    btn.disabled = false; lbl.textContent = 'Fetch Latest';
+    showErr('Fetch timed out — server may be unreachable. Using cached data.', 'stale', true);
+    const c = lj(K.DATA, null);
+    if (c && c.devices && c.devices.length) {
+      devices = c.devices;
+      loaded(new Date(c.ts), true);
+    }
+  }, 15000);
   try {
     const r = await fetch('https://devicehealth.ldb.co.in:8181/api/DeviceStatus/DownloadAndProcess');
+    clearTimeout(safeguard);
     if (!r.ok) throw new Error('HTTP ' + r.status);
     devices = parseCSV(await r.text());
     const ts = Date.now();
@@ -1594,6 +1921,7 @@ async function fetchCSV() {
     loaded(new Date(ts), false);
     showToast('Data refreshed — ' + devices.length + ' devices');
   } catch (e) {
+    clearTimeout(safeguard);
     const c = lj(K.DATA, null);
     if (c && c.devices && c.devices.length) {
       devices = c.devices;
@@ -1619,13 +1947,18 @@ function autoAssignEngineers() {
 function loaded(ts, cached) {
   autoAssignEngineers();
   const age = Math.round((Date.now() - ts.getTime()) / 36e5);
-  document.getElementById('last-fetched').textContent =
+  const lastFetched  = document.getElementById('last-fetched');
+  const staleBadge   = document.getElementById('stale-badge');
+  const statsRow     = document.getElementById('stats-row');
+  const mainUi       = document.getElementById('main-ui');
+  const emptyState   = document.getElementById('empty-state');
+  if (lastFetched) lastFetched.textContent =
     (cached ? 'Cached ' : 'Fetched ') +
     ts.toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-  document.getElementById('stale-badge').style.display = age >= 24 ? 'inline' : 'none';
-  document.getElementById('stats-row').style.display = 'grid';
-  document.getElementById('main-ui').style.display = 'block';
-  document.getElementById('empty-state').style.display = 'none';
+  if (staleBadge)  staleBadge.style.display  = age >= 24 ? 'inline' : 'none';
+  if (statsRow)    statsRow.style.display    = 'grid';
+  if (mainUi)      mainUi.style.display      = 'block';
+  if (emptyState)  emptyState.style.display  = 'none';
   updStats(); renderActive(); renderResolved();
 }
 
@@ -1678,9 +2011,10 @@ function setSort(v) { sort = v; renderActive(); }
 
 function switchTab(t) {
   tab = t;
-  const panels = ['active','resolved','notifs','log','reports'];
+  const panels = ['active','resolved','notifs','log','reports','visit'];
   panels.forEach(id => {
-    const tabEl  = document.getElementById('tab-' + (id === 'reports' ? 'rep' : id === 'active' ? 'a' : id === 'resolved' ? 'r' : id === 'notifs' ? 'n' : 'l'));
+    const tabId  = id === 'active' ? 'a' : id === 'resolved' ? 'r' : id === 'notifs' ? 'n' : id === 'log' ? 'l' : id === 'reports' ? 'rep' : 'visit';
+    const tabEl  = document.getElementById('tab-' + tabId);
     const panel  = document.getElementById('panel-' + id);
     if (tabEl) tabEl.classList.toggle('active', id === t);
     if (panel) panel.style.display = id === t ? 'block' : 'none';
@@ -1688,6 +2022,7 @@ function switchTab(t) {
   if (t === 'notifs')  { markNotifsRead(); renderNotifInbox(); }
   if (t === 'log')     { renderActivityLog(); loadKvReports(); loadAdminInbox(); }
   if (t === 'reports') { closeReportWizard(); }
+  if (t === 'visit')   { onVisitTabOpen(); }
 }
 
 function applySearch(data, query) {
@@ -1749,6 +2084,7 @@ function renderActive() {
   const acks = lj(K.ACK, {});
   const user = getCurrentUser();
   const admin = isAdmin(user);
+  const engUser = isEngineer(user);
   if (data.length !== total || document.getElementById('search-active').value) {
     countEl.style.display = 'block';
     countEl.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + total + ' active issues';
@@ -1756,66 +2092,92 @@ function renderActive() {
   if (!data.length) { el.innerHTML = '<div class="empty">No devices match.</div>'; return; }
   el.innerHTML = '<div class="table-wrap"><table>' +
     '<thead><tr>' +
-    '<th style="width:32px">#</th>' +
-    '<th style="width:20%">Location</th>' +
-    '<th style="width:11%">MAC ID</th>' +
-    '<th style="width:7%">Asset ID</th>' +
-    '<th style="width:12%">Last sync</th>' +
-    '<th style="width:5%;text-align:center">Down</th>' +
-    '<th style="width:8%">Priority</th>' +
-    '<th style="width:9%">Engineer</th>' +
-    '<th style="width:7%">Remarks</th>' +
-    '<th style="width:11%"></th>' +
+    '<th style="width:40%">Location</th>' +
+    '<th style="width:10%">Priority</th>' +
+    '<th style="width:8%;text-align:center">Down</th>' +
+    '<th style="width:13%">Engineer</th>' +
+    '<th style="width:12%"></th>' +
     '</tr></thead><tbody>' +
     data.map((d, i) => {
       const ek = nk(d.loc), ev = e[ek] || '', rv = r[d.uid] || '';
       const uid = esc(d.uid), loc = esc(d.loc), days = d.days || 0;
       const ackData = acks[d.uid];
-
-      // Alert button — admin only
-      const alertBtn = admin
-        ? '<button class="btn-row-alert" onclick="openAlertFromRow(\'' + uid + '\',\'' + loc + '\',' + days + ')" title="Send alert about this device">' +
-          '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
-          '</button>' : '';
-
-      // Acknowledge button — engineers only
-      const engUser = isEngineer(user);
       const myAck   = ackData && ackData.user === user;
-      const ackBtn  = engUser
-        ? (myAck
-            ? '<span class="btn-ack acked">✓ On it</span>'
-            : '<button class="btn-ack" onclick="acknowledgeDevice(\'' + uid + '\',\'' + loc + '\')" title="Acknowledge this device">I\'m on it</button>')
-        : '';
 
-      // Ack chip — shown to admin when someone has acknowledged
+      // Ack chip
       const ackChip = admin && ackData
-        ? '<div class="ack-chip" style="margin-top:3px">' +
+        ? '<div class="ack-chip" style="margin-top:4px">' +
             '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
             esc(ackData.user) + ' · ' + timeAgo(ackData.ts) +
           '</div>' : '';
 
-      return '<tr>' +
-        '<td style="color:var(--text2);font-size:11px">' + (i+1) + '</td>' +
-        '<td><div class="loc-cell">' + dotH(d.p) + '<span class="loc-text" title="' + esc(d.loc) + '">' + esc(d.loc) + '</span>' + ackChip + '</div></td>' +
-        '<td style="font-size:11px;color:var(--text2);font-family:monospace">' + esc(d.id) + '</td>' +
-        '<td style="font-size:11.5px;color:var(--text2)">' + (esc(d.assetId) || '—') + '</td>' +
-        '<td style="font-size:11px;color:var(--text2);white-space:nowrap">' + (esc(d.sr) || '—') + '</td>' +
-        '<td style="text-align:center">' + daysH(d.days) + '</td>' +
-        '<td>' + badgeH(d.p) + '</td>' +
-        '<td><input class="einput" type="text" placeholder="Engineer" value="' + esc(ev) + '" data-key="' + esc(ek) + '" onchange="saveEng(this)" onblur="saveEng(this)"/></td>' +
-        '<td><input class="einput" type="text" placeholder="Remark" value="' + esc(rv) + '" data-uid="' + esc(d.uid) + '" onchange="saveRem(this)" onblur="saveRem(this)"/></td>' +
-        '<td style="white-space:nowrap;vertical-align:middle">' +
-          '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">' +
-            '<div style="display:flex;gap:4px;align-items:center">' +
-              '<button class="btn-res" onclick="resolve(\'' + esc(d.uid) + '\')">Resolve</button>' +
-              alertBtn +
+      // Action buttons
+      const resolveBtn = '<button class="btn-res" style="font-size:12px;padding:7px 14px;min-height:34px;white-space:nowrap" onclick="event.stopPropagation();resolve(\'' + uid + '\')">Resolve</button>';
+      const alertBtn   = admin
+        ? '<button class="btn-row-alert" style="padding:6px 8px;min-height:34px;display:inline-flex;align-items:center" onclick="event.stopPropagation();openAlertFromRow(\'' + uid + '\',\'' + loc + '\',' + days + ')" title="Send alert">' +
+          '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+          '</button>' : '';
+      const ackBtn = engUser
+        ? (myAck
+            ? '<span class="btn-ack acked" style="font-size:12px;padding:7px 12px;min-height:34px;display:inline-flex;align-items:center">✓ On it</span>'
+            : '<button class="btn-ack" style="font-size:12px;padding:7px 12px;min-height:34px" onclick="event.stopPropagation();acknowledgeDevice(\'' + uid + '\',\'' + loc + '\')">I\'m on it</button>')
+        : '';
+
+      // Compact secondary info (MAC · Asset · LastSync)
+      const secondary = [
+        d.id ? '<span style="font-family:monospace">' + esc(d.id) + '</span>' : null,
+        d.assetId ? esc(d.assetId) : null,
+        d.sr ? esc(d.sr) : null
+      ].filter(Boolean).join(' <span style="color:var(--border2);margin:0 2px">·</span> ');
+
+      // Detail drawer
+      const drawerHtml =
+        '<tr class="device-detail-row" id="detail-' + uid + '" style="display:none"><td colspan="5">' +
+          '<div class="device-detail-inner">' +
+            '<div class="device-detail-item"><span class="device-detail-lbl">MAC ID</span><span class="device-detail-val mono">' + esc(d.id) + '</span></div>' +
+            '<div class="device-detail-item"><span class="device-detail-lbl">Asset ID</span><span class="device-detail-val">' + (esc(d.assetId)||'—') + '</span></div>' +
+            '<div class="device-detail-item"><span class="device-detail-lbl">Last sync</span><span class="device-detail-val">' + (esc(d.sr)||'—') + '</span></div>' +
+            '<div class="device-detail-item"><span class="device-detail-lbl">Days down</span><span class="device-detail-val">' + (d.days !== null ? d.days + (d.days === 1 ? ' day' : ' days') : '—') + '</span></div>' +
+            '<div class="device-detail-item"><span class="device-detail-lbl">Priority</span><span class="device-detail-val">' + badgeH(d.p) + '</span></div>' +
+            '<div class="device-detail-item"><span class="device-detail-lbl">Remark</span><span class="device-detail-val">' +
+              '<input class="einput" type="text" placeholder="Add remark…" value="' + esc(rv) + '" data-uid="' + esc(d.uid) + '" onclick="event.stopPropagation()" onchange="saveRem(this)" onblur="saveRem(this)" style="width:100%;font-size:12px"/>' +
+            '</span></div>' +
+            '<div class="device-detail-actions">' +
+              resolveBtn + alertBtn + ackBtn +
+              '<span class="device-detail-hint">Tap row to close</span>' +
             '</div>' +
-            ackBtn +
           '</div>' +
+        '</td></tr>';
+
+      return '<tr class="device-row" onclick="toggleDeviceDetail(\'' + uid + '\',event)">' +
+        '<td>' +
+          '<div class="loc-cell" style="margin-bottom:2px">' + dotH(d.p) + '<span class="loc-text" style="font-size:13px;font-weight:600;color:var(--text)">' + esc(d.loc) + '</span></div>' +
+          (secondary ? '<div style="font-size:10.5px;color:var(--text3);line-height:1.6;padding-left:18px">' + secondary + '</div>' : '') +
+          ackChip +
         '</td>' +
-        '</tr>';
+        '<td>' + badgeH(d.p) + '</td>' +
+        '<td style="text-align:center">' + daysH(d.days) + '</td>' +
+        '<td>' +
+          '<input class="einput" type="text" placeholder="—" value="' + esc(ev) + '" data-key="' + esc(ek) + '" onclick="event.stopPropagation()" onchange="saveEng(this)" onblur="saveEng(this)" style="font-size:12px;width:100%;min-width:0"/>' +
+        '</td>' +
+        '<td onclick="event.stopPropagation()" style="white-space:nowrap">' +
+          '<div style="display:flex;gap:5px;align-items:center">' + resolveBtn + alertBtn + '</div>' +
+          (ackBtn ? '<div style="margin-top:5px">' + ackBtn + '</div>' : '') +
+        '</td>' +
+        '</tr>' + drawerHtml;
     }).join('') +
     '</tbody></table></div>';
+}
+
+function toggleDeviceDetail(uid, e) {
+  // Don't trigger if clicking inputs or buttons
+  if (e && (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT')) return;
+  const row = document.getElementById('detail-' + uid);
+  if (!row) return;
+  const isOpen = row.style.display !== 'none';
+  // Close all other open drawers first
+  document.querySelectorAll('.device-detail-row').forEach(r => r.style.display = 'none');
+  row.style.display = isOpen ? 'none' : 'table-row';
 }
 
 // ── Render resolved ──────────────────────────────────────────
@@ -2591,6 +2953,58 @@ function removeContact(id) {
   showToast('Contact removed');
 }
 
+// ── Visit contacts management ─────────────────────────────
+function renderVisitContactsList(type) {
+  const listId = type === 'advance' ? 'visit-adv-contacts-list' : 'visit-apr-contacts-list';
+  const el = document.getElementById(listId);
+  if (!el) return;
+  const list = getVisitContacts(type);
+  if (!list.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px">No contacts yet.</div>';
+    return;
+  }
+  el.innerHTML = list.map(c =>
+    '<div class="contact-row">' +
+      '<div class="contact-row-info">' +
+        '<div class="contact-row-name">' + esc(c.name) + '</div>' +
+        '<div class="contact-row-email">' + esc(c.email) + '</div>' +
+      '</div>' +
+      '<span class="contact-role-badge ' + c.role + '">' + (c.role === 'to' ? 'To' : 'CC') + '</span>' +
+      '<button class="btn-remove-contact" onclick="removeVisitContact(\'' + esc(type) + '\',\'' + esc(c.id) + '\')">Remove</button>' +
+    '</div>'
+  ).join('');
+}
+
+function addVisitContact(type) {
+  const prefix = type === 'advance' ? 'new-vadv-' : 'new-vapr-';
+  const name   = document.getElementById(prefix + 'name').value.trim();
+  const email  = document.getElementById(prefix + 'email').value.trim();
+  const role   = document.getElementById(prefix + 'role').value;
+  if (!name)  { showToast('Enter a contact name'); return; }
+  if (!email || !email.includes('@')) { showToast('Enter a valid email'); return; }
+  const list = getVisitContacts(type);
+  list.push({ id: 'v' + Date.now(), name, email, role });
+  saveVisitContacts(type, list);
+  document.getElementById(prefix + 'name').value  = '';
+  document.getElementById(prefix + 'email').value = '';
+  renderVisitContactsList(type);
+  showToast(name + ' added');
+}
+
+function removeVisitContact(type, id) {
+  const list = getVisitContacts(type).filter(c => c.id !== id);
+  saveVisitContacts(type, list);
+  renderVisitContactsList(type);
+  showToast('Contact removed');
+}
+
+function buildVisitContactOptions(type, defaultRole) {
+  const contacts = getVisitContacts(type);
+  return contacts.map(c =>
+    '<option value="' + esc(c.email) + '" ' + (c.role === defaultRole ? 'selected' : '') + '>' + esc(c.name) + '</option>'
+  ).join('');
+}
+
 // Contact dropdowns are built with defaults already selected inside previewAndSend().
 // This function is kept for compatibility but no longer needs to fill anything.
 function fillWizardMailFields() { /* dropdowns pre-populated in previewAndSend() */ }
@@ -2606,12 +3020,15 @@ function openReportWizard(type) {
     renovation:  '🏗️ Site Renovation Report',
     electrical:  '⚡ Electrical Issue Report',
     rma:         '🔧 RMA Request',
-    sim:         '📶 SIM Fault Report'
+    sim:         '📶 SIM Fault Report',
+    leave:       '🗓️ Leave Application'
   };
   document.getElementById('wizard-title').textContent = titles[type] || 'Report';
   document.getElementById('report-type-selector').style.display = 'none';
   document.getElementById('report-wizard').style.display = 'block';
   document.getElementById('wizard-body').innerHTML = buildWizardForm(type);
+  // Auto-add first RMA card
+  if (type === 'rma') { rmaComponentCount = 0; addRmaComponent(); }
   // Pre-fill To/CC from saved contacts after form is rendered
   fillWizardMailFields();
 }
@@ -2658,6 +3075,15 @@ function buildWizardForm(type) {
         <option value="No">No</option>
       </select>
     </div>
+    <div class="report-field">
+      <label>Photo evidence <span style="color:var(--red-dot)">*</span> <span style="font-size:10px;color:var(--text3);font-weight:400">Mandatory for accident reports</span></label>
+      <input type="file" id="wizard-photos" accept="image/*" multiple style="display:none" onchange="showPhotoThumbnails(this)"/>
+      <button class="btn btn-sm" type="button" onclick="document.getElementById('wizard-photos').click()">
+        📷 Select photos
+      </button>
+      <div id="photo-thumbnails" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+      <div class="cred-hint" style="margin-top:4px">Select photos now — you'll attach them manually when the mail app opens.</div>
+    </div>
     ${previewAndSend()}`;
   }
 
@@ -2666,6 +3092,20 @@ function buildWizardForm(type) {
     <div class="report-field">
       <label>Additional notes (optional)</label>
       <textarea class="report-textarea" id="wizard-desc" placeholder="Any additional context…" style="min-height:60px"></textarea>
+    </div>
+    <div class="report-field">
+      <label>Photo evidence <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label>
+      <label class="photo-checkbox-row">
+        <input type="checkbox" id="wizard-photo-attach" onchange="togglePhotoSection()"/>
+        <span>I have photos to attach (PFA will be included in the email)</span>
+      </label>
+      <div id="photo-preview-area" style="display:none;margin-top:8px">
+        <input type="file" id="wizard-photos" accept="image/*" multiple style="display:none" onchange="showPhotoThumbnails(this)"/>
+        <button class="btn btn-sm" type="button" onclick="document.getElementById('wizard-photos').click()">
+          📷 Select photos
+        </button>
+        <div id="photo-thumbnails" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+      </div>
     </div>
     ${previewAndSend()}`;
   }
@@ -2676,28 +3116,43 @@ function buildWizardForm(type) {
       <label>Description of electrical issue</label>
       <textarea class="report-textarea" id="wizard-desc" placeholder="Describe the electrical issue…"></textarea>
     </div>
+    <div class="report-field">
+      <label>Reinstallation / Rewiring required?</label>
+      <select class="report-select" id="wizard-reinstall">
+        <option value="Reinstallation required">Reinstallation required</option>
+        <option value="Rewiring required">Rewiring required</option>
+        <option value="Both reinstallation and rewiring required">Both required</option>
+        <option value="No reinstallation required">No — not required</option>
+      </select>
+    </div>
     ${previewAndSend()}`;
   }
 
   if (type === 'rma') {
     return commonTop + `
     <div class="report-field">
-      <label>Component type</label>
-      <select class="report-select" id="wizard-component-type" onchange="updateRmaModels(this.value)">
-        <option value="">— Select component —</option>
-        <option value="Reader">Reader</option>
-        <option value="Router">Router</option>
-        <option value="Reader Adapter">Reader Adapter</option>
-        <option value="Router Adapter">Router Adapter</option>
-      </select>
-    </div>
-    <div class="report-field" id="rma-model-field" style="display:none">
-      <label>Model / Make</label>
-      <select class="report-select" id="wizard-component-model"></select>
+      <label>Components to return</label>
+      <div id="rma-component-list"></div>
+      <button class="btn btn-sm" style="margin-top:8px" type="button" onclick="addRmaComponent()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Add another component
+      </button>
     </div>
     <div class="report-field">
       <label>Notes (optional)</label>
       <textarea class="report-textarea" id="wizard-desc" placeholder="Any additional details about the fault…" style="min-height:60px"></textarea>
+    </div>
+    <div class="report-field">
+      <label>Photo evidence <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label>
+      <label class="photo-checkbox-row">
+        <input type="checkbox" id="wizard-photo-attach" onchange="togglePhotoSection()"/>
+        <span>I have photos to attach (PFA will be included in the email)</span>
+      </label>
+      <div id="photo-preview-area" style="display:none;margin-top:8px">
+        <input type="file" id="wizard-photos" accept="image/*" multiple style="display:none" onchange="showPhotoThumbnails(this)"/>
+        <button class="btn btn-sm" type="button" onclick="document.getElementById('wizard-photos').click()">📷 Select photos</button>
+        <div id="photo-thumbnails" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+      </div>
     </div>
     ${previewAndSend()}`;
   }
@@ -2714,8 +3169,15 @@ function buildWizardForm(type) {
       <input type="hidden" id="wizard-carrier" value=""/>
     </div>
     <div class="report-field">
-      <label>Faulty SIM number <span style="color:var(--red-dot)">*</span></label>
-      <input class="report-inp" type="text" id="wizard-faulty-sim" placeholder="e.g. 8991102405900255000U"/>
+      <label>Number of faulty SIMs</label>
+      <input class="report-inp" type="number" id="wizard-sim-qty" value="1" min="1" max="10"
+             style="max-width:80px" oninput="updateSimFields(this.value)"/>
+    </div>
+    <div id="sim-number-fields">
+      <div class="report-field">
+        <label>Faulty SIM 1 number <span style="color:var(--red-dot)">*</span></label>
+        <input class="report-inp" type="text" id="wizard-faulty-sim-1" placeholder="e.g. 8991102405900255000U"/>
+      </div>
     </div>
     <div class="report-field">
       <label>Has the SIM been replaced?</label>
@@ -2725,12 +3187,101 @@ function buildWizardForm(type) {
       </div>
     </div>
     <div id="sim-replace-fields" style="display:none">
-      <div class="report-field">
-        <label>New SIM number <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label>
-        <input class="report-inp" type="text" id="wizard-sim-number" placeholder="e.g. 8939012345678 (if available)"/>
+      <div id="sim-new-number-fields">
+        <div class="report-field">
+          <label>New SIM 1 number <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label>
+          <input class="report-inp" type="text" id="wizard-sim-new-1" placeholder="e.g. 8939012345678 (if available)"/>
+        </div>
       </div>
     </div>
     ${previewAndSend()}`;
+  }
+
+  if (type === 'leave') {
+    // Get user details
+    const u       = getCurrentUser();
+    const name    = (credCache && credCache[u] && credCache[u].name) || USER_ENGINEER[u] || u;
+    const savedDesig = ls('dsc_designation_v1') || '';
+    const savedPhone = ls('dsc_phone_v1') || '';
+    const today   = new Date().toISOString().slice(0,10);
+
+    return `
+    <div class="report-field">
+      <label>Duration</label>
+      <div class="leave-day-toggle">
+        <button class="leave-day-btn selected" id="leave-today-btn"  onclick="setLeaveDuration('today')">Today</button>
+        <button class="leave-day-btn"           id="leave-tomrw-btn" onclick="setLeaveDuration('tomorrow')">Tomorrow</button>
+        <button class="leave-day-btn"           id="leave-custom-btn" onclick="setLeaveDuration('custom')">Custom dates</button>
+      </div>
+    </div>
+    <div id="leave-single-date" class="report-field">
+      <label>Date of leave</label>
+      <input class="report-inp" type="date" id="leave-from" value="${today}" onchange="calcLeaveReturn()"/>
+    </div>
+    <div id="leave-custom-dates" class="report-field" style="display:none">
+      <div class="leave-date-row">
+        <div>
+          <label>From date</label>
+          <input class="report-inp" type="date" id="leave-from-custom" value="${today}" onchange="calcLeaveReturn()"/>
+        </div>
+        <div>
+          <label>To date</label>
+          <input class="report-inp" type="date" id="leave-to-custom" value="${today}" onchange="calcLeaveReturn()"/>
+        </div>
+      </div>
+    </div>
+    <div class="report-field">
+      <label>Reason for leave</label>
+      <div class="sim-toggle" style="margin-bottom:10px">
+        <button class="sim-toggle-btn selected" id="leave-reason-personal" onclick="setLeaveReason('personal')">Personal reason</button>
+        <button class="sim-toggle-btn" id="leave-reason-health" onclick="setLeaveReason('health')">Health issue</button>
+        <button class="sim-toggle-btn" id="leave-reason-custom" onclick="setLeaveReason('custom')">Other</button>
+      </div>
+      <div id="leave-custom-reason" style="display:none">
+        <input class="report-inp" type="text" id="leave-reason-text" placeholder="Please specify reason…"/>
+      </div>
+    </div>
+    <div class="report-field">
+      <label>Your designation</label>
+      <input class="report-inp" type="text" id="leave-designation" placeholder="e.g. RFID Engineer" value="${esc(savedDesig)}"/>
+      <div class="cred-hint">Saved for future use</div>
+    </div>
+    <div class="report-field">
+      <label>Your mobile number</label>
+      <input class="report-inp" type="tel" id="leave-phone" placeholder="e.g. 9876543210" value="${esc(savedPhone)}"/>
+      <div class="cred-hint">Appears on the letter as signature contact. Saved for future use.</div>
+    </div>
+    <div class="report-field" style="background:var(--accent-bg);border-radius:var(--radius);padding:8px 10px">
+      <div style="font-size:11px;color:var(--accent);font-weight:600">Calculated automatically</div>
+      <div style="font-size:12px;color:var(--text);margin-top:3px">Employee name: <strong>${esc(name)}</strong> · Location: <strong>Cochin</strong> · Re-join date: <span id="leave-rejoin-display">—</span> · Total days: <span id="leave-days-display">—</span></div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="report-preview-title">Letter preview</div>
+    <div class="report-preview" id="wizard-preview">Fill in the fields above to see the letter.</div>
+    <div class="mail-compose-box">
+      <div class="mail-compose-box-title">Mail recipients</div>
+      <div class="contact-sel-group">
+        <div class="contact-sel-row">
+          <label>To</label>
+          <select id="wizard-to-sel">${buildContactOptions('to')}</select>
+        </div>
+        <div class="contact-sel-row">
+          <label>CC</label>
+          <select id="wizard-cc-sel" multiple size="3">${buildContactOptions('cc')}</select>
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:6px">To edit contacts go to Settings.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="generateLeavePreview()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1v10M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Preview letter
+      </button>
+      <button class="btn btn-primary" onclick="sendLeaveApplication()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        Send application
+      </button>
+    </div>`;
   }
   return '';
 }
@@ -2837,15 +3388,158 @@ const RMA_MODELS = {
   'Router Adapter': ['Standard Adapter']
 };
 
-function updateRmaModels(type) {
-  const modelField = document.getElementById('rma-model-field');
-  const modelSel   = document.getElementById('wizard-component-model');
-  if (!modelField || !modelSel) return;
-  if (!type) { modelField.style.display = 'none'; return; }
-  const models = RMA_MODELS[type] || [];
-  modelSel.innerHTML = models.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  // Only show model selector for Reader and Router (adapters have no meaningful model choice)
-  modelField.style.display = (type === 'Reader' || type === 'Router') ? 'block' : 'none';
+// ── RMA multi-component builder ──────────────────────────────
+let rmaComponentCount = 0;
+
+function addRmaComponent() {
+  rmaComponentCount++;
+  const idx  = rmaComponentCount;
+  const list = document.getElementById('rma-component-list');
+  if (!list) return;
+
+  const modelOptions = Object.keys(RMA_MODELS).map(type =>
+    `<optgroup label="${type}">${(RMA_MODELS[type]||[]).map(m=>`<option value="${type}||${m}">${m} ${type}</option>`).join('')}</optgroup>`
+  ).join('');
+
+  const card = document.createElement('div');
+  card.className = 'rma-component-card';
+  card.id = 'rma-card-' + idx;
+  card.innerHTML = `
+    <div class="rma-component-card-header">
+      <span class="rma-component-card-title">Component ${idx}</span>
+      <button class="rma-component-remove" type="button" onclick="removeRmaComponent(${idx})" title="Remove">✕</button>
+    </div>
+    <div class="rma-component-grid">
+      <div class="report-field" style="margin:0">
+        <label>Type &amp; Model</label>
+        <select class="report-select" id="rma-type-model-${idx}" onchange="onRmaTypeModelChange(${idx})">
+          <option value="">— Select —</option>
+          ${modelOptions}
+          <option value="Reader Adapter||">Reader Adapter</option>
+          <option value="Router Adapter||">Router Adapter</option>
+        </select>
+      </div>
+      <div class="report-field" style="margin:0">
+        <label>Quantity</label>
+        <input class="report-inp" type="number" id="rma-qty-${idx}" value="1" min="1" max="99"/>
+      </div>
+    </div>
+    <div id="rma-nirad-${idx}" style="display:none;margin-top:8px">
+      <div class="rma-component-grid">
+        <div class="report-field" style="margin:0">
+          <label>Router MAC ID</label>
+          <input class="report-inp" type="text" id="rma-nirad-mac-${idx}" placeholder="e.g. 84:24:8D:F1:40:35"/>
+        </div>
+        <div class="report-field" style="margin:0">
+          <label>Router Serial No.</label>
+          <input class="report-inp" type="text" id="rma-nirad-serial-${idx}" placeholder="e.g. NRD2024001234"/>
+        </div>
+      </div>
+    </div>`;
+  list.appendChild(card);
+}
+
+function removeRmaComponent(idx) {
+  const card = document.getElementById('rma-card-' + idx);
+  if (card) card.remove();
+}
+
+function onRmaTypeModelChange(idx) {
+  const sel = document.getElementById('rma-type-model-' + idx);
+  if (!sel) return;
+  const val   = sel.value;
+  const model = val.split('||')[1] || '';
+  const nirad = document.getElementById('rma-nirad-' + idx);
+  if (nirad) nirad.style.display = model === 'Nirad N1000' ? 'block' : 'none';
+}
+
+function getRmaComponents() {
+  const cards = document.querySelectorAll('.rma-component-card');
+  const result = [];
+  cards.forEach(card => {
+    const id    = card.id.replace('rma-card-','');
+    const sel   = document.getElementById('rma-type-model-' + id);
+    const qty   = parseInt(document.getElementById('rma-qty-' + id)?.value || '1');
+    const mac   = document.getElementById('rma-nirad-mac-' + id)?.value.trim() || '';
+    const serial= document.getElementById('rma-nirad-serial-' + id)?.value.trim() || '';
+    if (!sel || !sel.value) return;
+    const parts = sel.value.split('||');
+    const type  = parts[0] || '';
+    const model = parts[1] || '';
+    result.push({ type, model, qty, mac, serial });
+  });
+  return result;
+}
+
+// Legacy stubs — kept for compat
+function updateRmaModels() {}
+function updateNiradFields() {}
+
+// ── SIM dynamic number fields ─────────────────────────────────
+function updateSimFields(qty) {
+  qty = Math.max(1, Math.min(10, parseInt(qty) || 1));
+  const faultyContainer = document.getElementById('sim-number-fields');
+  const newContainer    = document.getElementById('sim-new-number-fields');
+  if (!faultyContainer) return;
+
+  // Build faulty SIM inputs
+  faultyContainer.innerHTML = Array.from({length: qty}, (_, i) => `
+    <div class="report-field">
+      <label>Faulty SIM ${qty > 1 ? (i+1) + ' ' : ''}number <span style="color:var(--red-dot)">*</span></label>
+      <input class="report-inp" type="text" id="wizard-faulty-sim-${i+1}" placeholder="e.g. 8991102405900255000U"/>
+    </div>`).join('');
+
+  // Build replacement SIM inputs if replaced section is visible
+  if (newContainer) {
+    newContainer.innerHTML = Array.from({length: qty}, (_, i) => `
+      <div class="report-field">
+        <label>New SIM ${qty > 1 ? (i+1) + ' ' : ''}number <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label>
+        <input class="report-inp" type="text" id="wizard-sim-new-${i+1}" placeholder="e.g. 8939012345678"/>
+      </div>`).join('');
+  }
+}
+
+function getSimNumbers(prefix, qty) {
+  return Array.from({length: qty}, (_, i) => {
+    const el = document.getElementById(prefix + (i+1));
+    return el ? el.value.trim() : '';
+  }).filter(Boolean);
+}
+
+// ── Photo handling ────────────────────────────────────────────
+let selectedPhotos = [];
+
+function togglePhotoSection() {
+  const cb = document.getElementById('wizard-photo-attach');
+  const area = document.getElementById('photo-preview-area');
+  if (area) area.style.display = cb && cb.checked ? 'block' : 'none';
+  if (cb && !cb.checked) { selectedPhotos = []; const tb = document.getElementById('photo-thumbnails'); if (tb) tb.innerHTML = ''; }
+}
+
+function showPhotoThumbnails(input) {
+  const container = document.getElementById('photo-thumbnails');
+  if (!container) return;
+  selectedPhotos = Array.from(input.files);
+  container.innerHTML = '';
+  selectedPhotos.forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;display:inline-block';
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid var(--border2)';
+      img.alt = file.name;
+      const rm = document.createElement('button');
+      rm.textContent = '✕';
+      rm.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--red-dot);color:#fff;border:none;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;line-height:1;padding:0';
+      rm.onclick = () => { selectedPhotos.splice(i, 1); wrap.remove(); };
+      wrap.appendChild(img);
+      wrap.appendChild(rm);
+      container.appendChild(wrap);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function getWizardDevices() {
@@ -2868,6 +3562,218 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
 }
 
+// ── Leave application helpers ─────────────────────────────────
+const BCL_LOGO_B64 = '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';
+
+let leaveDuration = 'today';
+let leaveReasonType = 'personal';
+
+function buildContactOptions(defaultRole) {
+  const contacts = getContacts();
+  return contacts.map(c =>
+    '<option value="' + esc(c.email) + '" ' + (c.role === defaultRole ? 'selected' : '') + '>' + esc(c.name) + '</option>'
+  ).join('');
+}
+
+function setLeaveDuration(mode) {
+  leaveDuration = mode;
+  ['today','tomrw','custom'].forEach(m => {
+    const btn = document.getElementById('leave-' + m + '-btn');
+    if (btn) btn.classList.toggle('selected', m === mode);
+  });
+  const single = document.getElementById('leave-single-date');
+  const custom = document.getElementById('leave-custom-dates');
+  if (mode === 'custom') {
+    if (single) single.style.display = 'none';
+    if (custom) custom.style.display = 'block';
+  } else {
+    if (single) single.style.display = 'block';
+    if (custom) custom.style.display = 'none';
+    // Set the date input
+    const inp = document.getElementById('leave-from');
+    if (inp) {
+      const d = new Date();
+      if (mode === 'tomorrow') d.setDate(d.getDate() + 1);
+      inp.value = d.toISOString().slice(0, 10);
+    }
+  }
+  calcLeaveReturn();
+}
+
+function setLeaveReason(type) {
+  leaveReasonType = type;
+  ['personal','health','custom'].forEach(t => {
+    const btn = document.getElementById('leave-reason-' + t);
+    if (btn) btn.classList.toggle('selected', t === type);
+  });
+  const customField = document.getElementById('leave-custom-reason');
+  if (customField) customField.style.display = type === 'custom' ? 'block' : 'none';
+}
+
+function getLeaveFromTo() {
+  let fromStr, toStr;
+  if (leaveDuration === 'custom') {
+    fromStr = document.getElementById('leave-from-custom')?.value;
+    toStr   = document.getElementById('leave-to-custom')?.value;
+  } else {
+    fromStr = document.getElementById('leave-from')?.value;
+    toStr   = fromStr;
+  }
+  return { fromStr, toStr };
+}
+
+function calcLeaveReturn() {
+  const { fromStr, toStr } = getLeaveFromTo();
+  if (!fromStr || !toStr) return;
+  const from   = new Date(fromStr);
+  const to     = new Date(toStr);
+  if (to < from) { document.getElementById('leave-rejoin-display').textContent = 'Invalid dates'; return; }
+  const days   = Math.round((to - from) / 864e5) + 1;
+  const rejoin = new Date(to);
+  rejoin.setDate(rejoin.getDate() + 1);
+  // Skip weekends for rejoin
+  while (rejoin.getDay() === 0 || rejoin.getDay() === 6) rejoin.setDate(rejoin.getDate() + 1);
+  const fmtDate = d => d.toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const rejEl   = document.getElementById('leave-rejoin-display');
+  const daysEl  = document.getElementById('leave-days-display');
+  if (rejEl) rejEl.textContent = fmtDate(rejoin);
+  if (daysEl) daysEl.textContent = days + (days === 1 ? ' day' : ' days');
+  return { from, to, rejoin, days };
+}
+
+function getLeaveReason() {
+  if (leaveReasonType === 'personal') return 'personal reasons';
+  if (leaveReasonType === 'health')   return 'health issues';
+  const custom = document.getElementById('leave-reason-text')?.value.trim();
+  return custom || 'personal reasons';
+}
+
+function buildLeaveContent() {
+  const u      = getCurrentUser();
+  const name   = (credCache && credCache[u] && credCache[u].name) || USER_ENGINEER[u] || u;
+  const desig  = document.getElementById('leave-designation')?.value.trim() || 'RFID Engineer';
+  const phone  = document.getElementById('leave-phone')?.value.trim() || '';
+  const site   = 'Cochin';
+  const reason = getLeaveReason();
+  const calc   = calcLeaveReturn();
+  if (!calc) return null;
+  const { from, to, rejoin, days } = calc;
+  const fmtDate = d => d.toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const fromFmt = fmtDate(from);
+  const toFmt   = fmtDate(to);
+  const rejFmt  = fmtDate(rejoin);
+  const singleDay = days === 1;
+
+  // Save designation & phone for next time
+  lset('dsc_designation_v1', desig);
+  lset('dsc_phone_v1', phone);
+
+  const subject = singleDay
+    ? 'Leave Application – ' + name + ' – ' + fromFmt
+    : 'Leave Application – ' + name + ' – ' + fromFmt + ' to ' + toFmt;
+
+  const body =
+    '                          Leave Application\n\n' +
+    'To,\n' +
+    'Project Manager\n' +
+    'BCL Secure premises Pvt. Ltd.\n' +
+    'Gurgaon – Haryana – 122015\n\n' +
+    'Subject: Leave request\n\n' +
+    'Dear Sir\n\n' +
+    (singleDay
+      ? 'I would like to request leave on ' + fromFmt + ' due to ' + reason + '.'
+      : 'I would like to request leave from ' + fromFmt + ' to ' + toFmt + ' due to ' + reason + '.') +
+    '\n\nEmployee Details:\n\n' +
+    'Employee Name   : ' + name + '\n' +
+    'Designation     : ' + desig + '\n' +
+    'Location / Site : ' + (site || '—') + '\n' +
+    'Total Leave Days: ' + days + '\n\n' +
+    'I shall re-join the duty from ' + rejFmt + '.\n\n' +
+    'I will ensure all responsibilities are handed over appropriately and will be reachable if anything urgent arises. Kindly approve my leave and let me know if any further information is required.\n\n' +
+    '                                        Yours Faithfully\n\n' +
+    name + '\n' +
+    'BCL Staff Signature                     Employee Signature & Mobile\n' +
+    '                                        ' + (phone || '—');
+
+  return { subject, body };
+}
+
+function generateLeavePreview() {
+  const { fromStr } = getLeaveFromTo();
+  if (!fromStr) { showToast('Select leave dates first'); return; }
+  const result = buildLeaveContent();
+  if (!result) { showToast('Please check dates'); return; }
+  document.getElementById('wizard-preview').textContent = result.subject + '\n\n' + result.body;
+}
+
+function sendLeaveApplication() {
+  const { fromStr } = getLeaveFromTo();
+  if (!fromStr) { showToast('Select leave dates'); return; }
+  const desig = document.getElementById('leave-designation')?.value.trim();
+  if (!desig) { showToast('Enter your designation'); return; }
+  const result = buildLeaveContent();
+  if (!result) { showToast('Please check the dates'); return; }
+
+  const { subject, body } = result;
+  const toSel  = document.getElementById('wizard-to-sel');
+  const ccSel  = document.getElementById('wizard-cc-sel');
+  const toVal  = toSel ? toSel.value.trim() : '';
+  const ccVals = ccSel ? Array.from(ccSel.selectedOptions).map(o => o.value).filter(Boolean) : [];
+  const ccVal  = ccVals.join(', ');
+
+  // Get calculated details for KV record
+  const calc   = calcLeaveReturn();
+  const u      = getCurrentUser();
+  const name   = (credCache && credCache[u] && credCache[u].name) || USER_ENGINEER[u] || u;
+  const { fromStr: fs, toStr: ts } = getLeaveFromTo();
+
+  // Log to activity
+  logActivity(u, 'report', 'Filed <strong>' + esc(subject) + '</strong>', body);
+
+  // Push to Worker KV so admin sees it on their device
+  fetch(WORKER_URL + '/submit-leave', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id:       Date.now() + '_' + u,
+      user:     u,
+      name,
+      subject,
+      body,
+      fromDate: fs,
+      toDate:   ts || fs,
+      days:     calc ? calc.days : 1,
+      reason:   getLeaveReason(),
+      ts:       Date.now(),
+      status:   'pending'
+    })
+  }).catch(() => {});
+
+  // Also notify admin via push + inbox
+  fetch(WORKER_URL + '/manual-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: '🗓️ Leave request — ' + name,
+      body:  (calc ? calc.days + ' day' + (calc.days !== 1 ? 's' : '') + ' · ' : '') + getLeaveReason() + ' · Tap Activity Log to review.',
+      recipients: ['admin'],
+      sender: u
+    })
+  }).catch(() => {});
+
+  // Build mailto
+  let mailto = 'mailto:' + encodeURIComponent(toVal);
+  const params = [];
+  if (ccVal)   params.push('cc='      + encodeURIComponent(ccVal));
+  params.push('subject=' + encodeURIComponent(subject));
+  params.push('body='    + encodeURIComponent(body));
+  if (params.length) mailto += '?' + params.join('&');
+
+  showToast('Leave application sent — opening mail app…');
+  setTimeout(() => { window.location.href = mailto; }, 400);
+}
+
+
 function buildReportContent(type) {
   const site     = document.getElementById('wizard-site') ? document.getElementById('wizard-site').value.replace(/_/g,' ') : '';
   const devs     = getWizardDevices();
@@ -2888,36 +3794,50 @@ function buildReportContent(type) {
   const devRef    = firstDev.asset ? firstDev.asset : firstDev.mac;
 
   if (type === 'accident') {
-    const reinstall = document.getElementById('wizard-reinstall') ? document.getElementById('wizard-reinstall').value : 'Yes';
+    const reinstall  = document.getElementById('wizard-reinstall')?.value || 'Yes';
+    const photoInput = document.getElementById('wizard-photos');
+    const photoCount = photoInput?.files?.length || 0;
+    const pfaLine    = photoCount > 0
+      ? '\nPlease find the attached image' + (photoCount > 1 ? 's (' + photoCount + ' images)' : '') + ' for your reference and records.\n'
+      : '';
     return {
-      subject: 'Incident Report – RFID Device Setup Affected at ' + site,
+      subject: 'Incident Report – RFID Device Setup Affected at ' + site + (photoCount > 0 ? ' (PFA)' : ''),
       body:
         'Dear Sir,\n\n' +
         'I would like to inform you that an accident occurred at ' + site + ', which has affected the RFID device setup' + (devRef ? ' at ' + devRef : '') + '.\n\n' +
         'Details of the incident:\n\n' +
         devBullets + '\n' +
         (desc ? '  • Cause: ' + desc + '\n' : '') +
-        '  • Reinstallation required: ' + reinstall + '\n\n' +
-        'Please find the details noted above for your reference. Kindly advise on the next steps for restoring connectivity once the situation is resolved.\n\n' 
+        '  • Reinstallation required: ' + reinstall + '\n' +
+        pfaLine + '\n' +
+        'Please find the details noted above for your reference. Kindly advise on the next steps for restoring connectivity once the situation is resolved.\n\n'
     };
   }
 
   if (type === 'renovation') {
+    const hasPhotoCb = document.getElementById('wizard-photo-attach')?.checked;
+    const photoInput = document.getElementById('wizard-photos');
+    const photoCount = hasPhotoCb && photoInput?.files?.length ? photoInput.files.length : 0;
+    const pfaLine    = photoCount > 0
+      ? '\nPlease find the attached image' + (photoCount > 1 ? 's (' + photoCount + ' images)' : '') + ' for your reference and records.\n'
+      : '';
     return {
-      subject: 'Incident Report – Site Renovation Affecting RFID Setup at ' + site,
+      subject: 'Incident Report – Site Renovation Affecting RFID Setup at ' + site + (photoCount > 0 ? ' (PFA)' : ''),
       body:
         'Dear Sir,\n\n' +
         'I would like to inform you that ' + site + ' is currently undergoing renovation, which has affected the RFID device setup at this location.\n\n' +
         'Details:\n\n' +
         devBullets + '\n' +
         '  • Status: Site under renovation — devices temporarily offline\n' +
-        '  • Reinstallation required upon completion of renovation work\n\n' +
-        (desc ? 'Additional notes:\n' + desc + '\n\n' : '') +
-        'Please find the details noted above for your reference. Kindly advise on the next steps for reinstallation once the renovation work is completed.\n\n' 
+        '  • Reinstallation required upon completion of renovation work\n' +
+        (desc ? '  • Notes: ' + desc + '\n' : '') +
+        pfaLine + '\n' +
+        'Please find the details noted above for your reference. Kindly advise on the next steps for reinstallation once the renovation work is completed.\n\n'
     };
   }
 
   if (type === 'electrical') {
+    const reinstall = document.getElementById('wizard-reinstall')?.value || 'Reinstallation required';
     return {
       subject: 'Incident Report – Electrical Issue Affecting RFID Device at ' + site,
       body:
@@ -2927,60 +3847,82 @@ function buildReportContent(type) {
         devBullets + '\n' +
         '  • Cause: Electrical wiring issue at the site\n' +
         (desc ? '  • Description: ' + desc + '\n' : '') +
-        '  • Reinstallation required once the electrical issue is rectified\n\n' +
-        'Please find the details noted above for your reference. Kindly advise on the next steps for restoring connectivity once the electrical work is completed.\n\n' 
+        '  • ' + reinstall + '\n\n' +
+        'Please find the details noted above for your reference. Kindly advise on the next steps for restoring connectivity once the electrical work is completed.\n\n'
     };
   }
 
   if (type === 'rma') {
-    const compType  = document.getElementById('wizard-component-type')  ? document.getElementById('wizard-component-type').value  : '';
-    const compModel = document.getElementById('wizard-component-model') ? document.getElementById('wizard-component-model').value : '';
-    const component = compModel && (compType === 'Reader' || compType === 'Router')
-      ? compType + ' (' + compModel + ')'
-      : compType;
+    const components    = getRmaComponents();
+    const photoCheckbox = document.getElementById('wizard-photo-attach');
+    const photoInput    = document.getElementById('wizard-photos');
+    const photoCount    = (photoCheckbox?.checked && photoInput?.files?.length) ? photoInput.files.length : 0;
+    const pfaLine       = photoCount > 0
+      ? '\nPlease find the attached image' + (photoCount > 1 ? 's (' + photoCount + ' images)' : '') + ' for your reference and records.\n'
+      : '';
+    if (!components.length) return { subject: '', body: '' };
+    const compSummary = components.map(c => (c.model ? c.model + ' ' + c.type : c.type) + ' x' + c.qty).join(', ');
+    const compBullets = components.map((c, i) => {
+      const label = c.model ? c.model + ' ' + c.type : c.type;
+      let lines = '  Component ' + (i + 1) + ': ' + label + ' x' + c.qty;
+      if (c.model === 'Nirad N1000') {
+        if (c.mac)    lines += '\n    MAC ID: ' + c.mac;
+        if (c.serial) lines += '\n    Serial No: ' + c.serial;
+      }
+      return lines;
+    }).join('\n');
     return {
-      subject: 'RMA Request – ' + component + ' at ' + site,
+      subject: 'RMA Request – ' + compSummary + ' at ' + site + (photoCount > 0 ? ' (PFA)' : ''),
       body:
         'Dear Sir,\n\n' +
-        'I would like to raise an RMA request for a faulty ' + component + ' at ' + site + '.\n\n' +
-        'Details of the faulty component:\n\n' +
+        'I would like to raise an RMA request for the following faulty component(s) at ' + site + ':\n\n' +
+        compBullets + '\n\n' +
+        'Affected device(s):\n\n' +
         devBullets + '\n' +
-        '  • Faulty component: ' + (compType || 'Not specified') + '\n' +
-        (compModel && (compType === 'Reader' || compType === 'Router') ? '  • Make / Model: ' + compModel + '\n' : '') +
-        (desc ? '  • Additional notes: ' + desc + '\n' : '') +
-        '\nPlease find the details noted above for your reference. Kindly arrange for the replacement or repair of the above component at the earliest.\n\n' 
+        (desc ? '\nAdditional notes: ' + desc + '\n' : '') +
+        pfaLine + '\n' +
+        'Please find the details noted above for your reference. Kindly arrange for the replacement or repair of the above component(s) at the earliest.\n\n'
     };
   }
 
   if (type === 'sim') {
-    const carrier    = document.getElementById('wizard-carrier')    ? document.getElementById('wizard-carrier').value    : '';
-    const faultySim  = document.getElementById('wizard-faulty-sim') ? document.getElementById('wizard-faulty-sim').value.trim() : '';
-    const newSim     = document.getElementById('wizard-sim-number') ? document.getElementById('wizard-sim-number').value.trim() : '';
-
+    const carrier  = document.getElementById('wizard-carrier')?.value || '';
+    const qty      = parseInt(document.getElementById('wizard-sim-qty')?.value || '1');
+    const simStr   = (carrier || 'SIM') + ' SIM x ' + qty;
+    const faultySims = getSimNumbers('wizard-faulty-sim-', qty);
+    const faultySimText = faultySims.length
+      ? faultySims.map((n, i) => '  • Faulty SIM ' + (qty > 1 ? (i + 1) + ' ' : '') + 'number: ' + n).join('\n')
+      : '  • Faulty SIM number: Not provided';
     if (simReplaced) {
+      const newSims = getSimNumbers('wizard-sim-new-', qty);
+      const newSimText = newSims.length
+        ? newSims.map((n, i) => '  • Replacement SIM ' + (qty > 1 ? (i + 1) + ' ' : '') + 'number: ' + n).join('\n')
+        : '  • Replacement SIM number: To be updated';
       return {
         subject: 'SIM Replacement Report – ' + (carrier ? carrier + ' SIM – ' : '') + site,
         body:
           'Dear Sir,\n\n' +
-          'I would like to inform you that the ' + (carrier || '') + ' SIM installed in the RFID device at ' + site + ' was found to be faulty and has been replaced.\n\n' +
+          'I would like to inform you that ' + qty + ' ' + (carrier || '') + ' SIM' + (qty > 1 ? 's' : '') + ' installed in the RFID device(s) at ' + site + ' were found to be faulty and have been replaced.\n\n' +
           'Details:\n\n' +
           devBullets + '\n' +
+          '  • Component: ' + simStr + '\n' +
           '  • Carrier: ' + (carrier || 'Not specified') + '\n' +
-          '  • Faulty SIM number: ' + (faultySim || 'Not provided') + '\n' +
-          (newSim ? '  • Replacement SIM number: ' + newSim + '\n' : '  • Replacement SIM number: To be updated\n') +
-          '\nPlease update your records accordingly. Kindly confirm once the replacement has been noted at your end.\n\n' 
+          faultySimText + '\n' +
+          newSimText + '\n' +
+          '\nPlease update your records accordingly. Kindly confirm once the replacement has been noted at your end.\n\n'
       };
     } else {
       return {
         subject: 'SIM Fault Report – ' + (carrier ? carrier + ' SIM – ' : '') + site,
         body:
           'Dear Sir,\n\n' +
-          'I would like to inform you that the ' + (carrier || '') + ' SIM installed in the RFID device at ' + site + ' has been found to be faulty. No replacement is currently available.\n\n' +
+          'I would like to inform you that ' + qty + ' ' + (carrier || '') + ' SIM' + (qty > 1 ? 's' : '') + ' installed in the RFID device(s) at ' + site + ' have been found to be faulty. No replacement is currently available.\n\n' +
           'Details:\n\n' +
           devBullets + '\n' +
+          '  • Component: ' + simStr + '\n' +
           '  • Carrier: ' + (carrier || 'Not specified') + '\n' +
-          '  • Faulty SIM number: ' + (faultySim || 'Not provided') + '\n' +
-          '\nPlease do the needful at the earliest to restore connectivity at this site.\n\n' 
+          faultySimText + '\n' +
+          '\nPlease do the needful at the earliest to restore connectivity at this site.\n\n'
       };
     }
   }
@@ -2995,7 +3937,7 @@ function generateReportPreview() {
   if (!site) { showToast('Please select a site first'); return; }
   // Validate faulty SIM if SIM type
   if (type === 'sim') {
-    const faultySim = document.getElementById('wizard-faulty-sim');
+    const faultySim = document.getElementById('wizard-faulty-sim-1');
     if (faultySim && !faultySim.value.trim()) { showToast('Please enter the faulty SIM number'); return; }
   }
   const { subject, body } = buildReportContent(type);
@@ -3011,14 +3953,35 @@ function sendReport() {
   const devs = getWizardDevices();
   if (!devs.length) { showToast('Please select at least one device'); return; }
 
-  // Validate faulty SIM number required
+  // Validate RMA — at least one component must be selected
+  if (type === 'rma') {
+    const comps = getRmaComponents();
+    if (!comps.length) { showToast('Please add at least one component'); return; }
+    if (comps.some(c => !c.type)) { showToast('Please select a type for all components'); return; }
+  }
+
+  // Validate SIM — at least first SIM number required
   if (type === 'sim') {
-    const faultySim = document.getElementById('wizard-faulty-sim');
-    if (faultySim && !faultySim.value.trim()) { showToast('Please enter the faulty SIM number'); return; }
+    const first = document.getElementById('wizard-faulty-sim-1');
+    if (!first || !first.value.trim()) { showToast('Please enter the faulty SIM number'); return; }
+  }
+
+  // Validate accident photos — mandatory
+  if (type === 'accident') {
+    const photoInput = document.getElementById('wizard-photos');
+    if (!photoInput || !photoInput.files || photoInput.files.length === 0) {
+      showToast('Please select at least one photo for accident reports');
+      return;
+    }
   }
 
   const { subject, body } = buildReportContent(type);
   if (!subject) { showToast('Could not generate report'); return; }
+
+  // Check if photos are selected (for optional types)
+  const photoInput  = document.getElementById('wizard-photos');
+  const photoCount  = photoInput && photoInput.files ? photoInput.files.length : 0;
+  const hasPhotos   = photoCount > 0;
 
   // Read To/CC from dropdowns
   const toSel  = document.getElementById('wizard-to-sel');
@@ -3027,37 +3990,36 @@ function sendReport() {
   const ccVals = ccSel  ? Array.from(ccSel.selectedOptions).map(o => o.value).filter(Boolean) : [];
   const ccVal  = ccVals.join(', ');
 
-  // 1. Save to local activity log immediately
+  // 1. Save to local activity log
   logActivity(getCurrentUser(), 'report', 'Filed <strong>' + esc(subject) + '</strong>', body);
 
-  // 2. Push report to Worker KV so admin sees it on their device
+  // 2. Push report to Worker KV
   fetch(WORKER_URL + '/submit-report', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user: getCurrentUser(),
-      subject,
-      reportBody: body,
-      type,
-      ts: Date.now()
-    })
+    body: JSON.stringify({ user: getCurrentUser(), subject, reportBody: body, type, ts: Date.now() })
   }).catch(() => {});
 
-  // 3. Show in-app photo reminder banner
-  showInAppAlert(
-    '📎 Remember to attach photos',
-    'If you have photos related to this incident, please attach them to the email before sending.'
-  );
+  // 3. Show in-app photo reminder if photos are selected
+  if (hasPhotos) {
+    showInAppAlert(
+      '📎 Attach ' + photoCount + ' photo' + (photoCount > 1 ? 's' : '') + ' to the email',
+      'You selected ' + photoCount + ' photo' + (photoCount > 1 ? 's' : '') + '. Please attach them manually in the mail app before sending.'
+    );
+  }
 
-  // 4. Build mailto: with To, CC, subject, body and open mail app
+  // 4. Build final subject — add PFA if photos
+  const finalSubject = hasPhotos && !subject.includes('(PFA)') ? subject + ' (PFA)' : subject;
+
+  // 5. Build mailto
   let mailto = 'mailto:' + encodeURIComponent(toVal);
   const params = [];
-  if (ccVal)    params.push('cc='      + encodeURIComponent(ccVal));
-  params.push('subject=' + encodeURIComponent(subject));
+  if (ccVal)  params.push('cc='      + encodeURIComponent(ccVal));
+  params.push('subject=' + encodeURIComponent(finalSubject));
   params.push('body='    + encodeURIComponent(body));
   if (params.length) mailto += '?' + params.join('&');
 
-  setTimeout(() => { window.location.href = mailto; }, 600);
+  setTimeout(() => { window.location.href = mailto; }, hasPhotos ? 800 : 400);
 }
 
 // ── KV report sync (admin only) ──────────────────────────────
@@ -3135,6 +4097,764 @@ async function loadAdminInbox() {
   } catch (e) { /* offline */ }
 }
 
+// ── Leave requests (admin) ────────────────────────────────────
+async function loadLeaveRequests() {
+  if (!isAdmin(getCurrentUser())) return;
+  try {
+    const r    = await fetch(WORKER_URL + '/get-leaves');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (data.ok && Array.isArray(data.leaves)) {
+      renderLeaveCards(data.leaves);
+    }
+  } catch (e) { /* offline */ }
+}
+
+function leaveCountColor(n) {
+  if (n <= 0) return '';
+  if (n === 1) return 'c1';
+  if (n === 2) return 'c2';
+  if (n === 3) return 'c3';
+  return 'c4';
+}
+
+function renderLeaveCards(leaves) {
+  const row     = document.getElementById('leave-requests-row');
+  const cards   = document.getElementById('leave-req-cards');
+  const badge   = document.getElementById('leave-requests-count');
+  if (!cards) return;
+
+  // Filter only pending
+  const pending = leaves.filter(l => l.status !== 'approved' && l.status !== 'declined');
+
+  // Group by user
+  const byUser = {};
+  pending.forEach(l => {
+    if (!byUser[l.user]) byUser[l.user] = { name: l.name || l.user, items: [] };
+    byUser[l.user].items.push(l);
+  });
+
+  // Show row
+  if (row) row.style.display = 'block';
+
+  // Update badge
+  if (badge) {
+    const total = pending.length;
+    badge.textContent = total;
+    badge.style.display = total > 0 ? 'inline' : 'none';
+  }
+
+  if (!Object.keys(byUser).length) {
+    cards.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px">No pending leave requests.</div>';
+    return;
+  }
+
+  cards.innerHTML = Object.entries(byUser).map(([user, data]) => {
+    const count   = data.items.length;
+    const colorCls = leaveCountColor(count);
+    const initials = data.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return '<div class="leave-req-card" onclick="openLeaveModal(\'' + esc(user) + '\')">' +
+      '<div class="leave-req-name">' +
+        '<div style="width:22px;height:22px;border-radius:50%;background:var(--accent-bg);display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--accent);flex-shrink:0">' + initials + '</div>' +
+        esc(data.name) +
+      '</div>' +
+      '<div class="leave-count ' + colorCls + '">' + count + '</div>' +
+      '<div class="leave-count-lbl">Leave request' + (count !== 1 ? 's' : '') + '</div>' +
+    '</div>';
+  }).join('');
+
+  // Store globally for modal
+  window._leaveData = byUser;
+  window._allLeaves = leaves;
+}
+
+function openLeaveModal(user) {
+  const data = window._leaveData && window._leaveData[user];
+  if (!data) return;
+  document.getElementById('leave-modal-title').textContent = data.name + ' — Leave Requests';
+  const listEl = document.getElementById('leave-modal-list');
+  listEl.innerHTML = data.items.map(l => {
+    const dt = new Date(l.ts).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' });
+    const statusBadge = l.status === 'approved'
+      ? '<span style="font-size:10px;font-weight:700;color:var(--green-text);background:var(--green-bg);padding:1px 7px;border-radius:20px">Approved</span>'
+      : l.status === 'declined'
+      ? '<span style="font-size:10px;font-weight:700;color:var(--red-text);background:var(--red-bg);padding:1px 7px;border-radius:20px">Declined</span>'
+      : '<span style="font-size:10px;font-weight:700;color:var(--amber-text);background:var(--amber-bg);padding:1px 7px;border-radius:20px">Pending</span>';
+    const fmtDate = s => s ? new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    return '<div class="leave-modal-item">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+        '<div class="leave-modal-subject">' + esc(l.subject || 'Leave Request') + '</div>' +
+        statusBadge +
+      '</div>' +
+      '<div class="leave-modal-meta">' +
+        '📅 ' + fmtDate(l.fromDate) + (l.toDate && l.toDate !== l.fromDate ? ' → ' + fmtDate(l.toDate) : '') +
+        ' · ' + (l.days || 1) + ' day' + ((l.days||1) !== 1 ? 's' : '') +
+        ' · Reason: ' + esc(l.reason || '—') +
+        ' · Submitted: ' + dt +
+      '</div>' +
+      (l.body ? '<div class="leave-modal-body">' + esc(l.body) + '</div>' : '') +
+      (l.status === 'pending' ?
+        '<div class="leave-modal-actions">' +
+          '<button class="btn-approve" onclick="updateLeaveStatus(\'' + esc(l.id) + '\',\'approved\')">✓ Approve</button>' +
+          '<button class="btn-decline" onclick="updateLeaveStatus(\'' + esc(l.id) + '\',\'declined\')">✗ Decline</button>' +
+        '</div>' : '') +
+    '</div>';
+  }).join('') || '<div style="padding:1rem;font-size:13px;color:var(--text2)">No requests.</div>';
+
+  document.getElementById('leave-modal-backdrop').classList.add('open');
+}
+
+function closeLeaveModal() {
+  document.getElementById('leave-modal-backdrop').classList.remove('open');
+}
+
+async function updateLeaveStatus(id, status) {
+  try {
+    const r = await fetch(WORKER_URL + '/update-leave', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      showToast('Leave ' + status);
+      logActivity(getCurrentUser(), 'remark', 'Marked leave request as <strong>' + status + '</strong>');
+      closeLeaveModal();
+      loadLeaveRequests();
+    }
+  } catch (e) { showToast('Could not update — try again'); }
+}
+
+// ════════════════════════════════════════════════════════════
+// DISTANT SITE VISIT MODULE
+// ════════════════════════════════════════════════════════════
+
+const K_SITES             = 'dsc_distant_sites_v1';
+const K_VISIT_CONTACTS_APR = 'dsc_visit_contacts_apr_v1';  // approval mail contacts
+const K_VISIT_CONTACTS_ADV = 'dsc_visit_contacts_adv_v1';  // advance mail contacts
+
+const DEFAULT_VISIT_CONTACTS_APR = [
+  { id: 'va1', name: 'Sunil Swain',       email: 'sunil.swain@securepremises.com',    role: 'to' },
+  { id: 'va2', name: 'Prafulla Tarai',    email: 'prafulla.tarai@securepremises.com', role: 'cc' },
+  { id: 'va3', name: 'Konda Ramakrishna', email: 'konda.ramakrishna@securepremises.com', role: 'cc' },
+  { id: 'va4', name: 'NEC Client',        email: 'vigin.vg@headsupcorporation.com',   role: 'cc' },
+  { id: 'va5', name: 'Ayush E P',         email: 'ayush@securepremises.com',          role: 'cc' },
+];
+
+const DEFAULT_VISIT_CONTACTS_ADV = [
+  { id: 'vd1', name: 'Deepak Sutar',      email: 'deepak.sutar@securepremises.com',   role: 'to' },
+  { id: 'vd2', name: 'Prafulla Tarai',    email: 'prafulla.tarai@securepremises.com', role: 'cc' },
+  { id: 'vd3', name: 'Konda Ramakrishna', email: 'konda.ramakrishna@securepremises.com', role: 'cc' },
+];
+
+function getVisitContacts(type) {
+  const key = type === 'advance' ? K_VISIT_CONTACTS_ADV : K_VISIT_CONTACTS_APR;
+  const def = type === 'advance' ? DEFAULT_VISIT_CONTACTS_ADV : DEFAULT_VISIT_CONTACTS_APR;
+  return lj(key, def);
+}
+
+function saveVisitContacts(type, list) {
+  const key = type === 'advance' ? K_VISIT_CONTACTS_ADV : K_VISIT_CONTACTS_APR;
+  sj(key, list);
+  fetch(WORKER_URL + '/set-visit-contacts', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, contacts: list })
+  }).catch(() => {});
+}
+const DEFAULT_DISTANT_SITES = [
+  { name: 'Kottayam ICD Kerala',                                    type: 'ICD',           km: '130 KM' },
+  { name: 'KINFRA IITP Palakad',                                    type: 'Sez',           km: '190 KM' },
+  { name: 'KINFRA Mega Food Park Kozhipara Palakkad',               type: 'Sez',           km: '195 KM' },
+  { name: 'KINFRA Industrial Park Adoor',                           type: 'Sez',           km: '180 KM' },
+  { name: 'KINFRA Industrial Park Kunnamthanam',                    type: 'Sez',           km: '130 KM' },
+  { name: 'KINFRA Industrial Park Wayanad',                         type: 'Sez',           km: '290 KM' },
+  { name: 'KINFRA Techno Industrial Park Kakkancherry Malappuram',  type: 'Sez',           km: '180 KM' },
+  { name: 'KINFRA Small Industries Park Thalassery Kannur',         type: 'Sez',           km: '270 KM' },
+  { name: 'KINFRA Textile Centre Nadukani Thaliparambu Kannur',     type: 'Sez',           km: '330 KM' },
+  { name: 'Pampampallam Toll Plaza Kerala',                         type: 'Toll plaza',    km: '180 KM' },
+  { name: 'Panniyankara Toll Plaza Kerala',                         type: 'Toll plaza',    km: '120 KM' },
+  { name: 'Accelerated Freeze Drying Co Ltd',                       type: 'Sez',           km: '130 KM' },
+  { name: 'Accelerated Freeze Drying Co Ltd Frozen Store Ezhupunna',type: 'Sez',           km: '125 KM' },
+  { name: 'Accelerated Freeze Drying Co Ltd Frozen Foods Ezhupunna',type: 'Sez',           km: '130 KM' },
+  { name: 'KSIDC Industrial Growth Centre Pallippuram Cherthala',   type: 'Industrial area',km: '115 KM' },
+  { name: 'KSIDC Mega Food Park Pallipuram Kerala',                 type: 'Industrial area',km: '110 KM' },
+  { name: 'SIDCO Industrial Estate Kollakadavu Kerala',             type: 'Industrial area',km: '130 KM' },
+  { name: 'KSIDC Life Science Park Trivandrum Kerala',              type: 'Industrial area',km: '275 KM' },
+  { name: 'Industrial Development Plot Ananthapuram',               type: 'Industrial area',km: '460 KM' },
+  { name: 'KSIDC Industrial Growth Centre Valiyavelicham Kannur',   type: 'Industrial area',km: '290 KM' },
+  { name: 'AM Fisheries Private Limited Kerala',                    type: 'Sez',           km: '150 KM' },
+  { name: 'Development Plot Kunnamthanam Kerala',                   type: 'Industrial area',km: '140 KM' },
+  { name: 'KSIDC Investment Zone Palakkad Kerala',                  type: 'Industrial area',km: '200 KM' },
+];
+
+function getDistantSites() {
+  return lj(K_SITES, null) || DEFAULT_DISTANT_SITES;
+}
+
+// ── Sites KV fetch/save (admin) ──────────────────────────────
+async function fetchDistantSitesFromKV() {
+  try {
+    const r = await fetch(WORKER_URL + '/get-sites');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.ok && Array.isArray(d.sites) && d.sites.length) {
+      sj(K_SITES, d.sites);
+    }
+  } catch(e) { /* offline */ }
+}
+
+async function pushDistantSitesToKV() {
+  const sites = getDistantSites();
+  try {
+    await fetch(WORKER_URL + '/set-sites', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ sites })
+    });
+  } catch(e) {}
+}
+
+// ── onVisitTabOpen ───────────────────────────────────────────
+async function onVisitTabOpen() {
+  const admin  = isAdmin(getCurrentUser());
+  const eng_u  = isEngineer(getCurrentUser());
+  // Fetch latest sites from KV for everyone
+  await fetchDistantSitesFromKV();
+  document.getElementById('visit-eng-view').style.display   = eng_u ? 'block' : 'none';
+  document.getElementById('visit-admin-view').style.display = admin ? 'block' : 'none';
+  if (admin) { renderAdminSitesList(); loadVisitRequests(); }
+}
+
+// ── Admin: sites management ──────────────────────────────────
+function renderAdminSitesList() {
+  const sites = getDistantSites();
+  const el    = document.getElementById('admin-sites-list');
+  if (!el) return;
+  if (!sites.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text2)">No sites yet. Add one above.</div>'; return; }
+  el.innerHTML = sites.map((s, i) =>
+    '<div class="visit-site-row">' +
+      '<div class="visit-site-name">' + esc(s.name) + '</div>' +
+      '<span class="visit-site-type">' + esc(s.type) + '</span>' +
+      '<span class="visit-site-km">' + esc(s.km) + '</span>' +
+      '<div class="visit-site-actions">' +
+        '<button class="btn-site-edit" onclick="editDistantSite(' + i + ')">Edit</button>' +
+        '<button class="btn-site-del" onclick="deleteDistantSite(' + i + ')">Remove</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function openAddSiteModal() {
+  document.getElementById('new-site-name').value = '';
+  document.getElementById('new-site-type').value = '';
+  document.getElementById('new-site-km').value   = '';
+  document.getElementById('edit-site-idx').value = '';
+  document.getElementById('add-site-modal-title').textContent = 'Add distant site';
+  document.getElementById('add-site-modal-backdrop').classList.add('open');
+}
+
+function closeAddSiteModal() {
+  document.getElementById('add-site-modal-backdrop').classList.remove('open');
+}
+
+function editDistantSite(i) {
+  const sites = getDistantSites();
+  const s = sites[i];
+  if (!s) return;
+  document.getElementById('new-site-name').value  = s.name;
+  document.getElementById('new-site-type').value  = s.type;
+  document.getElementById('new-site-km').value    = s.km;
+  document.getElementById('edit-site-idx').value  = i;
+  document.getElementById('add-site-modal-title').textContent = 'Edit distant site';
+  document.getElementById('add-site-modal-backdrop').classList.add('open');
+}
+
+async function saveDistantSite() {
+  const name = document.getElementById('new-site-name').value.trim();
+  const type = document.getElementById('new-site-type').value.trim();
+  const km   = document.getElementById('new-site-km').value.trim();
+  if (!name) { showToast('Enter a site name'); return; }
+  if (!km)   { showToast('Enter the distance'); return; }
+  const sites = getDistantSites();
+  const idx   = document.getElementById('edit-site-idx').value;
+  if (idx !== '') {
+    sites[parseInt(idx)] = { name, type, km };
+  } else {
+    sites.push({ name, type, km });
+  }
+  sj(K_SITES, sites);
+  await pushDistantSitesToKV();
+  closeAddSiteModal();
+  renderAdminSitesList();
+  showToast(idx !== '' ? 'Site updated' : 'Site added');
+}
+
+async function deleteDistantSite(i) {
+  const sites = getDistantSites();
+  const name  = sites[i]?.name || 'this site';
+  // Double-tap confirm
+  const btn = event.target;
+  if (btn.dataset.confirming === '1') {
+    btn.dataset.confirming = '0';
+    sites.splice(i, 1);
+    sj(K_SITES, sites);
+    await pushDistantSitesToKV();
+    renderAdminSitesList();
+    showToast('Site removed');
+  } else {
+    btn.dataset.confirming = '1';
+    btn.textContent = 'Confirm?';
+    setTimeout(() => { btn.dataset.confirming = '0'; btn.textContent = 'Remove'; }, 3000);
+  }
+}
+
+// ── Admin: view visit requests ───────────────────────────────
+async function loadVisitRequests() {
+  try {
+    const r = await fetch(WORKER_URL + '/get-visits');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.ok && Array.isArray(d.visits)) renderVisitRequests(d.visits);
+  } catch(e) {}
+}
+
+function renderVisitRequests(visits) {
+  const el = document.getElementById('admin-visit-requests');
+  if (!el) return;
+  if (!visits.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px 0">No visit requests yet.</div>'; return; }
+  el.innerHTML = visits.slice().reverse().map(v =>
+    '<div class="visit-req-card">' +
+      '<div class="visit-req-subject">' + esc(v.subject) + '</div>' +
+      '<div class="visit-req-meta">' +
+        '👤 ' + esc(v.user) + ' · ' + new Date(v.ts).toLocaleDateString('en-IN') +
+        ' · ' + (v.type === 'advance' ? '💰 Advance' : '📋 Approval') +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+// ── Engineer: visit wizard ───────────────────────────────────
+let currentVisitType = null;
+let selectedVisitSites = []; // [{ site, purpose, date, stayDays, cost }]
+
+function openVisitWizard(type) {
+  currentVisitType  = type;
+  selectedVisitSites = [];
+  const titles = { approval: '📋 Site Visit Approval', advance: '💰 Advance Request' };
+  document.getElementById('visit-wizard-title').textContent = titles[type] || 'Site Visit';
+  document.getElementById('visit-type-selector').style.display = 'none';
+  document.getElementById('visit-wizard').style.display = 'block';
+  document.getElementById('visit-wizard-body').innerHTML = buildVisitForm(type);
+}
+
+function closeVisitWizard() {
+  currentVisitType = null;
+  selectedVisitSites = [];
+  document.getElementById('visit-type-selector').style.display = 'block';
+  document.getElementById('visit-wizard').style.display = 'none';
+}
+
+function buildVisitForm(type) {
+  const sites  = getDistantSites();
+  const today  = new Date().toISOString().slice(0, 10);
+  const isAdv  = type === 'advance';
+
+  return `
+    <div class="report-field">
+      <label>Default travel date <span style="font-size:10px;color:var(--text3);font-weight:400">(can override per site below)</span></label>
+      <input class="report-inp" type="date" id="visit-date" value="${today}" onchange="propagateVisitDate(this.value)"/>
+    </div>
+    <div class="report-field">
+      <label>Add sites to visit</label>
+      <div class="visit-search-wrap">
+        <input class="report-inp" type="text" id="visit-search" placeholder="Search site name…" autocomplete="off"
+          oninput="filterVisitSites(this.value)" onfocus="showVisitDropdown()" onblur="hideVisitDropdownDelayed()"/>
+        <div class="visit-dropdown" id="visit-dropdown" style="display:none"></div>
+      </div>
+      <div class="visit-tags" id="visit-tags"></div>
+    </div>
+    <div id="visit-selected-section" style="display:none">
+      <div class="report-field">
+        <label>Date &amp; purpose per site</label>
+        <div id="visit-purpose-rows"></div>
+      </div>
+      ${isAdv ? `
+      <div class="report-field">
+        <label>Stay required</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="report-select" id="visit-stay-na" onchange="toggleStayDays(this.value)" style="max-width:120px">
+            <option value="na">N/A</option>
+            <option value="yes">Yes</option>
+          </select>
+          <input class="report-inp" type="number" id="visit-stay-days" value="1" min="1" max="30"
+            style="max-width:70px;display:none" onchange="refreshVisitPreview()"/>
+          <span id="visit-stay-unit" style="font-size:12px;color:var(--text2);display:none">nights</span>
+        </div>
+      </div>
+      <div class="report-field">
+        <label>Approximate total cost (₹)</label>
+        <input class="report-inp" type="number" id="visit-cost" placeholder="e.g. 3000" min="0" style="max-width:140px" onchange="refreshVisitPreview()"/>
+      </div>` : ''}
+    </div>
+    <div class="report-preview-title">Mail preview</div>
+    <div class="report-preview" id="visit-preview" style="font-family:monospace;font-size:11px;white-space:pre;overflow-x:auto">Add sites and fill in details to preview the mail.</div>
+    <div class="mail-compose-box">
+      <div class="mail-compose-box-title">Mail recipients</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">To</label>
+          <select id="visit-to-sel" style="width:100%;padding:10px 12px;font-size:14px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:var(--font);min-height:44px">
+            ${buildVisitContactOptions(type, 'to')}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">CC <span style="font-size:10px;font-weight:400;color:var(--text3)">(hold Ctrl/⌘ for multiple)</span></label>
+          <select id="visit-cc-sel" multiple style="width:100%;padding:8px 12px;font-size:14px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:var(--font);min-height:130px">
+            ${buildVisitContactOptions(type, 'cc')}
+          </select>
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:6px">To edit contacts go to Settings → Distant Visit contacts.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="sendVisitRequest()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        Send request
+      </button>
+    </div>`;
+}
+
+// ── Site search dropdown ─────────────────────────────────────
+let _visitDropdownTimeout = null;
+
+function filterVisitSites(query) {
+  const sites = getDistantSites();
+  const q     = query.toLowerCase().trim();
+  const matches = sites
+    .map((s, i) => ({ ...s, idx: i }))
+    .filter(s => !selectedVisitSites.find(sel => sel.idx === s.idx)) // exclude already selected
+    .filter(s => !q || s.name.toLowerCase().includes(q) || s.type.toLowerCase().includes(q));
+  renderVisitDropdown(matches);
+}
+
+function renderVisitDropdown(matches) {
+  const dd = document.getElementById('visit-dropdown');
+  if (!dd) return;
+  if (!matches.length) {
+    dd.innerHTML = '<div class="visit-dropdown-empty">No sites found</div>';
+  } else {
+    dd.innerHTML = matches.map(s =>
+      `<div class="visit-dropdown-item" onmousedown="addVisitSite(${s.idx})">
+        <div class="visit-dropdown-item-name">${esc(s.name)}</div>
+        <div class="visit-dropdown-item-meta">${esc(s.type)} · ${esc(s.km)}</div>
+      </div>`
+    ).join('');
+  }
+  dd.style.display = 'block';
+}
+
+function showVisitDropdown() {
+  filterVisitSites(document.getElementById('visit-search')?.value || '');
+}
+
+function hideVisitDropdownDelayed() {
+  _visitDropdownTimeout = setTimeout(() => {
+    const dd = document.getElementById('visit-dropdown');
+    if (dd) dd.style.display = 'none';
+  }, 200);
+}
+
+function addVisitSite(idx) {
+  const site = getDistantSites()[idx];
+  if (!site || selectedVisitSites.find(s => s.idx === idx)) return;
+  const globalDate = document.getElementById('visit-date')?.value || new Date().toISOString().slice(0,10);
+  selectedVisitSites.push({ idx, name: site.name, type: site.type, km: site.km, purpose: '', date: globalDate });
+  selectedVisitSites.sort((a,b) => a.idx - b.idx);
+  // Clear search
+  const inp = document.getElementById('visit-search');
+  if (inp) inp.value = '';
+  const dd = document.getElementById('visit-dropdown');
+  if (dd) dd.style.display = 'none';
+  renderVisitTags();
+  renderVisitPurposeRows();
+  refreshVisitPreview();
+}
+
+function removeVisitSite(idx) {
+  selectedVisitSites = selectedVisitSites.filter(s => s.idx !== idx);
+  renderVisitTags();
+  renderVisitPurposeRows();
+  refreshVisitPreview();
+}
+
+function renderVisitTags() {
+  const container = document.getElementById('visit-tags');
+  if (!container) return;
+  container.innerHTML = selectedVisitSites.map(s =>
+    `<span class="visit-tag">
+      ${esc(s.name.length > 32 ? s.name.slice(0,30)+'…' : s.name)}
+      <button class="visit-tag-remove" onmousedown="removeVisitSite(${s.idx})">×</button>
+    </span>`
+  ).join('');
+}
+
+// Legacy stub — no longer used
+function toggleVisitSite() {}
+
+function renderVisitPurposeRows() {
+  const container = document.getElementById('visit-purpose-rows');
+  const section   = document.getElementById('visit-selected-section');
+  if (!container) return;
+  if (!selectedVisitSites.length) {
+    if (section) section.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+  if (section) section.style.display = 'block';
+
+  // Get global date as default for any site without its own date
+  const globalDate = document.getElementById('visit-date')?.value || new Date().toISOString().slice(0,10);
+
+  container.innerHTML = selectedVisitSites.map((s, i) => {
+    const siteDate = s.date || globalDate;
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.75rem .9rem;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">
+        <span style="color:var(--accent);margin-right:6px">${i+1}.</span>${esc(s.name)}
+        <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:6px">${esc(s.type)} · ${esc(s.km)}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Travel date</label>
+          <input class="report-inp" type="date" id="vdate-${s.idx}" value="${siteDate}"
+            oninput="selectedVisitSites[${i}].date=this.value;refreshVisitPreview()"/>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Purpose of visit</label>
+          <input class="report-inp" type="text" id="vpurpose-${s.idx}"
+            value="${esc(s.purpose)}"
+            placeholder="e.g. URL update and PM activity"
+            oninput="selectedVisitSites[${i}].purpose=this.value;refreshVisitPreview()"/>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function propagateVisitDate(newDate) {
+  selectedVisitSites.forEach(s => { s.date = newDate; });
+  renderVisitPurposeRows();
+  refreshVisitPreview();
+}
+
+function toggleStayDays(val) {
+  const inp  = document.getElementById('visit-stay-days');
+  const unit = document.getElementById('visit-stay-unit');
+  const show = val === 'yes';
+  if (inp)  inp.style.display  = show ? 'block' : 'none';
+  if (unit) unit.style.display = show ? 'inline' : 'none';
+  refreshVisitPreview();
+}
+
+function getStayValue() {
+  const naEl = document.getElementById('visit-stay-na');
+  if (!naEl || naEl.value === 'na') return 'NA';
+  return document.getElementById('visit-stay-days')?.value || '1';
+}
+
+function refreshVisitPreview() {
+  const prevEl = document.getElementById('visit-preview');
+  if (!prevEl || !selectedVisitSites.length) return;
+  const { subject, plainBody } = buildVisitContent(currentVisitType);
+  if (plainBody) prevEl.textContent = 'Subject: ' + subject + '\n\n' + plainBody;
+}
+
+function buildVisitContent(type) {
+  const user  = getCurrentUser();
+  const name  = (credCache && credCache[user] && credCache[user].name) || USER_ENGINEER[user] || user;
+  const desig = ls('dsc_designation_v1') || 'RFID engineer';
+  const isAdv = type === 'advance';
+
+  const allDates  = selectedVisitSites.map(s => s.date || new Date().toISOString().slice(0,10));
+  const firstDate = allDates.slice().sort()[0];
+  const fmtD = d => new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const subjectDate = fmtD(firstDate);
+
+  // Cumulative 100KM slot counter
+  let slotCounter = 0;
+  const rows = selectedVisitSites.map((s, i) => {
+    slotCounter += Math.ceil((parseInt(s.km) || 0) / 100);
+    return {
+      sl: i + 1, site: s.name, type: s.type || '', state: 'Kerala',
+      eng: name, dist: s.km || '', date: fmtD(s.date || firstDate),
+      purpose: s.purpose || '', slot: slotCounter
+    };
+  });
+
+  const stayDays  = isAdv ? getStayValue() : '';
+  const totalCost = isAdv ? (document.getElementById('visit-cost')?.value || '') : '';
+
+  // NO OF 100 KM SITE TO BE CLAIMED = simply the number of sites being visited
+  const totalSlots = rows.length;
+
+  const subject = isAdv
+    ? 'Advance request for site visit on ' + subjectDate
+    : 'Need approval for site visit on ' + subjectDate;
+
+  // ── HTML table ───────────────────────────────────────────────
+  const HDR  = '#ACD14F';   // header background (as specified)
+  const HBRD = '#8aaa38';   // header border
+  const th = (v) => '<th style="border:1px solid ' + HBRD + ';padding:6px 8px;font-size:11px;font-weight:bold;color:#333;background:' + HDR + ';text-align:center">' + v + '</th>';
+  const tdc = (v, extra) => '<td style="border:1px solid #ccc;padding:6px 8px;font-size:12px;text-align:center;background:#fff' + (extra||'') + '">' + v + '</td>';
+  const tdm = (v, span, extra) => '<td rowspan="' + span + '" style="border:1px solid #ccc;padding:6px 8px;font-size:12px;text-align:center;vertical-align:middle;background:#fff;font-weight:bold' + (extra||'') + '">' + v + '</td>';
+
+  let headerRow, dataRows;
+
+  if (!isAdv) {
+    headerRow = '<tr>' + [
+      th('SL NO'), th('SITE LOCATION'), th('TOLL PLAZA/ITC Etc'), th('LOCATION(STATE)'),
+      th('ASSIGNED ENGINEER'), th('DISTANCE FROM LOCATION(ONE SIDE)'),
+      th('PLANNED TRAVEL DATE'), th('PURPOSE OF VISIT'),
+      th('NO OF 100 KM SITE TO BE CLAIMED')
+    ].join('') + '</tr>';
+    dataRows = rows.map((r, i) => '<tr>' +
+      tdc(r.sl) + tdc(r.site) + tdc(r.type) + tdc(r.state) +
+      tdc(r.eng) + tdc(r.dist) + tdc(r.date) + tdc(r.purpose) +
+      (i === 0 ? tdm(totalSlots, rows.length) : '') +
+    '</tr>').join('');
+  } else {
+    headerRow = '<tr>' + [
+      th('SL NO'), th('SITE LOCATION'), th('TOLL PLAZA/ITC Etc'), th('LOCATION(STATE)'),
+      th('ASSIGNED ENGINEER'), th('DISTANCE FROM LOCATION(ONE SIDE)'),
+      th('Stay required(No of days)'), th('PLANNED TRAVEL DATE'), th('PURPOSE OF VISIT'),
+      th('NO OF 100 KM SITE TO BE CLAIMED'), th('APPROXIMATELY COST AMOUNT')
+    ].join('') + '</tr>';
+    dataRows = rows.map((r, i) => '<tr>' +
+      tdc(r.sl) + tdc(r.site) + tdc(r.type) + tdc(r.state) +
+      tdc(r.eng) + tdc(r.dist) +
+      (i === 0 ? tdm(stayDays, rows.length) : '') +
+      tdc(r.date) + tdc(r.purpose) +
+      (i === 0 ? tdm(totalSlots, rows.length) : '') +
+      (i === 0 ? tdm(totalCost ? '\u20B9'+totalCost : '', rows.length) : '') +
+    '</tr>').join('');
+  }
+
+  const table = `<table style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif">${headerRow}${dataRows}</table>`;
+
+  const intro = isAdv
+    ? 'Dear sir,<br><br>As per client request, I need to travel below mentioned site. I am sharing the estimate travel expenses for the site visit.<br>Kindly approve the same'
+    : 'Dear sir,<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I would like to inform you that, as per the client\'s instruction, I need to travel to the following location for Device checking. I need approval to do so.';
+
+  const closing = 'Thanks and regards,<br>' + name + '<br>' + desig + '<br>Cochin';
+
+  const htmlBody = `<div style="font-family:Arial,sans-serif;font-size:13px">${intro}<br><br>${table}<br><br>${closing}</div>`;
+
+  // Plain text for mailto: — readable format without closing (Gmail signature adds it)
+  const SEP = '\n' + '-'.repeat(120) + '\n';
+  const approvalCols2 = ['SL NO','SITE LOCATION','TOLL PLAZA/ITC Etc','LOCATION(STATE)','ASSIGNED ENGINEER','DISTANCE','PLANNED DATE','PURPOSE OF VISIT','100KM SLOTS'];
+  const advanceCols2  = ['SL','SITE LOCATION','TOLL PLAZA/ITC Etc','STATE','ENGINEER','DISTANCE','STAY(DAYS)','DATE','PURPOSE','100KM SLOTS','APPROX COST'];
+  const plainCols = isAdv ? advanceCols2 : approvalCols2;
+
+  // Column widths based on content
+  const colData = rows.map((r, i) => {
+    if (!isAdv) return [String(r.sl),r.site,r.type,r.state,r.eng,r.dist,r.date,r.purpose, i===0?String(totalSlots):''];
+    return [String(r.sl),r.site,r.type,r.state,r.eng,r.dist,i===0?stayDays:'',r.date,r.purpose,i===0?String(totalSlots):'',i===0?(totalCost||''):''];
+  });
+  const widths = plainCols.map((h,ci) => Math.max(h.length, ...colData.map(row => (row[ci]||'').length)) + 2);
+  const pad = (s,w) => String(s||'').padEnd(w);
+  const divider = widths.map(w => '-'.repeat(w)).join('+');
+  const hdrLine = plainCols.map((h,i) => pad(h,widths[i])).join('|');
+  const dataLines = colData.map(row => row.map((v,i) => pad(v,widths[i])).join('|')).join('\n');
+  const plainTable = divider + '\n' + hdrLine + '\n' + divider + '\n' + dataLines + '\n' + divider;
+
+  const plainIntro = isAdv
+    ? 'Dear sir,\n\nAs per client request, I need to travel below mentioned site. I am sharing the estimate travel expenses for the site visit.\nKindly approve the same'
+    : 'Dear sir,\n\n      I would like to inform you that, as per the client\'s instruction, I need to travel to the following location for Device checking. I need approval to do so.';
+
+  const plainBody = plainIntro + '\n\n' + plainTable;
+
+  return { subject, htmlBody, plainBody };
+}
+
+async function sendVisitRequest() {
+  if (!selectedVisitSites.length) { showToast('Select at least one site'); return; }
+  if (selectedVisitSites.some(s => !s.date)) { showToast('Set a travel date for each site'); return; }
+
+  const { subject, htmlBody, plainBody } = buildVisitContent(currentVisitType);
+  const toSel  = document.getElementById('visit-to-sel');
+  const ccSel  = document.getElementById('visit-cc-sel');
+  const toVal  = toSel ? toSel.value.trim() : '';
+  const ccVals = ccSel ? Array.from(ccSel.selectedOptions).map(o => o.value).filter(Boolean) : [];
+  const ccVal  = ccVals.join(',');
+  const user   = getCurrentUser();
+
+  logActivity(user, 'report', 'Filed <strong>' + esc(subject) + '</strong>', plainBody);
+
+  fetch(WORKER_URL + '/submit-visit', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ user, subject, body: plainBody, type: currentVisitType, ts: Date.now() })
+  }).catch(()=>{});
+
+  const name = (credCache && credCache[user] && credCache[user].name) || USER_ENGINEER[user] || user;
+  fetch(WORKER_URL + '/manual-alert', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      title: currentVisitType === 'advance' ? '💰 Advance request — ' + name : '📋 Visit approval — ' + name,
+      body: selectedVisitSites.length + ' site' + (selectedVisitSites.length > 1 ? 's' : '') + ' · ' + subject,
+      recipients: ['admin'], sender: user
+    })
+  }).catch(()=>{});
+
+  // ── STEP 3: Google Apps Script — creates Gmail draft with green HTML table ──
+  const scriptUrl = GMAIL_SCRIPT_URLS[user] || '';
+
+  if (!scriptUrl) {
+    // Script not configured yet — fall back to mailto with plain text
+    showToast('Gmail script not set up — using plain mail…');
+    const mailtoUrl = 'mailto:' + encodeURIComponent(toVal)
+      + '?cc='      + encodeURIComponent(ccVal)
+      + '&subject=' + encodeURIComponent(subject)
+      + '&body='    + encodeURIComponent(plainBody);
+    setTimeout(() => { window.location.href = mailtoUrl; }, 300);
+    return;
+  }
+
+  const sendBtn = document.querySelector('#visit-wizard-body .btn-primary');
+  if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Creating draft…'; }
+
+  try {
+    const resp = await fetch(WORKER_URL + '/gmail-draft', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        scriptUrl: scriptUrl,
+        to:        toVal,
+        cc:        ccVal,
+        subject:   subject,
+        html:      htmlBody,
+        plain:     plainBody
+      })
+    });
+    const result = await resp.json();
+    if (result.ok) {
+      showInAppAlert(
+        '✅ Draft created in Gmail!',
+        'Open your Gmail app → Drafts → find "' + subject + '" → review and tap Send.'
+      );
+      showToast('Draft created — check Gmail Drafts');
+    } else {
+      throw new Error(result.error || 'Script error');
+    }
+  } catch (err) {
+    showToast('Draft failed (' + err.message + ') — opening mail app…');
+    const mailtoUrl = 'mailto:' + encodeURIComponent(toVal)
+      + '?cc='      + encodeURIComponent(ccVal)
+      + '&subject=' + encodeURIComponent(subject)
+      + '&body='    + encodeURIComponent(plainBody);
+    setTimeout(() => { window.location.href = mailtoUrl; }, 300);
+  } finally {
+    if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send request'; }
+  }
+}
+
 // ── Init ─────────────────────────────────────────────────────
 (function init() {
   // Load credentials from KV first (async, non-blocking)
@@ -3143,7 +4863,7 @@ async function loadAdminInbox() {
   checkAuth();
   autoAssignEngineers();
   checkPushStatus();
-  if (!ls(K_SETUP)) document.getElementById('onboard').style.display = 'flex';
+  if (!ls(K_SETUP) && isAdmin(getCurrentUser())) document.getElementById('onboard').style.display = 'flex';
   const c = lj(K.DATA, null);
   if (c && c.devices && c.devices.length) {
     devices = c.devices;
