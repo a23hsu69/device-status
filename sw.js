@@ -1,4 +1,4 @@
-const CACHE = 'dsc-v45';
+const CACHE = 'dsc-v60';
 const STATIC = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -41,7 +41,7 @@ self.addEventListener('fetch', e => {
 // ── Push notification handler ──────────────────────────────────
 self.addEventListener('push', e => {
   e.waitUntil((async () => {
-    let title = 'Device Status Alert';
+    let title = 'Field Manager Alert';
     let body  = 'Tap to open the app';
     let tag   = 'device-alert';
     let url   = self.registration.scope;

@@ -1,7 +1,7 @@
 {
-  "name": "Device Status \u2014 Kochi Region",
-  "short_name": "DeviceStatus",
-  "description": "Monitor device uptime for Kochi region cold chain sites",
+  "name": "Field Manager — Kochi Region",
+  "short_name": "FieldManager",
+  "description": "Field management app for Kochi region — reports, alerts, leave, site visits",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

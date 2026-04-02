@@ -6,13 +6,14 @@
 <meta name="theme-color" content="#0F6E56"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="apple-mobile-web-app-title" content="Device Status"/>
-<meta name="description" content="Kochi Region Device Status Monitor"/>
+<meta name="apple-mobile-web-app-title" content="Field Manager"/>
+<meta name="description" content="Field Management — Kochi Region"/>
 <link rel="manifest" href="./manifest.json"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 <link rel="apple-touch-icon" href="./icons/icon-180.png"/>
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"/>
-<title>Device Status — Kochi</title>
+<title>Field Manager — Kochi</title>
 <style>
 :root{
   --bg:#ffffff;--bg2:#f7f7f6;--bg3:#f0efe9;
@@ -87,56 +88,17 @@ body{display:flex;flex-direction:column;min-height:100vh}
 #tab-visit.active{border-bottom-color:#ACD14F !important;color:#ACD14F}
 .tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-/* toolbar */
-.toolbar{display:flex;gap:8px;padding:.85rem 1.25rem;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);background:var(--bg2)}
-.search-wrap{position:relative;min-width:180px;max-width:260px;flex:1}
-.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3)}
-.search-inp{width:100%;border:1px solid var(--border2);border-radius:20px;padding:6px 10px 6px 30px;font-size:12px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;transition:border-color .12s}
-.search-inp:focus{border-color:var(--accent)}.search-inp::placeholder{color:var(--text3)}
-.pill{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);cursor:pointer;color:var(--text2);font-family:var(--font);font-weight:500;transition:all .12s}
-.pill:hover{border-color:var(--accent);color:var(--accent)}.pill.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);font-weight:600}
-.sort-sel{font-size:12px;padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:var(--font);cursor:pointer}
-.export-group{display:flex;gap:6px;margin-left:auto}
 
 /* legend */
-.legend{display:flex;gap:16px;flex-wrap:wrap;padding:.6rem 1.25rem;font-size:11px;color:var(--text2);align-items:center;border-bottom:1px solid var(--border);background:var(--bg2)}
 .legend-item{display:flex;align-items:center;gap:5px}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
 .dot-c{background:var(--red-dot)}.dot-h{background:var(--amber-dot)}.dot-t{background:var(--green-dot)}.dot-r{background:var(--teal-dot)}
 
-/* results count */
-.results-count{font-size:11px;color:var(--text2);padding:6px 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)}
-.results-count strong{color:var(--text);font-weight:600}
 
-/* table */
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}
-table{width:100%;min-width:760px;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
-thead th{font-size:10.5px;font-weight:700;color:var(--text3);text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;background:var(--bg2)}
-tbody tr{border-bottom:1px solid var(--border);transition:background .08s}
-tbody tr:hover{background:var(--accent-bg)}
-td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
-.loc-cell{display:flex;align-items:center;gap:5px;overflow:hidden}
 .loc-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 
-/* badges */
-.badge{display:inline-flex;align-items:center;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap;gap:4px}
-.badge-c{background:var(--red-bg);color:var(--red-text)}.badge-h{background:var(--amber-bg);color:var(--amber-text)}
-.badge-t{background:var(--green-bg);color:var(--green-text)}.badge-r{background:var(--teal-bg);color:var(--teal-text)}
-.days{font-weight:700;font-size:13px}
-.days-t{color:var(--green-dot)}.days-h{color:var(--amber-dot)}.days-c{color:var(--red-dot)}
 
-/* inline inputs */
-.einput{width:100%;border:none;background:transparent;font-size:12px;color:var(--text);font-family:var(--font);padding:0;outline:none}
-.einput:focus{background:var(--bg2);border-radius:4px;padding:2px 6px;outline:1px solid var(--accent)}
-.einput::placeholder{color:var(--text3)}
 
-/* row action buttons */
-.btn-res{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-dot);color:var(--green-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600}
-.btn-res:hover{background:var(--green-dot);color:#fff}
-.btn-reopen{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--amber-bg);border:1px solid var(--amber-dot);color:var(--amber-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600}
-.btn-reopen:hover{background:var(--amber-dot);color:#fff}
-.resolved-row td{opacity:0.55}
-.ts{font-size:11px;color:var(--text2);white-space:nowrap}
 
 /* empty / error */
 .empty{text-align:center;padding:4rem 1rem;color:var(--text2);font-size:14px}
@@ -149,14 +111,14 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .modal-backdrop.open{display:flex}
 @media(min-width:600px){.modal-backdrop{align-items:center;padding:1rem}}
 .modal{background:var(--bg);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:1.5rem;width:100%;max-height:90vh;overflow-y:auto;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
-@media(min-width:600px){.modal{border-radius:var(--radius-xl);max-width:540px;max-height:80vh}}
+@media(min-width:600px){.modal{border-radius:var(--radius-xl);max-width:540px;max-height:80vh;padding-bottom:calc(1.5rem + 50px)}}
 .modal h2{font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.01em}
 .modal p{font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6}
 .eng-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;align-items:center}
 .eng-lbl{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .eng-inp{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font)}
 .eng-inp:focus{outline:none;border-color:var(--accent)}
-.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1rem}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:1.25rem;border-top:1px solid var(--border);padding:1rem;position:sticky;bottom:0;background:var(--bg);z-index:10;flex-shrink:0}
 .eng-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
 .btn-upload-again{font-size:12px;padding:4px 10px;border-radius:var(--radius)}
 
@@ -226,41 +188,8 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .notif-meta{font-size:10.5px;color:var(--text3);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap}
 .notif-unread-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px}
 
-/* onboarding */
-.onboard{position:fixed;inset:0;background:var(--bg3);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;overflow-y:auto}
-.onboard h1{font-size:22px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
-.onboard-sub{font-size:14px;color:var(--text2);line-height:1.6;max-width:380px;margin:0 auto 1.5rem}
-.onboard-box{width:100%;max-width:460px}
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-xl);padding:2.5rem 1rem;cursor:pointer;transition:all .15s;background:var(--bg)}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-bg)}
-.upload-zone input{display:none}
-.upload-zone p{font-size:13px;color:var(--text2);margin:4px 0 0}
-.upload-zone .hint{font-size:11px;color:var(--text3);margin-top:4px}
-.upload-summary{margin-top:1rem;font-size:13px;text-align:left}
-.tag-matched{display:inline-block;background:var(--green-bg);color:var(--green-text);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin:2px}
-.onboard-actions{display:flex;gap:8px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
-.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:1.5rem}
-.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
-.step-dot.active{background:var(--accent)}.step-dot.done{background:var(--green-dot)}
-.gaps-list{width:100%;max-width:460px;text-align:left;max-height:45vh;overflow-y:auto;margin-bottom:.5rem}
-.gap-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;align-items:center}
-.gap-lbl{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gap-inp{width:100%;border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font)}
-.section-note{font-size:12px;color:var(--text2);margin-bottom:12px;padding:8px 10px;background:var(--bg2);border-radius:var(--radius);line-height:1.5;text-align:left}
 
-/* ── Admin dashboard cards ── */
-.eng-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
-.eng-card{background:var(--bg);border-radius:var(--radius-lg);padding:1rem 1.1rem;border:1px solid var(--border);box-shadow:var(--shadow)}
-.eng-card-name{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.eng-card-stats{display:flex;gap:14px;flex-wrap:wrap}
-.eng-stat{text-align:center;min-width:36px}
-.eng-stat-val{font-size:22px;font-weight:700;line-height:1;letter-spacing:-0.02em}
-.eng-stat-lbl{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
-@media(max-width:480px){.eng-summary{grid-template-columns:1fr}}
 
-/* ── Row alert button ── */
-.btn-row-alert{background:none;border:none;cursor:pointer;color:var(--text3);padding:3px 4px;border-radius:var(--radius);display:inline-flex;align-items:center;transition:color .12s,background .12s;flex-shrink:0}
-.btn-row-alert:hover{color:var(--accent);background:var(--accent-bg)}
 
 /* ── Activity log tab ── */
 .log-toolbar{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)}
@@ -307,6 +236,32 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .settings-info{font-size:12px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;line-height:1.5;margin-bottom:1rem}
 .admin-pw-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1rem}
 .admin-pw-section-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px}
+
+/* ── Android-style settings rows ── */
+.sett-section-hdr{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;padding:14px 16px 4px;background:var(--bg3)}
+.sett-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--bg);border-bottom:1px solid var(--border);min-height:52px;transition:background .1s}
+.sett-row-tap{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sett-row-tap:active{background:var(--bg2)}
+.sett-row-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sett-row-body{flex:1;min-width:0}
+.sett-row-title{font-size:13.5px;font-weight:500;color:var(--text)}
+.sett-row-sub{font-size:11.5px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sett-row-danger .sett-row-title{color:var(--red-text)}
+.sett-chevron{color:var(--text3);flex-shrink:0;transition:transform .2s}
+.sett-chevron.open{transform:rotate(90deg)}
+.sett-panel{max-height:0;overflow:hidden;transition:max-height .28s cubic-bezier(.4,0,.2,1);background:var(--bg2);border-bottom:1px solid var(--border)}
+.sett-panel.open{max-height:600px}
+.sett-panel-inner{padding:12px 16px 14px}
+/* user row inside settings */
+.sett-user-row{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.sett-user-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0}
+.sett-user-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.2}
+.sett-user-meta{font-size:11px;color:var(--text3);margin-top:1px}
+.sett-user-actions{display:flex;gap:5px;margin-left:auto;flex-shrink:0}
+.sett-user-chip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid;cursor:pointer;font-family:var(--font);background:none;transition:opacity .12s;white-space:nowrap}
+.sett-user-chip:active{opacity:.7}
+.sett-user-chip.role{border-color:var(--accent);color:var(--accent)}
+.sett-user-chip.del{border-color:var(--red-dot);color:var(--red-text)}
 
 /* ── Reports tab ── */
 .report-list{padding:1rem 1.25rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
@@ -422,36 +377,6 @@ td{padding:9px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
 .btn-decline{font-size:11px;padding:3px 10px;border-radius:var(--radius);background:var(--red-bg);border:1px solid var(--red-dot);color:var(--red-text);cursor:pointer;font-family:var(--font);font-weight:600}
 .btn-approve:hover{background:var(--green-dot);color:#fff}.btn-decline:hover{background:var(--red-dot);color:#fff}
 
-/* ── Mobile tap targets & device detail card ── */
-.btn-res{font-size:12px;padding:7px 14px;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-dot);color:var(--green-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600;min-height:36px}
-.btn-res:hover{background:var(--green-dot);color:#fff}
-.btn-reopen{font-size:11px;padding:5px 12px;border-radius:20px;background:var(--amber-bg);border:1px solid var(--amber-dot);color:var(--amber-text);cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600}
-.btn-reopen:hover{background:var(--amber-dot);color:#fff}
-tr.device-row{cursor:pointer}
-/* ── Active issues table — polished rows ── */
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius-lg);border:1px solid var(--border)}
-.table-wrap table{width:100%;border-collapse:collapse;min-width:340px}
-.table-wrap thead th{background:var(--bg2);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2}
-.table-wrap tbody tr.device-row td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .1s}
-.table-wrap tbody tr.device-row:last-of-type td{border-bottom:none}
-tr.device-row{cursor:pointer}
-tr.device-row:hover td{background:var(--bg2)}
-tr.device-row.detail-open td{background:var(--accent-bg)}
-/* Device detail drawer */
-.device-detail-row{background:var(--bg) !important}
-.device-detail-row td{padding:0 !important;border-top:2px solid var(--accent) !important;border-bottom:2px solid var(--accent) !important}
-.device-detail-inner{padding:1.1rem 1.25rem 1.25rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
-@media(max-width:700px){.device-detail-inner{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:460px){.device-detail-inner{grid-template-columns:1fr 1fr}}
-.device-detail-item{background:var(--bg2);border-radius:10px;padding:.7rem .9rem;border:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
-.device-detail-lbl{font-size:9.5px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
-.device-detail-val{font-size:12.5px;color:var(--text);font-weight:600;word-break:break-all;line-height:1.4;font-family:inherit}
-.device-detail-val.mono{font-family:monospace;font-size:11.5px}
-.device-detail-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:.85rem;grid-column:1/-1;border-top:1px solid var(--border);margin-top:.1rem;align-items:center}
-.device-detail-actions .btn-res{font-size:13px;padding:9px 20px;border-radius:var(--radius-lg);min-height:38px}
-.device-detail-actions .btn-ack{font-size:13px;padding:9px 16px;min-height:38px}
-.device-detail-actions .btn-row-alert{padding:9px 11px;border-radius:var(--radius-lg);border:1px solid var(--border2);min-height:38px;display:inline-flex;align-items:center}
-.device-detail-hint{font-size:10.5px;color:var(--text3);margin-left:auto}
 
 /* ── Visit site search dropdown ── */
 .visit-search-wrap{position:relative}
@@ -529,12 +454,8 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
 @media(max-width:700px){
   .topbar-title{font-size:14px}
   .main{padding:.75rem}
-  .stats-grid{grid-template-columns:repeat(3,1fr);gap:8px}
   table{font-size:11px;min-width:700px}
   td,thead th{padding:7px 5px}
-  .export-group{margin-left:0}
-  .toolbar{gap:6px;padding:.65rem .75rem}
-  .sort-sel{max-width:140px}
 }
 </style>
 </head>
@@ -544,7 +465,7 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
 <div class="login-screen" id="login-screen">
   <div class="login-card">
     <img src="./icons/icon-192.png" class="login-logo" alt="" onerror="this.style.display='none'"/>
-    <div class="login-title">Device Status</div>
+    <div class="login-title">Field Manager</div>
     <div class="login-sub">Kochi Region — Authorised Access Only</div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field">
@@ -556,7 +477,7 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
       <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
-    <div class="login-footer">LDB Device Monitoring · v4.1 · Sessions expire after 24 hours</div>
+    <div class="login-footer">LDB Field Management · v6.0 · Sessions expire after 24 hours</div>
   </div>
 </div>
 
@@ -565,7 +486,7 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
   <div class="install-bar">
     <img src="./icons/icon-192.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0" alt=""/>
     <div style="flex:1;min-width:160px">
-      <div style="font-size:13px;font-weight:500">Install Device Status</div>
+      <div style="font-size:13px;font-weight:500">Install Field Manager</div>
       <div style="font-size:11px;opacity:.85;margin-top:1px">Works offline · Fast access from home screen</div>
     </div>
     <button onclick="installApp()">Install</button>
@@ -579,12 +500,11 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
     <img src="./icons/icon-192.png" class="topbar-logo" alt="" onerror="this.style.display='none'"/>
     <div>
       <div class="topbar-title">
-        Device Status
-        <span class="version-tag">v4.1</span>
+        Field Manager
+        <span class="version-tag">v6.0</span>
         <span class="offline-badge" id="offline-badge" style="display:none">Offline</span>
-        <span class="stale-badge" id="stale-badge" style="display:none">Stale</span>
       </div>
-      <div class="topbar-sub" id="last-fetched">No data loaded</div>
+      <div class="topbar-sub" id="last-fetched">Field Management — Kochi Region</div>
     </div>
   </div>
   <div class="topbar-actions">
@@ -609,15 +529,7 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
     <button class="btn btn-icon" id="settings-btn" onclick="openSettingsModal()" title="Settings" style="display:none">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <!-- engineer assignment — admin only -->
-    <button class="btn btn-icon" id="assign-eng-btn" onclick="openSetup()" title="Assign engineers" style="display:none">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 8a3 3 0 100-6 3 3 0 000 6zM2 14s-1 0-1-1 1-4 6-4c.5 0 1 0 1.5.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M13 11v4M11 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-    </button>
-    <!-- fetch -->
-    <button class="btn" id="fetch-btn" onclick="fetchCSV()">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span id="fetch-label">Fetch Latest</span>
-    </button>
+
   </div>
 </div>
 
@@ -634,7 +546,6 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
 <div class="main">
   <div id="error-area"></div>
 
-  <!-- Engineer summary cards — admin only, shown after data loaded -->
   <!-- Leave requests — admin only -->
   <div id="leave-requests-row" class="leave-requests-row" style="display:none">
     <div class="leave-requests-title">
@@ -658,46 +569,10 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
     </div>
   </div>
 
-  <div id="eng-summary-row" class="eng-summary" style="display:none">
-    <div class="eng-card">
-      <div class="eng-card-name">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Ayush E P
-      </div>
-      <div class="eng-card-stats">
-        <div class="eng-stat"><div class="eng-stat-val red" id="ec-a-crit">0</div><div class="eng-stat-lbl">Critical</div></div>
-        <div class="eng-stat"><div class="eng-stat-val amber" id="ec-a-high">0</div><div class="eng-stat-lbl">High</div></div>
-        <div class="eng-stat"><div class="eng-stat-val green" id="ec-a-temp">0</div><div class="eng-stat-lbl">Temp</div></div>
-        <div class="eng-stat"><div class="eng-stat-val teal" id="ec-a-res">0</div><div class="eng-stat-lbl">Resolved</div></div>
-      </div>
-    </div>
-    <div class="eng-card">
-      <div class="eng-card-name">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Swethaswan
-      </div>
-      <div class="eng-card-stats">
-        <div class="eng-stat"><div class="eng-stat-val red" id="ec-s-crit">0</div><div class="eng-stat-lbl">Critical</div></div>
-        <div class="eng-stat"><div class="eng-stat-val amber" id="ec-s-high">0</div><div class="eng-stat-lbl">High</div></div>
-        <div class="eng-stat"><div class="eng-stat-val green" id="ec-s-temp">0</div><div class="eng-stat-lbl">Temp</div></div>
-        <div class="eng-stat"><div class="eng-stat-val teal" id="ec-s-res">0</div><div class="eng-stat-lbl">Resolved</div></div>
-      </div>
-    </div>
-  </div>
 
-  <div id="stats-row" class="stats-grid" style="display:none">
-    <div class="stat"><div class="stat-lbl">Active</div><div class="stat-val red" id="s-total">0</div></div>
-    <div class="stat"><div class="stat-lbl">Critical</div><div class="stat-val red" id="s-crit">0</div></div>
-    <div class="stat"><div class="stat-lbl">High</div><div class="stat-val amber" id="s-high">0</div></div>
-    <div class="stat"><div class="stat-lbl">Temp</div><div class="stat-val green" id="s-temp">0</div></div>
-    <div class="stat"><div class="stat-lbl">Resolved</div><div class="stat-val teal" id="s-res">0</div></div>
-  </div>
-
-  <div id="main-ui" style="display:none">
+  <div id="main-ui">
     <div class="card" style="margin-bottom:1rem">
       <div class="tab-bar">
-        <button class="tab active" id="tab-a" onclick="switchTab('active')">Active issues</button>
-        <button class="tab" id="tab-r" onclick="switchTab('resolved')">Resolved</button>
         <!-- Notifications tab: only shown to engineers via JS -->
         <button class="tab" id="tab-n" onclick="switchTab('notifs')" style="display:none">
           Notifications
@@ -715,66 +590,6 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
           Distant Visit
         </button>
-      </div>
-
-      <!-- Active panel -->
-      <div id="panel-active">
-        <div class="legend">
-          <div class="legend-item"><span class="dot dot-c"></span>Critical (&gt;7d)</div>
-          <div class="legend-item"><span class="dot dot-h"></span>High (2–7d)</div>
-          <div class="legend-item"><span class="dot dot-t"></span>Possibly temp (0–1d)</div>
-        </div>
-        <div class="toolbar">
-          <div class="search-wrap">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <input class="search-inp" type="search" id="search-active" placeholder="Search location, engineer…" oninput="renderActive()"/>
-          </div>
-          <button class="pill active" id="pill-all" onclick="setFilter('all',this)">All</button>
-          <button class="pill" id="pill-critical" onclick="setFilter('critical',this)">Critical</button>
-          <button class="pill" id="pill-high" onclick="setFilter('high',this)">High</button>
-          <button class="pill" id="pill-temp" onclick="setFilter('temp',this)">Temp</button>
-          <select class="sort-sel" id="eng-filter-sel" onchange="setEngFilter(this.value)">
-            <option value="">All engineers</option>
-            <option value="Ayush E P">Ayush E P</option>
-            <option value="Swethaswan">Swethaswan</option>
-          </select>
-          <select class="sort-sel" onchange="setSort(this.value)">
-            <option value="days_desc">Most days down</option>
-            <option value="days_asc">Fewest days down</option>
-            <option value="sync_desc">Newest sync first</option>
-            <option value="sync_asc">Oldest sync first</option>
-          </select>
-          <div class="export-group">
-            <button class="btn" onclick="exportCSV('active')">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>CSV
-            </button>
-            <button class="btn" onclick="exportExcel('active')">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Excel
-            </button>
-          </div>
-        </div>
-        <div id="active-count" class="results-count" style="display:none"></div>
-        <div id="active-tbl"></div>
-      </div>
-
-      <!-- Resolved panel -->
-      <div id="panel-resolved" style="display:none">
-        <div class="toolbar">
-          <div class="search-wrap">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <input class="search-inp" type="search" id="search-resolved" placeholder="Search location, engineer…" oninput="renderResolved()"/>
-          </div>
-          <div class="export-group">
-            <button class="btn" onclick="exportCSV('resolved')">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>CSV
-            </button>
-            <button class="btn" onclick="exportExcel('resolved')">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h12v-4M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Excel
-            </button>
-          </div>
-        </div>
-        <div id="resolved-count" class="results-count" style="display:none"></div>
-        <div id="resolved-tbl"></div>
       </div>
 
       <!-- Notifications panel -->
@@ -801,6 +616,24 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
 
       <!-- Reports panel — engineers only -->
       <div id="panel-reports" style="display:none">
+
+        <!-- Admin: Upload Device List banner (shown to admin only via JS) -->
+        <div id="report-admin-upload-bar" style="display:none;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2);align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text)">Device List</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px" id="report-devlist-status">No device list uploaded yet.</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="file" id="report-devlist-file" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleReportDeviceUpload(this)"/>
+            <button class="btn btn-sm btn-primary" onclick="document.getElementById('report-devlist-file').click()">
+              📂 Upload Device List
+            </button>
+            <button class="btn btn-sm" onclick="pushDeviceListToKV(true)" title="Push local list to server so engineers can fetch it">
+              ☁️ Sync to server
+            </button>
+          </div>
+        </div>
+
         <!-- Report type selector (default view) -->
         <div id="report-type-selector">
           <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)">
@@ -939,63 +772,6 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
       </div>
     </div>
   </div>
-    <div style="font-size:32px;margin-bottom:10px">📡</div>
-    <div>Press "Fetch Latest" to load device status</div>
-    <div style="font-size:12px;margin-top:6px;color:var(--text2)">Works offline after first load</div>
-  </div>
-</div>
-
-<!-- ── Onboarding overlay ───────────────────────────────────── -->
-<div class="onboard" id="onboard" style="display:none">
-  <div id="onboard-step-upload">
-    <div class="step-dots"><span class="step-dot active"></span><span class="step-dot"></span></div>
-    <h1>Set up engineer assignments</h1>
-    <p class="onboard-sub">Upload your site-to-engineer mapping file. The app will auto-assign engineers to matching locations.</p>
-    <div class="onboard-box">
-      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('eng-file').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="handleFileDrop(event)">
-        <input type="file" id="eng-file" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(this)"/>
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <p><strong>Click to upload</strong> or drag and drop</p>
-        <p class="hint">Excel (.xlsx/.xls) or CSV — Column A: Site name, Column B: Engineer</p>
-      </div>
-      <div id="upload-summary" class="upload-summary" style="display:none"></div>
-    </div>
-    <div class="onboard-actions">
-      <button class="btn" onclick="skipOnboarding()">Skip</button>
-      <button class="btn btn-primary" id="btn-next-step" onclick="goToGapsStep()" style="display:none">Next — fill gaps</button>
-      <button class="btn btn-primary" id="btn-finish-upload" onclick="finishOnboarding()" style="display:none">Finish</button>
-    </div>
-  </div>
-  <div id="onboard-step-gaps" style="display:none">
-    <div class="step-dots"><span class="step-dot done"></span><span class="step-dot active"></span></div>
-    <h1 style="margin-bottom:8px">Fill in unmatched sites</h1>
-    <p class="onboard-sub" style="margin-bottom:1rem">These sites had no match. Add engineers manually or leave blank.</p>
-    <div class="section-note" id="gaps-matched-note"></div>
-    <div class="gaps-list" id="gaps-list"></div>
-    <div class="onboard-actions">
-      <button class="btn" onclick="goBackToUpload()">Back</button>
-      <button class="btn btn-primary" onclick="finishOnboarding()">Save &amp; continue</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Engineer assignment modal ───────────────────────────── -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
-  <div class="modal" id="modal">
-    <div class="eng-modal-header">
-      <h2>Assign engineers to locations</h2>
-      <button class="btn btn-upload-again" onclick="reopenUploadFromModal()">Upload file</button>
-    </div>
-    <p>Saved locally — persists across sessions.</p>
-    <div id="eng-list"></div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeSetup()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveEngineers()">Save</button>
-    </div>
   </div>
 </div>
 
@@ -1094,119 +870,195 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
 
 <!-- ── Admin settings modal ────────────────────────────────── -->
 <div class="modal-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettingsModal()">
-  <div class="modal" style="max-width:520px">
-    <h2>Admin Settings</h2>
-    <p>Credential changes sync to the server instantly across all devices.</p>
+  <div class="modal" style="max-width:520px;padding:0;overflow:hidden;border-radius:var(--radius-xl);display:flex;flex-direction:column;max-height:90vh">
 
-    <div class="settings-info" id="settings-sync-status">
-      <span id="settings-sync-icon">⏳</span> Loading current credentials from server…
-    </div>
-
-    <!-- Engineer management -->
-    <div class="settings-section">
-      <div class="settings-section-title">Engineers</div>
-      <div class="eng-mgmt-list" id="eng-mgmt-list"><!-- populated by JS --></div>
-      <!-- Add new user form -->
-      <div class="add-eng-form">
-        <div class="add-eng-form-title">➕ Add new user</div>
-        <div class="add-eng-grid">
-          <div class="cred-field">
-            <label>Full name</label>
-            <input class="cred-inp" type="text" id="new-eng-name" placeholder="e.g. Rahul K" maxlength="40"/>
-          </div>
-          <div class="cred-field">
-            <label>Username</label>
-            <input class="cred-inp" type="text" id="new-eng-username" placeholder="e.g. rahul" autocomplete="off" maxlength="32"/>
-          </div>
-          <div class="cred-field">
-            <label>Password</label>
-            <input class="cred-inp" type="password" id="new-eng-password" placeholder="Min 6 chars" autocomplete="new-password"/>
-          </div>
-        </div>
-        <div class="cred-field" style="margin-top:8px;max-width:180px">
-          <label>Role</label>
-          <select class="cred-inp" id="new-eng-role">
-            <option value="engineer">Engineer</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="addNewEngineer()">Add user</button>
+    <!-- Settings header -->
+    <div style="display:flex;align-items:center;gap:10px;padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10">
+      <button onclick="closeSettingsModal()" style="background:none;border:none;cursor:pointer;color:var(--text2);padding:4px;display:flex;align-items:center">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div>
+        <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em">Settings</div>
+        <div style="font-size:11px;color:var(--text2)" id="settings-sync-status">Loading&hellip;</div>
       </div>
     </div>
 
-    <!-- Change passwords for existing engineers -->
-    <div class="settings-section">
-      <div class="settings-section-title">Change engineer passwords</div>
-      <div id="eng-pw-change-list"><!-- populated by JS --></div>
-    </div>
+    <div style="overflow-y:auto;flex:1;min-height:0;padding-bottom:1rem">
 
-    <!-- Admin's own password -->
-    <div class="settings-section">
-      <div class="settings-section-title">Your password (admin)</div>
-      <div class="admin-pw-section">
-        <div class="user-cred-fields">
-          <div class="cred-field">
-            <label>Current password</label>
-            <input class="cred-inp" type="password" id="admin-current-pw" placeholder="Required to save" autocomplete="current-password"/>
+      <!-- SECTION: Users -->
+      <div class="sett-section-hdr">&#x1F465; Users</div>
+      <div id="eng-mgmt-list"></div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-add-user')" id="row-add-user">
+        <div class="sett-row-icon" style="background:#e8f5f0">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Add new user</div></div>
+        <svg class="sett-chevron" id="chev-add-user" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-add-user">
+        <div class="sett-panel-inner">
+          <div class="add-eng-grid">
+            <div class="cred-field"><label>Full name</label><input class="cred-inp" type="text" id="new-eng-name" placeholder="e.g. Rahul K" maxlength="40"/></div>
+            <div class="cred-field"><label>Username</label><input class="cred-inp" type="text" id="new-eng-username" placeholder="e.g. rahul" autocomplete="off" maxlength="32"/></div>
+            <div class="cred-field"><label>Password</label><input class="cred-inp" type="password" id="new-eng-password" placeholder="Min 6 chars" autocomplete="new-password"/></div>
+            <div class="cred-field"><label>Role</label><select class="cred-inp" id="new-eng-role"><option value="engineer">Engineer</option><option value="admin">Admin</option></select></div>
           </div>
-          <div class="cred-field">
-            <label>New password</label>
-            <input class="cred-inp" type="password" id="admin-new-pw" placeholder="Leave blank to keep" autocomplete="new-password"/>
+          <button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="addNewEngineer()">Add user</button>
+        </div>
+      </div>
+
+      <!-- SECTION: Passwords -->
+      <div class="sett-section-hdr">&#x1F511; Passwords</div>
+      <div id="eng-pw-change-list"></div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-admin-pw')" id="row-admin-pw">
+        <div class="sett-row-icon" style="background:#fdf2f2">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="4" y="7" width="8" height="6" rx="1.5" stroke="var(--red-dot)" stroke-width="1.3"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="var(--red-dot)" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Your password (admin)</div><div class="sett-row-sub">Change admin login password</div></div>
+        <svg class="sett-chevron" id="chev-admin-pw" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-admin-pw">
+        <div class="sett-panel-inner">
+          <div class="user-cred-fields">
+            <div class="cred-field"><label>Current password</label><input class="cred-inp" type="password" id="admin-current-pw" placeholder="Required to save" autocomplete="current-password"/></div>
+            <div class="cred-field"><label>New password</label><input class="cred-inp" type="password" id="admin-new-pw" placeholder="Leave blank to keep" autocomplete="new-password"/></div>
+          </div>
+          <div class="cred-hint" style="margin-top:6px">Current password is required to save any changes.</div>
+        </div>
+      </div>
+
+      <!-- SECTION: Device list -->
+      <div class="sett-section-hdr">&#x1F4E1; Device List</div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-upload')" id="row-dev-upload">
+        <div class="sett-row-icon" style="background:#f0fdf4">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3-3 3 3M3 13h10" stroke="var(--green-dot)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Upload CSV / Excel</div><div class="sett-row-sub" id="dev-list-count">No devices loaded</div></div>
+        <svg class="sett-chevron" id="chev-dev-upload" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-dev-upload">
+        <div class="sett-panel-inner">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+            <input type="file" id="dev-csv-file" accept=".csv,.xlsx,.xls" style="font-size:12px;flex:1" onchange="previewDeviceCsv(this)"/>
+            <button class="btn btn-sm btn-primary" id="dev-csv-apply-btn" onclick="applyDeviceCsvPreview()" style="display:none">Apply</button>
+          </div>
+          <div id="dev-csv-preview" style="font-size:12px;color:var(--text2)"></div>
+        </div>
+      </div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-url')" id="row-dev-url">
+        <div class="sett-row-icon" style="background:#f0fdfa">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1012 0A6 6 0 002 8z" stroke="var(--teal-dot)" stroke-width="1.3"/><path d="M8 2c-1.5 2-2 3.8-2 6s.5 4 2 6M8 2c1.5 2 2 3.8 2 6s-.5 4-2 6M2 8h12" stroke="var(--teal-dot)" stroke-width="1.1" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Fetch from URL</div><div class="sett-row-sub" id="dev-fetch-status">Fetch device list from a CSV endpoint</div></div>
+        <svg class="sett-chevron" id="chev-dev-url" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-dev-url">
+        <div class="sett-panel-inner">
+          <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+            <div class="cred-field" style="flex:1;min-width:180px"><label>CSV endpoint URL</label><input class="cred-inp" type="url" id="dev-fetch-url" placeholder="https://&hellip;/DeviceStatus/DownloadAndProcess"/></div>
+            <button class="btn btn-sm btn-primary" style="white-space:nowrap;margin-bottom:1px" onclick="fetchDevicesFromUrl()">Fetch now</button>
           </div>
         </div>
-        <div class="cred-hint" style="margin-top:6px">Your current password is required to save any changes.</div>
       </div>
-    </div>
-
-    <!-- Mail contacts -->
-    <div class="settings-section">
-      <div class="settings-section-title">Mail contacts (Reports)</div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Pre-filled in To/CC for incident reports, leave applications etc.</p>
-      <div id="contacts-list"><!-- populated by JS --></div>
-      <div class="add-eng-form" style="margin-top:8px">
-        <div class="add-eng-form-title">➕ Add contact</div>
-        <div class="add-contact-grid">
-          <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-contact-name" placeholder="e.g. NEC Client" maxlength="40"/></div>
-          <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-contact-email" placeholder="e.g. client@nec.com"/></div>
-          <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-contact-role"><option value="to">To</option><option value="cc">CC</option></select></div>
-          <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addContact()">Add</button></div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-manual')" id="row-dev-manual">
+        <div class="sett-row-icon" style="background:#fff7ed">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="#f59e0b" stroke-width="1.3"/><path d="M8 6v4M6 8h4" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Add device manually</div></div>
+        <svg class="sett-chevron" id="chev-dev-manual" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-dev-manual">
+        <div class="sett-panel-inner">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="cred-field"><label>Site name</label><input class="cred-inp" type="text" id="new-dev-site" placeholder="e.g. Cochin SEZ" list="dev-site-datalist"/><datalist id="dev-site-datalist"></datalist></div>
+            <div class="cred-field"><label>MAC ID</label><input class="cred-inp" type="text" id="new-dev-mac" placeholder="e.g. 84:24:8D:F1:40:35"/></div>
+            <div class="cred-field"><label>Asset label</label><input class="cred-inp" type="text" id="new-dev-label" placeholder="e.g. IN/OUT LHS"/></div>
+            <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addDeviceManually()">Add device</button></div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Distant visit approval contacts -->
-    <div class="settings-section">
-      <div class="settings-section-title">Distant Visit — Approval mail contacts</div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Default To/CC for "Need approval for site visit" mails.</p>
-      <div id="visit-apr-contacts-list"><!-- populated by JS --></div>
-      <div class="add-eng-form" style="margin-top:8px">
-        <div class="add-eng-form-title">➕ Add contact</div>
-        <div class="add-contact-grid">
-          <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-vapr-name" placeholder="e.g. Sunil Swain" maxlength="40"/></div>
-          <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-vapr-email" placeholder="e.g. sunil@securepremises.com"/></div>
-          <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-vapr-role"><option value="to">To</option><option value="cc">CC</option></select></div>
-          <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addVisitContact('approval')">Add</button></div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-list')" id="row-dev-list">
+        <div class="sett-row-icon" style="background:#f5f3ff">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">View / manage device list</div></div>
+        <svg class="sett-chevron" id="chev-dev-list" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-dev-list">
+        <div class="sett-panel-inner" style="padding:0">
+          <div id="dev-list-wrap" style="max-height:240px;overflow-y:auto;background:var(--bg)">
+            <div id="dev-list-inner" style="font-size:12px;color:var(--text2);padding:10px">Loading&hellip;</div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;padding:8px 10px;border-top:1px solid var(--border);flex-wrap:wrap">
+            <button class="btn btn-sm" style="color:var(--red-text);border-color:var(--red-dot)" onclick="clearAllDevices()">&#x1F5D1; Clear all</button>
+            <button class="btn btn-sm" onclick="pushDeviceListToKV(true)">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save to server
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Distant visit advance contacts -->
-    <div class="settings-section">
-      <div class="settings-section-title">Distant Visit — Advance request contacts</div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Default To/CC for "Advance request for site visit" mails.</p>
-      <div id="visit-adv-contacts-list"><!-- populated by JS --></div>
-      <div class="add-eng-form" style="margin-top:8px">
-        <div class="add-eng-form-title">➕ Add contact</div>
-        <div class="add-contact-grid">
-          <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-vadv-name" placeholder="e.g. Deepak Sutar" maxlength="40"/></div>
-          <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-vadv-email" placeholder="e.g. deepak@securepremises.com"/></div>
-          <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-vadv-role"><option value="to">To</option><option value="cc">CC</option></select></div>
-          <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addVisitContact('advance')">Add</button></div>
+      <!-- SECTION: Mail contacts -->
+      <div class="sett-section-hdr">&#x2709;&#xFE0F; Mail Contacts</div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-contacts')" id="row-contacts">
+        <div class="sett-row-icon" style="background:#eff6ff">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="1.5" stroke="#3b82f6" stroke-width="1.3"/><path d="M2 6l6 4 6-4" stroke="#3b82f6" stroke-width="1.3"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Report contacts</div><div class="sett-row-sub">To / CC for incident reports &amp; leave</div></div>
+        <svg class="sett-chevron" id="chev-contacts" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-contacts">
+        <div class="sett-panel-inner">
+          <div id="contacts-list"></div>
+          <div class="add-contact-grid" style="margin-top:8px">
+            <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-contact-name" placeholder="e.g. NEC Client" maxlength="40"/></div>
+            <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-contact-email" placeholder="e.g. client@nec.com"/></div>
+            <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-contact-role"><option value="to">To</option><option value="cc">CC</option></select></div>
+            <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addContact()">Add</button></div>
+          </div>
         </div>
       </div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-visit-apr')" id="row-visit-apr">
+        <div class="sett-row-icon" style="background:#eff6ff">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z" stroke="#3b82f6" stroke-width="1.3"/><circle cx="8" cy="6" r="1.5" stroke="#3b82f6" stroke-width="1.2"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Visit approval contacts</div><div class="sett-row-sub">To / CC for site visit approval mails</div></div>
+        <svg class="sett-chevron" id="chev-visit-apr" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-visit-apr">
+        <div class="sett-panel-inner">
+          <div id="visit-apr-contacts-list"></div>
+          <div class="add-contact-grid" style="margin-top:8px">
+            <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-vapr-name" placeholder="e.g. Sunil Swain" maxlength="40"/></div>
+            <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-vapr-email" placeholder="e.g. sunil@securepremises.com"/></div>
+            <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-vapr-role"><option value="to">To</option><option value="cc">CC</option></select></div>
+            <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addVisitContact('approval')">Add</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-visit-adv')" id="row-visit-adv">
+        <div class="sett-row-icon" style="background:#eff6ff">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="#3b82f6" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="#3b82f6" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body"><div class="sett-row-title">Visit advance contacts</div><div class="sett-row-sub">To / CC for advance request mails</div></div>
+        <svg class="sett-chevron" id="chev-visit-adv" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-visit-adv">
+        <div class="sett-panel-inner">
+          <div id="visit-adv-contacts-list"></div>
+          <div class="add-contact-grid" style="margin-top:8px">
+            <div class="cred-field"><label>Name</label><input class="cred-inp" type="text" id="new-vadv-name" placeholder="e.g. Deepak Sutar" maxlength="40"/></div>
+            <div class="cred-field"><label>Email</label><input class="cred-inp" type="email" id="new-vadv-email" placeholder="e.g. deepak@securepremises.com"/></div>
+            <div class="cred-field"><label>Default</label><select class="cred-inp" id="new-vadv-role"><option value="to">To</option><option value="cc">CC</option></select></div>
+            <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addVisitContact('advance')">Add</button></div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="modal-footer">
+    <div style="display:flex;justify-content:flex-end;gap:8px;padding:.75rem 1.25rem;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0">
       <button class="btn" onclick="closeSettingsModal()">Cancel</button>
       <button class="btn btn-primary" id="settings-save-btn" onclick="saveSettings()">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 2L6 12l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1215,6 +1067,7 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
     </div>
   </div>
 </div>
+
 
 <div class="toast" id="toast"></div>
 
@@ -1225,81 +1078,24 @@ tr.device-row.detail-open td{background:var(--accent-bg)}
 'use strict';
 
 // ── Constants & data ─────────────────────────────────────────
-const SITE_MAP = [
-  {site:"GIPL_Paliyekkara_Toll_Plaza",engineer:"Ayush E P"},
-  {site:"Kumbalam_Toll_Plaza",engineer:"Swethaswan"},
-  {site:"Kottayam_ICD_Kerala",engineer:"Ayush E P"},
-  {site:"International_Container_Transhipment_TerminalKochi",engineer:"Swethaswan"},
-  {site:"Cochin_SEZ",engineer:"Swethaswan"},
-  {site:"GDKL_CFS(Kerala)",engineer:"Swethaswan"},
-  {site:"MIV_CFS(Kerala)",engineer:"Swethaswan"},
-  {site:"Cochin_Port_Trust_CFS_(Kerala)",engineer:"Swethaswan"},
-  {site:"KSIE_CFS (Kerala)",engineer:"Swethaswan"},
-  {site:"Ponnarin Mangalam Toll Plaza Cochin",engineer:"Swethaswan"},
-  {site:"Chakiat Agencies Private Limited Cochin",engineer:"Swethaswan"},
-  {site:"Bay Container Terminal Pvt Ltd Cochin",engineer:"Swethaswan"},
-  {site:"Empire Container Terminal Cochin",engineer:"Swethaswan"},
-  {site:"Reefco Container Services (India) Pvt Ltd Cochin",engineer:"Swethaswan"},
-  {site:"MARINE CONTAINER LOGISTICS 1",engineer:"Swethaswan"},
-  {site:"MARINE CONTAINER LOGISTICS 2",engineer:"Swethaswan"},
-  {site:"Blueocean Container Terminals (I) Pvt Ltd 1 Cochin",engineer:"Swethaswan"},
-  {site:"MIV Empty Yard Cochin",engineer:"Swethaswan"},
-  {site:"KINFRA Export Promotion Industrial Park Kakkanad",engineer:"Ayush E P"},
-  {site:"KINFRA Small Industries Park Mazhuvannur Ernakulam",engineer:"Ayush E P"},
-  {site:"KINFRA Industrial Park Koratty Thrissur",engineer:"Ayush E P"},
-  {site:"KINFRA IITP Palakad",engineer:"Ayush E P"},
-  {site:"KINFRA Mega Food Park Kozhipara Palakkad",engineer:"Ayush E P"},
-  {site:"KINFRA Industrial Park Adoor",engineer:"Ayush E P"},
-  {site:"KINFRA Industrial Park kunnamthanam",engineer:"Ayush E P"},
-  {site:"KINFRA Industrial Park Wayanad",engineer:"Ayush E P"},
-  {site:"KINFRA Techno Industrial  Park Kakkancherry  Malappuram SEZ",engineer:"Ayush E P"},
-  {site:"KINFRA Small Industries Park Thalassery Kannur",engineer:"Ayush E P"},
-  {site:"KINFRA Textile Centre Nadukani Thaliparambu Kannur",engineer:"Ayush E P"},
-  {site:"Bhavani Shipping Services Kerala",engineer:"Swethaswan"},
-  {site:"MBK Logistix Pvt Ltd Cochin",engineer:"Swethaswan"},
-  {site:"Sristar Container Services LLP Cochin",engineer:"Swethaswan"},
-  {site:"Petta CFS",engineer:"Swethaswan"},
-  {site:"KINFRA Kalamassery",engineer:"Ayush E P"},
-  {site:"EMMAY LOGISTICS (INDIA) PRIVATE LIMITED",engineer:"Ayush E P"},
-  {site:"Pampampallam Toll Plaza Kerala",engineer:"Ayush E P"},
-  {site:"Nest Electronics City NeST Hitek Park",engineer:"Ayush E P"},
-  {site:"Panniyankara Toll Plaza Kerala",engineer:"Ayush E P"},
-  {site:"Accelerated Freeze Drying Co Ltd",engineer:"Swethaswan"},
-  {site:"Accelerated Freeze Drying Co Ltd Frozen Store Ezhupunna",engineer:"Swethaswan"},
-  {site:"Accelerated Freeze Drying Co Ltd Frozen Foods Ezhupunna",engineer:"Swethaswan"},
-  {site:"KSIDC Industrial Growth Centre Pallippuram Cherthala Kerala",engineer:"Swethaswan"},
-  {site:"KSIDC Mega Food Park Pallipuram Kerala",engineer:"Swethaswan"},
-  {site:"SIDCO Industrial Estate Kollakadavu Kerala",engineer:"Ayush E P"},
-  {site:"KSIDC Life Science Park Trivandrum Kerala",engineer:"Ayush E P"},
-  {site:"Development Plot Athani Kerala",engineer:"Ayush E P"},
-  {site:"Industrial Development Plot Ananthapuram",engineer:"Ayush E P"},
-  {site:"KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala",engineer:"Ayush E P"},
-  {site:"AM Fisheries Private Limited Kerala",engineer:"Swethaswan"},
-  {site:"Development plot Kunnamthanam kerala",engineer:"Ayush E P"},
-  {site:"KSIDC Investment zone Palakkad Kerala",engineer:"Ayush E P"}
-];
 
-const MAC_ASSET_MAP = {"C4:7D:CC:68:28:F9":"IN/OUT LHS","C4:7D:CC:68:29:2C":"IN/OUT RHS","C4:7D:CC:72:B7:DC":"IN/OUT LHS","C4:7D:CC:65:78:04":"IN/OUT RHS","00:16:25:15:92:4D":"IN/OUT LHS","00:16:25:15:1C:1B":"IN/OUT RHS","00:16:25:15:1C:AA":"IN/OUT LHS","C4:7D:CC:68:29:22":"IN/OUT LHS","C4:7D:CC:68:2D:69":"IN/OUT RHS","84:24:8D:F1:40:35":"IN/OUT LHS","84:24:8D:F1:45:A6":"IN/OUT RHS","84:24:8D:FC:B0:19":"IN LHS","84:24:8D:FC:AF:A4":"OUT LHS","84:24:8D:FC:AF:A6":"IN RHS","84:24:8D:F2:48:61":"OUT RHS","00:8D:F4:D0:00:53":"IN / LHS","00:8D:F4:D0:00:9E":"IN / RHS","00:8D:F4:D0:00:59":"OUT / LHS","00:8D:F4:D0:00:08":"OUT / RHS","00:16:25:15:1C:CC":"Gate 1 L.H.S","00:16:25:15:1C:D8":"Gate 1 R.H.S","00:16:25:15:1C:3A":"Gate 2 L.H.S","00:16:25:15:1C:CD":"Gate 2 R.H.S","84:24:8D:F1:40:EE":"IN LHS","84:24:8D:F1:18:D5":"OUT LHS","84:24:8D:F1:18:BB":"IN RHS","84:24:8D:F1:40:96":"OUT RHS","84:24:8D:F5:6B:26":"Lane 1","84:24:8D:F5:4B:B8":"Lane 2","84:24:8D:F7:81:62":"Lane 3","84:24:8D:F5:4B:BD":"Lane 4","84:24:8D:F0:F2:D8":"Lane 5","84:24:8D:F5:46:E9":"Lane 6","84:24:8D:F5:43:10":"Lane 7","84:24:8D:FD:DC:18":"Lane 8","84:24:8D:F5:46:EB":"Lane 9","84:24:8D:F5:6B:3F":"Lane 10","84:24:8D:F5:6B:36":"Lane 11","84:24:8D:F5:6B:27":"Lane 12","84:24:8D:F5:76:5A":"Lane 13","84:24:8D:F1:3E:DB":"IN LHS","84:24:8D:F1:3F:1B":"IN RHS","00:16:25:15:22:83":"Gate 1 LHS","00:16:25:15:22:55":"Gate 1 RHS","00:16:25:15:21:E0":"Gate 2 LHS","00:16:25:15:23:AD":"Gate 2 RHS","00:16:25:15:22:BF":"IN/OUT LHS","00:16:25:15:22:54":"IN/OUT RHS","00:16:25:15:22:5D":"Gate 1 LHS","00:8D:F4:D0:11:DD":"Gate 1 RHS","00:16:25:15:23:19":"Gate 2 LHS","00:16:25:15:23:16":"Gate 2 RHS","00:16:25:15:22:BD":"IN/OUT LHS","00:16:25:15:23:13":"IN/OUT RHS","00:8D:F4:D0:00:86":"IN / LHS","00:8D:F4:D0:00:95":"IN / RHS","00:8D:F4:D0:02:A2":"OUT / LHS","00:8D:F4:D0:00:8C":"OUT / RHS","00:16:25:15:23:1B":"LHS","00:16:25:15:23:15":"Middle","00:16:25:15:23:24":"RHS","00:16:25:15:23:0B":"Gate 1 LHS","00:16:25:15:22:86":"Gate 1 RHS","00:16:25:15:23:59":"Gate 2 LHS","00:16:25:15:23:BF":"Gate 2 RHS","00:16:25:15:22:9F":"IN/OUT LHS","00:16:25:15:23:2D":"IN/OUT RHS","00:16:25:15:24:08":"Gate 1 LHS","00:16:25:15:24:07":"Gate 1 RHS","00:16:25:15:24:0B":"Gate 2 LHS","00:16:25:15:24:09":"Gate 2 RHS","00:16:25:15:22:63":"IN/OUT LHS","00:16:25:15:23:2C":"IN/OUT RHS","00:16:25:15:21:DB":"IN/OUT LHS","00:16:25:15:24:06":"IN/OUT RHS","00:16:25:15:24:01":"LHS","00:16:25:15:23:E1":"Middle","00:16:25:15:24:04":"RHS","84:24:8D:FB:5A:E0":"IN/OUT LHS","84:24:8D:F3:27:4A":"IN/OUT RHS","84:24:8D:F1:40:86":"IN/OUT LHS","84:24:8D:F1:40:DA":"IN/OUT RHS","84:24:8D:F0:F6:56":"IN/OUT MIDDLE","84:24:8D:F5:3E:BD":"Lane 1","84:24:8D:F6:08:04":"Lane 2","84:24:8D:F0:F5:CB":"Lane 3","84:24:8D:F5:6B:6F":"Lane 4","84:24:8D:F3:25:F0":"Lane 5","84:24:8D:F5:6B:2E":"Lane 6","84:24:8D:F5:6B:43":"Lane 7","84:24:8D:F6:08:6F":"Lane 8","84:24:8D:F5:6B:67":"Lane 9","00:16:25:15:1D:58":"Gate 2 L.H.S","00:16:25:15:1D:5A":"Gate 2 R.H.S","00:16:25:15:1D:5B":"Gate 1 L.H.S","00:16:25:15:1D:5D":"Gate 1 R.H.S","C4:7D:CC:72:BD:0A":"IN/OUT LHS","C4:7D:CC:72:BE:AF":"IN/OUT RHS","84:24:8D:F0:F6:DC":"IN LHS","84:24:8D:F1:41:1A":"OUT LHS","84:24:8D:F1:0D:04":"IN RHS","84:24:8D:F1:2F:6A":"OUT RHS","10:07:23:6E:0D:0F":"Lane 1","10:07:23:6E:10:A3":"Lane 2","10:07:23:6E:0F:65":"Lane 3","10:07:23:6E:0F:F7":"Lane 4","10:07:23:6E:0F:56":"Lane 5","10:07:23:6E:0D:0B":"Lane 6","10:07:23:6E:0F:E6":"Lane 7","10:07:23:6E:0F:5B":"Lane 8","10:07:23:6E:0D:35":"Lane 9","10:07:23:6E:0D:C3":"Lane 10","10:07:23:6E:0D:AB":"Lane 11","C4:7D:CC:72:BE:47":"IN/OUT LHS","C4:7D:CC:72:B9:21":"IN/OUT RHS","00:16:25:15:1D:52":"Lane 1","00:16:25:15:1D:0F":"Lane 2","00:16:25:15:1D:4E":"Lane 3","00:16:25:15:1D:4C":"Lane 4","00:16:25:15:1D:4F":"Lane 5","00:16:25:15:1D:0D":"Lane 6","00:16:25:15:1C:F8":"Lane 7","00:16:25:15:1C:F2":"Lane 8","00:16:25:15:1C:2D":"Lane 9","00:16:25:15:1C:44":"Lane 10","00:16:25:15:1C:31":"Lane 11","C4:7D:CC:68:2D:77":"IN/OUT LHS","C4:7D:CC:68:29:69":"IN/OUT RHS","C4:7D:CC:72:BD:02":"IN/OUT LHS","C4:7D:CC:72:BE:58":"IN/OUT RHS","10:07:23:6E:10:F7":"IN LHS","10:07:23:6E:10:B9":"IN RHS","10:07:23:6E:0E:8A":"OUT LHS","10:07:23:6E:0E:34":"OUT RHS","00:8D:F4:D0:02:33":"Lane 1","00:8D:F4:D0:02:2D":"Lane 2","00:8D:F4:D0:03:D4":"Lane 3","00:8D:F4:D0:02:03":"Lane 4","00:8D:F4:D0:01:AF":"Lane 5","00:8D:F4:D0:01:73":"Lane 6","00:8D:F4:D0:02:4A":"Lane 7","00:8D:F4:D0:02:84":"Lane 8","00:8D:F4:D0:02:45":"Lane 9","00:8D:F4:D0:01:79":"Lane 10","00:8D:F4:D0:01:9A":"Lane 11","00:8D:F4:D0:02:57":"Lane 12","00:8D:F4:D0:02:18":"Lane 13","00:8D:F4:D0:03:02":"Lane 14","00:8D:F4:D0:02:FF":"Lane 15","00:8D:F4:D0:01:94":"Lane 16","00:8D:F4:D0:02:27":"Lane 17","10:07:23:6E:10:AF":"LHS","10:07:23:6E:10:D9":"RHS","10:07:23:6E:10:6B":"LHS","10:07:23:6E:11:8B":"RHS","00:16:25:15:21:07":"LHS","00:16:25:15:1F:DC":"RHS","00:8D:F4:D0:0B:33":"IN/LHS","00:8D:F4:D0:0B:20":"IN/RHS","00:8D:F4:D0:0B:5F":"OUT/LHS","00:8D:F4:D0:0B:2B":"OUT/RHS","00:8D:F4:D0:0B:67":"IN/OUT LHS","00:8D:F4:D0:0B:66":"IN/OUT RHS","00:8D:F4:D0:0B:75":"IN/OUT LHS","00:8D:F4:D0:0B:76":"IN/OUT RHS","00:8D:F4:D0:0B:1C":"IN/LHS","00:8D:F4:D0:0B:42":"IN/RHS","00:8D:F4:D0:0B:34":"OUT/LHS","00:8D:F4:D0:0B:41":"OUT/RHS","00:8D:F4:D0:0B:79":"Gate 1 LHS","00:8D:F4:D0:0B:7B":"Gate 1 RHS","00:8D:F4:D0:0B:08":"Gate 2 IN/LHS","00:8D:F4:D0:0B:47":"Gate 2 IN/RHS","00:8D:F4:D0:0B:78":"Gate 2 OUT/LHS","00:8D:F4:D0:0B:49":"Gate 2 OUT/RHS","00:8D:F4:D0:0B:29":"IN/OUT LHS","00:8D:F4:D0:0B:1F":"IN/OUT RHS","00:8D:F4:D0:0B:48":"IN/OUT RHS","00:8D:F4:D0:0A:BF":"IN/OUT LHS","00:8D:F4:D0:0A:BE":"IN/OUT RHS","00:8D:F4:D0:0B:2A":"IN/OUT LHS","00:8D:F4:D0:0B:50":"IN/OUT RHS","00:8D:F4:D0:0B:9A":"Gate1/LHS","00:8D:F4:D0:0F:13":"Gate1/RHS","10:07:23:6E:0D:F1":"Gate2/RHS"};
 
-const LOCS = SITE_MAP.map(s => s.site);
 
 // Storage keys
 const K = {
-  ENG:      'dsc_engineers_v1',
-  REM:      'dsc_remarks_v1',
-  DATA:     'dsc_lastdata_v1',
-  RES:      'dsc_resolved_v1',
-  NOTIF:    'dsc_notif_inbox_v1',
-  NOTIF_READ:'dsc_notif_read_v1',
-  LOG:      'dsc_activity_log_v1',
-  CREDS:    'dsc_creds_v1',
-  CONTACTS: 'dsc_contacts_v1',
-  ACK:      'dsc_ack_v1'
+  REM:        'dsc_remarks_v1',
+  NOTIF:      'dsc_notif_inbox_v1',
+  NOTIF_READ: 'dsc_notif_read_v1',
+  LOG:        'dsc_activity_log_v1',
+  CREDS:      'dsc_creds_v1',
+  CONTACTS:   'dsc_contacts_v1',
+  ACK:        'dsc_ack_v1',
+  DEVICES:    'dsc_device_list_v1',       // { version, updatedAt, source, fetchUrl, devices: [{site,mac,assetId,label}] }
+  DEV_VER:    'dsc_device_list_ver_v1',   // last known KV version timestamp (for sync check)
 };
 const K_AUTH      = 'dsc_auth_v1';
 const K_AUTH_TS   = 'dsc_auth_ts_v1';
 const K_AUTH_US   = 'dsc_auth_user_v1';
-const K_SETUP     = 'dsc_setup_done_v1';
 const K_INSTALL   = 'dsc_install_dismissed';
 const AUTH_TTL    = 24 * 60 * 60 * 1000;
 
@@ -1312,12 +1108,12 @@ const WORKER_URL = 'https://device-status-worker.dswkochi.workers.dev';
 // Gmail Apps Script Web App URLs — set after deploying the script
 // Each engineer deploys their own script under their Gmail account
 const GMAIL_SCRIPT_URLS = {
-  ayush:      'https://script.google.com/macros/s/AKfycbzXs1Q6C4g1IzqmqR0g9f5-UvDv_fVF6c2c-zJ577HsoCrU7L7KJZvMsdXpandXaxfm/exec', // paste Ayush's deployed Web App URL here
-  swethaswan: 'https://script.google.com/macros/s/AKfycbzNVtfJyxXVoWktSWTaXQMDsf4uNe_JyI6Lc1dOfl6jbiqteEBEZfqbGZ--blFTECEo/exec', // paste Swethaswan's deployed Web App URL here
+  ayush:      'https://script.google.com/macros/s/AKfycbzXs1Q6C4g1IzqmqR0g9f5-UvDv_fVF6c2c-zJ577HsoCrU7L7KJZvMsdXpandXaxfm/exec',
+  swethaswan: 'https://script.google.com/macros/s/AKfycbwVnSp9IOOZnMgDHsQ3ShUkyM-PQKrAtNQae_6xs_fCbGbLj1QU9-A5ILsZU7Q_8cPd/exec',
 };
 
 // App state
-let devices = [], filter = 'all', sort = 'days_desc', tab = 'active', deferredInstall = null;
+let devices = [], tab = 'notifs', deferredInstall = null;
 
 // ── localStorage helpers ─────────────────────────────────────
 const lj = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch { return d; } };
@@ -1326,9 +1122,7 @@ const ls = k => localStorage.getItem(k);
 const lset = (k, v) => localStorage.setItem(k, v);
 const lrm = k => localStorage.removeItem(k);
 
-const eng  = () => lj(K.ENG, {});
 const rem  = () => lj(K.REM, {});
-const res  = () => lj(K.RES, {});
 const esc  = s => (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const nk   = s => s.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
 
@@ -1388,8 +1182,17 @@ function getUserRole(u) {
   // Original admin account is always admin
   if (u === 'admin') return 'admin';
   const creds = credCache || lj(K.CREDS, {});
+  // Direct key match
   if (creds && creds[u]) return creds[u].role || 'engineer';
-  // Hardcoded fallback
+  // Match by username field (in case key differs from login username)
+  if (creds) {
+    for (const entry of Object.values(creds)) {
+      if (entry && entry.username && entry.username.toLowerCase() === u.toLowerCase()) {
+        return entry.role || 'engineer';
+      }
+    }
+  }
+  // Hardcoded fallback for core accounts
   if (u === 'ayush' || u === 'swethaswan') return 'engineer';
   return null;
 }
@@ -1421,7 +1224,6 @@ function applyRoleUI(user) {
   const repTab      = document.getElementById('tab-rep');
   const visitTab    = document.getElementById('tab-visit');
   const settingsBtn = document.getElementById('settings-btn');
-  const assignBtn   = document.getElementById('assign-eng-btn');
   if (alertBtn)    alertBtn.style.display    = admin ? 'inline-flex' : 'none';
   if (notifBtn)    notifBtn.style.display    = eng_u ? 'inline-flex' : 'none';
   if (notifTab)    notifTab.style.display    = eng_u ? 'inline-flex' : 'none';
@@ -1429,11 +1231,7 @@ function applyRoleUI(user) {
   if (repTab)      repTab.style.display      = eng_u ? 'inline-flex' : 'none';
   if (visitTab)    visitTab.style.display    = (admin || eng_u) ? 'inline-flex' : 'none';
   if (settingsBtn) settingsBtn.style.display = admin ? 'inline-flex' : 'none';
-  if (assignBtn)   assignBtn.style.display   = admin ? 'inline-flex' : 'none';
-  // Engineer summary cards — only show if admin and data is loaded
-  const engRow   = document.getElementById('eng-summary-row');
   const leaveRow = document.getElementById('leave-requests-row');
-  if (engRow)   engRow.style.display   = (admin && devices.length) ? 'grid' : 'none';
   if (leaveRow) leaveRow.style.display = admin ? 'block' : 'none';
   if (admin) { loadLeaveRequests(); }
   if (eng_u) { updateUnreadBadge(); loadNotifInbox(); }
@@ -1496,6 +1294,20 @@ async function fetchCredentials() {
       }
     }
   } catch(e) { /* offline */ }
+  // Silently sync device list if KV version is newer than local cache
+  try {
+    const rd = await fetch(WORKER_URL + '/device-list');
+    if (rd.ok) {
+      const dd = await rd.json();
+      if (dd.ok && dd.version) {
+        const localVer = parseInt(ls(K.DEV_VER) || '0');
+        if (dd.version > localVer) {
+          sj(K.DEVICES, dd);
+          lset(K.DEV_VER, String(dd.version));
+        }
+      }
+    }
+  } catch(e) { /* offline — use local cache */ }
 }
 
 // Resolve username → { username, hash } from cache or defaults
@@ -1541,7 +1353,7 @@ function doLogin() {
 
 function doLogout() {
   clearSession();
-  tab = 'active';
+  tab = 'notifs';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
@@ -1596,10 +1408,20 @@ async function openSettingsModal() {
     }
   } catch(e) {}
 
+  // Load device list from KV and check version
+  try {
+    const rd = await fetch(WORKER_URL + '/device-list');
+    if (rd.ok) {
+      const dd = await rd.json();
+      if (dd.ok) { saveDeviceListLocal(dd); }
+    }
+  } catch(e) {}
+
   renderEngMgmtList();
   renderContactsList();
   renderVisitContactsList('approval');
   renderVisitContactsList('advance');
+  renderDeviceListSettings();
 }
 
 function renderEngMgmtList() {
@@ -1610,35 +1432,36 @@ function renderEngMgmtList() {
       const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
       const isCore   = u.key === 'admin';
       const role     = u.role || 'engineer';
-      return '<div class="eng-mgmt-row">' +
-        '<div class="eng-mgmt-avatar">' + initials + '</div>' +
+      const roleLabel = role === 'admin' ? 'Admin' : 'Engineer';
+      return '<div class="sett-user-row">' +
+        '<div class="sett-user-avatar">' + initials + '</div>' +
         '<div style="flex:1;min-width:0">' +
-          '<div class="eng-mgmt-name">' + esc(u.name) + '</div>' +
-          '<div class="eng-mgmt-login">Login: ' + esc(u.username) + '</div>' +
+          '<div class="sett-user-name">' + esc(u.name) + '</div>' +
+          '<div class="sett-user-meta">@' + esc(u.username) + ' &middot; ' + roleLabel + (isCore ? ' &middot; Core' : '') + '</div>' +
         '</div>' +
-        '<span class="role-badge ' + role + '">' + (role === 'admin' ? 'Admin' : 'Engineer') + '</span>' +
+        '<div class="sett-user-actions">' +
         (!isCore
-          ? '<button class="btn-remove-eng" style="margin-left:4px" onclick="changeUserRole(\'' + esc(u.key) + '\',\'' + role + '\')">' +
+          ? '<button class="sett-user-chip role" onclick="changeUserRole(\'' + esc(u.key) + '\',\'' + role + '\')">' +
               (role === 'admin' ? '→ Engineer' : '→ Admin') + '</button>' +
-            '<button class="btn-remove-eng" style="margin-left:4px" onclick="removeEngineer(\'' + esc(u.key) + '\')">Remove</button>'
-          : '<span style="font-size:10px;color:var(--text3);padding:3px 6px;flex-shrink:0">Core</span>') +
+            '<button class="sett-user-chip del" onclick="removeEngineer(\'' + esc(u.key) + '\')">Remove</button>'
+          : '') +
+        '</div>' +
       '</div>';
-    }).join('') || '<div style="font-size:12px;color:var(--text2);padding:8px">No users yet.</div>';
+    }).join('') || '<div style="font-size:12px;color:var(--text2);padding:12px 16px">No users yet.</div>';
   }
-  // Password change inputs — all non-core users
+    // Password change inputs — all non-core users
   const changeable = allUsers.filter(u => u.key !== 'admin');
   const pwListEl = document.getElementById('eng-pw-change-list');
   if (pwListEl) {
     pwListEl.innerHTML = changeable.map(u => {
-      return '<div class="user-cred-card" style="margin-bottom:8px">' +
-        '<div class="user-cred-header">' +
-          '<div class="user-cred-avatar">' + u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) + '</div>' +
-          '<div>' +
-            '<div class="user-cred-name">' + esc(u.name) + '</div>' +
-            '<div class="user-cred-login">Login: ' + esc(u.username) + ' · ' + (u.role === 'admin' ? 'Admin' : 'Engineer') + '</div>' +
-          '</div>' +
+      const initials2 = u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      return '<div class="sett-row" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px 16px">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<div class="sett-user-avatar" style="width:28px;height:28px;font-size:10px">' + initials2 + '</div>' +
+          '<div class="sett-user-name" style="font-size:12.5px">' + esc(u.name) + '</div>' +
+          '<div class="sett-user-meta" style="margin-left:4px">@' + esc(u.username) + '</div>' +
         '</div>' +
-        '<div class="cred-field">' +
+        '<div class="cred-field" style="margin:0">' +
           '<label>New password</label>' +
           '<input class="cred-inp" type="password" id="pw-' + esc(u.key) + '" placeholder="Leave blank to keep current" autocomplete="new-password"/>' +
         '</div>' +
@@ -1653,8 +1476,9 @@ function getAllUserList() {
   const list  = [];
   // Original admin always first
   list.push({ key: 'admin', name: 'Admin', username: creds.admin?.username || 'admin', role: 'admin' });
-  // Core engineers
+  // Core engineers — skip if tombstoned via __removed_
   ['ayush','swethaswan'].forEach(k => {
+    if (creds['__removed_' + k]) return; // explicitly deleted
     const entry = creds[k];
     const role  = entry?.role || DEFAULT_HASHES[k]?.role || 'engineer';
     list.push({ key: k, name: entry?.name || (k === 'ayush' ? 'Ayush E P' : 'Swethaswan'), username: entry?.username || k, role });
@@ -1662,6 +1486,7 @@ function getAllUserList() {
   // Dynamic users
   Object.entries(creds).forEach(([key, val]) => {
     if (['admin','ayush','swethaswan'].includes(key)) return;
+    if (key.startsWith('__removed_')) return; // skip tombstones
     if (val && (val.role === 'engineer' || val.role === 'admin')) {
       list.push({ key, name: val.name || key, username: val.username || key, role: val.role });
     }
@@ -1679,9 +1504,10 @@ function changeUserRole(key, currentRole) {
   const newRole = currentRole === 'admin' ? 'engineer' : 'admin';
   if (!credCache[key]) {
     const def = DEFAULT_HASHES[key];
-    credCache[key] = { username: def?.username || key, hash: def?.hash || '', name: key };
+    credCache[key] = { username: def?.username || key, hash: def?.hash || '', name: key, role: newRole };
+  } else {
+    credCache[key].role = newRole;
   }
-  credCache[key].role = newRole;
   sj(K.CREDS, credCache);
   renderEngMgmtList();
   showToast('Role changed to ' + newRole + ' — tap Save & sync to push to server');
@@ -1708,16 +1534,380 @@ function addNewEngineer() {
 }
 
 function removeEngineer(key) {
-  if (!credCache) return;
-  if (!credCache[key]) return;
-  const name = credCache[key].name || key;
+  if (!credCache) credCache = {};
+  // Get name from credCache if present, otherwise fall back to defaults
+  const entry = credCache[key] || DEFAULT_HASHES[key];
+  const name  = (entry && entry.name) || key;
+  // Store null tombstone so getAllUserList() filters it out
   delete credCache[key];
+  // Also ensure it can't be rebuilt from DEFAULT_HASHES by marking as removed
+  credCache['__removed_' + key] = true;
   sj(K.CREDS, credCache);
   renderEngMgmtList();
   showToast(name + ' removed — tap Save & sync to push to server');
 }
 
+function toggleSettPanel(panelId) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  // Rotate chevron — id convention: panel-xxx -> chev-xxx
+  const chevId = 'chev-' + panelId.replace('panel-', '');
+  const chev = document.getElementById(chevId);
+  if (chev) chev.classList.toggle('open', isOpen);
+}
+
 function closeSettingsModal() { document.getElementById('settings-backdrop').classList.remove('open'); }
+
+// ── Device list helpers ───────────────────────────────────────
+function getDeviceList() { return lj(K.DEVICES, null) || { version: 0, updatedAt: null, source: 'none', fetchUrl: '', devices: [] }; }
+function saveDeviceListLocal(data) { sj(K.DEVICES, data); lset(K.DEV_VER, String(data.version || 0)); }
+
+function getDevicesForSite(site) {
+  const dl = getDeviceList();
+  const n  = s => s.toLowerCase().replace(/[_\-\s]+/g, ' ').trim();
+  return (dl.devices || []).filter(d => n(d.site) === n(site) || d.site === site);
+}
+
+function getDeviceSites() {
+  const dl = getDeviceList();
+  return [...new Set((dl.devices || []).map(d => d.site))].sort();
+}
+
+// ── Render device list in settings ───────────────────────────
+function renderDeviceListSettings() {
+  const dl      = getDeviceList();
+  const devs    = dl.devices || [];
+  const countEl = document.getElementById('dev-list-count');
+  const inner   = document.getElementById('dev-list-inner');
+  const urlEl   = document.getElementById('dev-fetch-url');
+  if (urlEl && dl.fetchUrl) urlEl.value = dl.fetchUrl;
+  const statusEl = document.getElementById('dev-fetch-status');
+  if (statusEl && dl.updatedAt) {
+    const ago = timeAgo(new Date(dl.updatedAt).getTime());
+    statusEl.textContent = 'Last synced ' + ago + ' · source: ' + (dl.source || 'manual');
+  }
+  if (countEl) countEl.textContent = devs.length + ' device' + (devs.length !== 1 ? 's' : '') + ' across ' + getDeviceSites().length + ' sites';
+  const datalist = document.getElementById('dev-site-datalist');
+  if (datalist) datalist.innerHTML = getDeviceSites().map(s => '<option value="' + esc(s) + '">').join('');
+  if (!inner) return;
+  if (!devs.length) {
+    inner.innerHTML = '<div style="padding:12px;color:var(--text2);font-size:12px">No devices yet. Add manually, upload a CSV, or fetch from URL above.</div>';
+    return;
+  }
+  const bySite = {};
+  devs.forEach((d, i) => { if (!bySite[d.site]) bySite[d.site] = []; bySite[d.site].push({ ...d, _idx: i }); });
+  inner.innerHTML = Object.entries(bySite).map(([site, siteDevs]) => {
+    const safesite = esc(site);
+    return '<div style="border-bottom:1px solid var(--border)">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 6px 4px 10px;background:var(--bg2);position:sticky;top:0">' +
+        '<span style="font-size:11px;font-weight:600;color:var(--text2)">' + safesite + ' <span style="font-weight:400;color:var(--text3)">(' + siteDevs.length + ')</span></span>' +
+        '<button onclick="deleteSite(&quot;' + safesite + '&quot;)" style="background:none;border:1px solid var(--red-dot);border-radius:4px;cursor:pointer;color:var(--red-text);font-size:10px;padding:2px 7px;font-family:var(--font);white-space:nowrap">🗑 Delete site</button>' +
+      '</div>' +
+      siteDevs.map(d =>
+        '<div style="display:flex;align-items:center;gap:8px;padding:5px 10px;border-top:1px solid var(--border)">' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:12px;color:var(--text);font-family:monospace">' + esc(d.mac) + '</div>' +
+            (d.label ? '<div style="font-size:11px;color:var(--text2)">' + esc(d.label) + '</div>' : '') +
+          '</div>' +
+          '<button onclick="removeDevice(' + d._idx + ')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:2px 5px;line-height:1;border-radius:4px" title="Remove this device">✕</button>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+  }).join('');
+}
+
+// ── Add device manually ───────────────────────────────────────
+function addDeviceManually() {
+  const site  = document.getElementById('new-dev-site')?.value.trim();
+  const mac   = document.getElementById('new-dev-mac')?.value.trim().toUpperCase();
+  const label = document.getElementById('new-dev-label')?.value.trim();
+  if (!site) { showToast('Enter a site name'); return; }
+  if (!mac || !/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)) { showToast('Enter a valid MAC (e.g. 84:24:8D:F1:40:35)'); return; }
+  const dl = getDeviceList();
+  if (dl.devices.some(d => d.mac === mac && d.site === site)) { showToast('Device already exists for that site'); return; }
+  dl.devices.push({ site, mac, assetId: label, label });
+  dl.updatedAt = new Date().toISOString();
+  dl.source    = 'manual';
+  saveDeviceListLocal(dl);
+  ['new-dev-site','new-dev-mac','new-dev-label'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  renderDeviceListSettings();
+  showToast('Device added — tap "Save devices to server" to sync');
+}
+
+// ── Remove device ─────────────────────────────────────────────
+function removeDevice(idx) {
+  const dl = getDeviceList();
+  dl.devices.splice(idx, 1);
+  dl.updatedAt = new Date().toISOString();
+  saveDeviceListLocal(dl);
+  renderDeviceListSettings();
+  showToast('Device removed — tap "Save devices to server" to sync');
+}
+
+// ── Delete all devices for a single site ──────────────────────
+function deleteSite(site) {
+  if (deleteSite._confirm === site) {
+    deleteSite._confirm = null;
+    const dl = getDeviceList();
+    const before = dl.devices.length;
+    dl.devices = dl.devices.filter(d => d.site !== site);
+    dl.updatedAt = new Date().toISOString();
+    saveDeviceListLocal(dl);
+    renderDeviceListSettings();
+    showToast('Deleted ' + (before - dl.devices.length) + ' devices for "' + site + '" — tap Save to sync');
+  } else {
+    deleteSite._confirm = site;
+    showToast('Tap "Delete site" again to confirm deletion of "' + site + '"');
+    setTimeout(() => { if (deleteSite._confirm === site) deleteSite._confirm = null; }, 3000);
+  }
+}
+deleteSite._confirm = null;
+
+// ── Clear entire device list ───────────────────────────────────────────
+function clearAllDevices() {
+  const countEl = document.getElementById('dev-list-count');
+  if (clearAllDevices._confirm) {
+    clearAllDevices._confirm = false;
+    const dl = getDeviceList();
+    const count = dl.devices.length;
+    dl.devices   = [];
+    dl.updatedAt = new Date().toISOString();
+    dl.version   = Date.now();
+    saveDeviceListLocal(dl);
+    renderDeviceListSettings();
+    updateReportAdminBar();
+    showToast(count + ' devices cleared — tap Save to sync to server');
+  } else {
+    clearAllDevices._confirm = true;
+    if (countEl) {
+      const orig = countEl.textContent;
+      countEl.textContent = 'Tap "Clear all" again to confirm';
+      countEl.style.color = 'var(--red-text)';
+      setTimeout(() => {
+        clearAllDevices._confirm = false;
+        countEl.textContent = orig;
+        countEl.style.color = '';
+      }, 3000);
+    }
+  }
+}
+clearAllDevices._confirm = false;
+
+// ── CSV upload preview & apply ────────────────────────────────
+let _csvPreviewDevices = null;
+
+function previewDeviceCsv(input) {
+  const file = input.files[0]; if (!file) return;
+  const previewEl = document.getElementById('dev-csv-preview');
+  const applyBtn  = document.getElementById('dev-csv-apply-btn');
+  previewEl.textContent = 'Reading…'; _csvPreviewDevices = null;
+  if (applyBtn) applyBtn.style.display = 'none';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  function handleParsed(parsed) {
+    if (!parsed || !parsed.length) { previewEl.textContent = 'No valid devices found in file.'; return; }
+    _csvPreviewDevices = parsed;
+    const current = getDeviceList().devices || [];
+    const curSet  = new Set(current.map(d => d.mac + '|' + d.site));
+    const incSet  = new Set(parsed.map(d => d.mac + '|' + d.site));
+    const added   = parsed.filter(d => !curSet.has(d.mac + '|' + d.site)).length;
+    const removed = current.filter(d => !incSet.has(d.mac + '|' + d.site)).length;
+    const same    = parsed.filter(d => curSet.has(d.mac + '|' + d.site)).length;
+    previewEl.innerHTML =
+      '<strong>' + parsed.length + ' devices</strong> · ' +
+      '<span style="color:var(--green-text)">+' + added + ' new</span> · ' +
+      '<span style="color:var(--red-text)">−' + removed + ' removed</span> · ' +
+      same + ' unchanged<br>' +
+      '<span style="font-size:11px;color:var(--text3)">Detected columns: ' + (parsed._cols || 'site, mac, label') + '</span>';
+    if (applyBtn) applyBtn.style.display = 'inline-flex';
+  }
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    if (typeof XLSX === 'undefined') { previewEl.textContent = 'Excel parser not loaded yet — try again in a moment.'; return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const wb  = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+        const ws  = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        if (!rows || rows.length < 2) { previewEl.textContent = 'Excel file appears empty.'; return; }
+        const csvText = rows.map(r => r.map(c => '"' + String(c || '').replace(/"/g, '""') + '"').join(',')).join('\n');
+        handleParsed(parseDeviceCsvText(csvText));
+      } catch(err) { previewEl.textContent = 'Could not parse Excel: ' + err.message; }
+    };
+    reader.onerror = () => { previewEl.textContent = 'Could not read file.'; };
+    reader.readAsArrayBuffer(file);
+  } else {
+    const reader = new FileReader();
+    reader.onload = e => { handleParsed(parseDeviceCsvText(e.target.result)); };
+    reader.onerror = () => { previewEl.textContent = 'Could not read file.'; };
+    reader.readAsText(file);
+  }
+}
+
+// RFC 4180-compliant CSV row parser — correctly handles quoted fields that
+// contain commas, double-quotes, or newlines inside them.
+function parseCsvRow(line) {
+  const cols = [];
+  let cur = '';
+  let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuote) {
+      if (ch === '"') {
+        // Two consecutive quotes inside a quoted field = escaped quote character
+        if (i + 1 < line.length && line[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else {
+          inQuote = false; // closing quote
+        }
+      } else {
+        cur += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuote = true;
+      } else if (ch === ',') {
+        cols.push(cur.trim());
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+  }
+  cols.push(cur.trim()); // last column
+  return cols;
+}
+
+// Multi-line RFC 4180 CSV parser: handles quoted fields that span multiple lines.
+function parseCsvAllRows(txt) {
+  const rows = [];
+  let cur = '';
+  let inQuote = false;
+  for (let i = 0; i < txt.length; i++) {
+    const ch = txt[i];
+    if (inQuote) {
+      if (ch === '"') {
+        if (i + 1 < txt.length && txt[i + 1] === '"') { cur += '"'; i++; }
+        else { inQuote = false; cur += ch; }
+      } else { cur += ch; }
+    } else {
+      if (ch === '"') { inQuote = true; cur += ch; }
+      else if (ch === '\n' || (ch === '\r' && txt[i + 1] === '\n')) {
+        if (ch === '\r') i++;
+        if (cur.trim()) rows.push(parseCsvRow(cur));
+        cur = '';
+      } else { cur += ch; }
+    }
+  }
+  if (cur.trim()) rows.push(parseCsvRow(cur));
+  return rows;
+}
+
+function parseDeviceCsvText(txt) {
+  const rows = parseCsvAllRows(txt);
+  if (rows.length < 2) return [];
+  const hdr = rows[0].map(h => h.replace(/^"|"$/g, '').trim().toLowerCase());
+
+  // Detect columns by header keyword — order: site, label, mac, engineer
+  // MAC must match 'mac' or 'reader' but NOT just 'asset' (asset alone = label)
+  const iSite  = hdr.findIndex(h => h.includes('site') || h.includes('location'));
+  const iMac   = hdr.findIndex(h => h.includes('mac') || h.includes('reader'));
+  const iLabel = hdr.findIndex(h =>
+    (h.includes('asset') || h.includes('label') || h.includes('gate') || h.includes('position')) &&
+    !h.includes('mac') && !h.includes('reader')
+  );
+  const iEng   = hdr.findIndex(h => h.includes('engineer') || h.includes('eng'));
+
+  // Fallback to positional if headers not detected: col0=site, col1=label, col2=mac, col3=eng
+  const getSite  = cols => (iSite  >= 0 ? cols[iSite]  : cols[0] || '').trim();
+  const getMac   = cols => (iMac   >= 0 ? cols[iMac]   : cols[2] || '').trim().toUpperCase();
+  const getLabel = cols => (iLabel >= 0 ? cols[iLabel] : cols[1] || '').trim();
+  const getEng   = cols => (iEng   >= 0 ? cols[iEng]   : cols[3] || '').trim();
+
+  const result = [];
+  for (let i = 1; i < rows.length; i++) {
+    const cols = rows[i];
+    const site  = getSite(cols);
+    const mac   = getMac(cols);
+    const label = getLabel(cols);
+    const eng   = getEng(cols);
+    if (!site || !mac) continue;
+    // Validate MAC loosely — must contain colons/dashes or be 12 hex chars
+    if (!/^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^[0-9A-Fa-f]{12}$/.test(mac)) continue;
+    const displayLabel = label + (eng ? ' · ' + eng : '');
+    result.push({ site, mac, assetId: label, label: displayLabel, engineer: eng });
+  }
+  result._cols = [
+    iSite  >= 0 ? hdr[iSite]  : 'col0 (site)',
+    iMac   >= 0 ? hdr[iMac]   : 'col2 (mac)',
+    iLabel >= 0 ? hdr[iLabel] : 'col1 (label)',
+    iEng   >= 0 ? hdr[iEng]   : 'col3 (engineer)'
+  ].join(', ');
+  return result;
+}
+
+function applyDeviceCsvPreview() {
+  if (!_csvPreviewDevices || !_csvPreviewDevices.length) { showToast('No devices to apply'); return; }
+  const dl = getDeviceList();
+  const srcFile = document.getElementById('dev-csv-file');
+  const srcExt  = srcFile && srcFile.files[0] ? srcFile.files[0].name.split('.').pop().toLowerCase() : 'csv';
+  dl.devices = _csvPreviewDevices; dl.updatedAt = new Date().toISOString(); dl.source = (srcExt === 'xlsx' || srcExt === 'xls') ? 'xlsx_upload' : 'csv_upload'; dl.version = Date.now();
+  saveDeviceListLocal(dl); _csvPreviewDevices = null;
+  const applyBtn = document.getElementById('dev-csv-apply-btn');
+  const previewEl = document.getElementById('dev-csv-preview');
+  const fileInp = document.getElementById('dev-csv-file');
+  if (applyBtn) applyBtn.style.display = 'none';
+  if (previewEl) previewEl.textContent = '';
+  if (fileInp) fileInp.value = '';
+  renderDeviceListSettings();
+  showToast(dl.devices.length + ' devices applied — tap "Save devices to server" to sync');
+}
+
+// ── Fetch from URL (via worker CORS proxy) ────────────────────
+async function fetchDevicesFromUrl() {
+  const urlEl    = document.getElementById('dev-fetch-url');
+  const statusEl = document.getElementById('dev-fetch-status');
+  const url      = urlEl ? urlEl.value.trim() : '';
+  if (!url) { showToast('Enter a URL first'); return; }
+  statusEl.textContent = 'Fetching…';
+  try {
+    await fetch(WORKER_URL + '/set-fetch-url', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const r = await fetch(WORKER_URL + '/fetch-from-url');
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'Fetch failed');
+    const rd = await fetch(WORKER_URL + '/device-list');
+    const dd = await rd.json();
+    if (dd.ok) {
+      saveDeviceListLocal(dd);
+      renderDeviceListSettings();
+      statusEl.textContent = 'Fetched ' + (dd.devices?.length || 0) + ' devices · just now';
+      showToast('Device list updated from URL');
+    }
+  } catch (e) { statusEl.textContent = 'Fetch failed: ' + e.message; showToast('Fetch failed — ' + e.message); }
+}
+
+// ── Push device list to KV ────────────────────────────────────
+async function pushDeviceListToKV(showFeedback) {
+  const dl = getDeviceList();
+  dl.version = Date.now(); dl.updatedAt = new Date().toISOString();
+  saveDeviceListLocal(dl);
+  try {
+    const r = await fetch(WORKER_URL + '/device-list', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ devices: dl.devices, source: dl.source || 'manual', fetchUrl: dl.fetchUrl || '', version: dl.version })
+    });
+    const d = await r.json();
+    if (d.ok) { if (showFeedback) showToast('Device list saved to server ✓ — ' + dl.devices.length + ' devices'); renderDeviceListSettings(); }
+    else { if (showFeedback) showToast('Save failed: ' + (d.error || 'unknown')); }
+  } catch(e) { if (showFeedback) showToast('Offline — saved locally only'); }
+}
 
 async function saveSettings() {
   const btn = document.getElementById('settings-save-btn');
@@ -1735,22 +1925,32 @@ async function saveSettings() {
   const credentials = {};
   let hasChanges = false;
 
-  // Build credentials from all engineers
-  const allEngineers = getEngineerList();
-  for (const eng_entry of allEngineers) {
+  // Collect removed keys from tombstones in credCache
+  const removedKeys = Object.keys(credCache || {})
+    .filter(k => k.startsWith('__removed_'))
+    .map(k => k.replace('__removed_', ''));
+  if (removedKeys.length) hasChanges = true;
+
+  // Build credentials from ALL non-admin users in credCache (not just engineers)
+  const allUsers = getAllUserList().filter(u => u.key !== 'admin');
+  for (const eng_entry of allUsers) {
     const pwEl = document.getElementById('pw-' + eng_entry.key);
     const pwVal = pwEl ? pwEl.value.trim() : '';
-    const existing = credCache && credCache[eng_entry.key] ? credCache[eng_entry.key] : { username: eng_entry.username, hash: DEFAULT_HASHES[eng_entry.key]?.hash || '' };
+    const existing = credCache && credCache[eng_entry.key] ? credCache[eng_entry.key] : { username: eng_entry.username, hash: DEFAULT_HASHES[eng_entry.key]?.hash || '', role: eng_entry.role || 'engineer', name: eng_entry.name || eng_entry.username };
     let newHash = existing.hash;
     if (pwVal) {
       if (pwVal.length < 6) { showToast('Password for ' + eng_entry.name + ' must be 6+ chars'); return; }
       newHash = sha256(eng_entry.username + ':' + pwVal);
       hasChanges = true;
     }
-    credentials[eng_entry.key] = { username: eng_entry.username, name: eng_entry.name, hash: newHash, role: 'engineer' };
-    if (credCache && credCache[eng_entry.key] && credCache[eng_entry.key].role === 'engineer' && eng_entry.key !== 'ayush' && eng_entry.key !== 'swethaswan') {
-      hasChanges = true; // new engineer added
-    }
+    // Read actual role from credCache — do NOT hardcode to 'engineer'
+    const actualRole = (credCache && credCache[eng_entry.key] && credCache[eng_entry.key].role) || eng_entry.role || 'engineer';
+    credentials[eng_entry.key] = { username: eng_entry.username, name: eng_entry.name || eng_entry.username, hash: newHash, role: actualRole };
+    // Mark changed if: new user (not in defaults), role changed, or any field differs
+    const isCore = ['ayush', 'swethaswan'].includes(eng_entry.key);
+    const defaultRole = DEFAULT_HASHES[eng_entry.key]?.role || 'engineer';
+    if (!isCore) hasChanges = true; // dynamic user — always sync
+    else if (actualRole !== defaultRole) hasChanges = true; // role changed on core user
   }
 
   if (adminNewPw) { if (adminNewPw.length < 6) { showToast('New admin password must be 6+ chars'); return; } hasChanges = true; }
@@ -1759,10 +1959,10 @@ async function saveSettings() {
   btn.disabled = true; btn.textContent = 'Saving…';
 
   try {
-    // Save engineer credentials
+    // Save engineer credentials — send removedKeys so Worker deletes them from KV
     const r = await fetch(WORKER_URL + '/set-credentials', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ adminHash: adminCurrentHash, credentials })
+      body: JSON.stringify({ adminHash: adminCurrentHash, credentials, removedKeys })
     });
     const data = await r.json();
     if (!data.ok) {
@@ -1771,6 +1971,8 @@ async function saveSettings() {
     }
     if (!credCache) credCache = {};
     Object.assign(credCache, credentials);
+    // Clean up removal tombstones now that server is updated
+    removedKeys.forEach(k => { delete credCache['__removed_' + k]; delete credCache[k]; });
     sj(K.CREDS, credCache);
 
     // Save admin password if changed
@@ -1797,223 +1999,14 @@ async function saveSettings() {
   btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 2L6 12l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save &amp; sync';
 }
 
-// ── Location / CSV helpers ───────────────────────────────────
-function norms(s) {
-  return s.toLowerCase().replace(/[_\-]/g, ' ').replace(/[().,]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-function matchLoc(csvLoc) {
-  if (!csvLoc) return false;
-  const c = norms(csvLoc);
-  if (c.length < 5) return false;
-  return SITE_MAP.some(entry => {
-    const s = norms(entry.site);
-    if (s.length < 5) return false;
-    return c === s || c.includes(s) || (s.includes(c) && c.length >= s.length * 0.75);
-  });
-}
-function getEngineerForLoc(csvLoc) {
-  if (!csvLoc) return '';
-  const c = norms(csvLoc);
-  if (c.length < 5) return '';
-  let best = null, bestLen = 0;
-  SITE_MAP.forEach(entry => {
-    const s = norms(entry.site);
-    if (s.length < 5) return;
-    const matched = c === s || c.includes(s) || (s.includes(c) && c.length >= s.length * 0.75);
-    if (matched && s.length > bestLen) { best = entry; bestLen = s.length; }
-  });
-  return best ? best.engineer : '';
-}
-function getAssetId(macId) {
-  return macId ? (MAC_ASSET_MAP[macId.toUpperCase()] || '') : '';
-}
-function pd(s) {
-  if (!s) return null;
-  s = s.trim().replace(/^"|"$/g, '').trim();
-  let m = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})[\s,T]+(\d{1,2}):(\d{2}):(\d{2})/);
-  if (m) return new Date(+m[3], +m[2]-1, +m[1], +m[4], +m[5], +m[6]);
-  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[\s,T]+(\d{1,2}):(\d{2}):(\d{2})/);
-  if (m) return new Date(+m[3], +m[1]-1, +m[2], +m[4], +m[5], +m[6]);
-  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[\s,T]+(\d{1,2}):(\d{2}):(\d{2})/);
-  if (m) return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +m[6]);
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
-}
-function calcD(d) { return d ? Math.max(0, Math.floor((Date.now() - d) / 864e5)) : null; }
-function calcH(d) { return d ? Math.max(0, (Date.now() - d) / 36e5) : null; }
-function prio(d) { if (d === null) return 'u'; if (d <= 1) return 't'; if (d <= 7) return 'h'; return 'c'; }
-function parseLine(l) {
-  const r = []; let c = '', q = false;
-  for (let i = 0; i < l.length; i++) {
-    const ch = l[i];
-    if (ch === '"') { q = !q; } else if (ch === ',' && !q) { r.push(c); c = ''; } else c += ch;
-  }
-  r.push(c); return r;
-}
-
-// ── CSV parsing ──────────────────────────────────────────────
-function parseCSV(txt) {
-  const lines = txt.split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const hdr = parseLine(lines[0]).map(h => h.replace(/^"|"$/g, '').trim());
-  const KNOWN = {
-    loc:  ['LOCATION_NAME','Location_Name','location_name','LocationName'],
-    sync: ['LastSync','Last_Sync','last_sync','LAST_SYNC','LastSyncTime'],
-    id:   ['MAC_ID','mac_id','ASSET_ID','asset_id','DeviceID','Device_ID']
-  };
-  function findCol(candidates) {
-    for (let ci = 0; ci < candidates.length; ci++) {
-      const idx = hdr.findIndex(h => h === candidates[ci]);
-      if (idx >= 0) return idx;
-    }
-    const kw = candidates[0].toLowerCase();
-    return hdr.findIndex(h => h.toLowerCase().includes(kw.replace(/_/g, '')));
-  }
-  let iLoc = findCol(KNOWN.loc);
-  let iSync = findCol(KNOWN.sync);
-  let iId   = findCol(KNOWN.id);
-  if (iLoc  < 0) iLoc  = 4;
-  if (iSync < 0) iSync = 2;
-  if (iId   < 0) iId   = 0;
-  const out = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const cols = parseLine(line);
-    if (!cols || cols.length <= iLoc) continue;
-    const loc = (cols[iLoc] || '').replace(/^"|"$/g, '').trim();
-    if (!loc || !matchLoc(loc)) continue;
-    const sr = (cols[iSync] || '').replace(/^"|"$/g, '').trim();
-    const sd = pd(sr);
-    const days = calcD(sd ? sd.getTime() : null);
-    const rawId = String(cols[iId] || i).replace(/^"|"$/g, '').trim();
-    const autoEng = getEngineerForLoc(loc);
-    const hours = calcH(sd ? sd.getTime() : null);
-    const assetId = getAssetId(rawId);
-    out.push({ uid: rawId + '_' + nk(loc), id: rawId, assetId, sr, sd, days, hours, p: prio(days), loc, autoEng });
-  }
-  return out;
-}
-
-// ── Fetch ────────────────────────────────────────────────────
-async function fetchCSV() {
-  const btn = document.getElementById('fetch-btn');
-  const lbl = document.getElementById('fetch-label');
-  btn.disabled = true; lbl.textContent = 'Fetching…';
-  clearErr();
-  // Fallback reset in case fetch hangs (service worker can't clone AbortSignal)
-  const safeguard = setTimeout(() => {
-    btn.disabled = false; lbl.textContent = 'Fetch Latest';
-    showErr('Fetch timed out — server may be unreachable. Using cached data.', 'stale', true);
-    const c = lj(K.DATA, null);
-    if (c && c.devices && c.devices.length) {
-      devices = c.devices;
-      loaded(new Date(c.ts), true);
-    }
-  }, 15000);
-  try {
-    const r = await fetch('https://devicehealth.ldb.co.in:8181/api/DeviceStatus/DownloadAndProcess');
-    clearTimeout(safeguard);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    devices = parseCSV(await r.text());
-    const ts = Date.now();
-    sj(K.DATA, { ts, devices });
-    loaded(new Date(ts), false);
-    showToast('Data refreshed — ' + devices.length + ' devices');
-  } catch (e) {
-    clearTimeout(safeguard);
-    const c = lj(K.DATA, null);
-    if (c && c.devices && c.devices.length) {
-      devices = c.devices;
-      loaded(new Date(c.ts), true);
-      const age = Math.round((Date.now() - c.ts) / 36e5);
-      showErr('Live fetch failed (' + e.message + '). Cached data — ' + age + 'h old.', 'stale', true);
-    } else {
-      showErr('Could not fetch data: ' + e.message, 'warn', true);
-    }
-  }
-  btn.disabled = false; lbl.textContent = 'Fetch Latest';
-}
-
-function autoAssignEngineers() {
-  const e = eng(); let changed = false;
-  SITE_MAP.forEach(entry => {
-    const k = nk(entry.site);
-    if (entry.engineer && !e[k]) { e[k] = entry.engineer; changed = true; }
-  });
-  if (changed) sj(K.ENG, e);
-}
-
-function loaded(ts, cached) {
-  autoAssignEngineers();
-  const age = Math.round((Date.now() - ts.getTime()) / 36e5);
-  const lastFetched  = document.getElementById('last-fetched');
-  const staleBadge   = document.getElementById('stale-badge');
-  const statsRow     = document.getElementById('stats-row');
-  const mainUi       = document.getElementById('main-ui');
-  const emptyState   = document.getElementById('empty-state');
-  if (lastFetched) lastFetched.textContent =
-    (cached ? 'Cached ' : 'Fetched ') +
-    ts.toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-  if (staleBadge)  staleBadge.style.display  = age >= 24 ? 'inline' : 'none';
-  if (statsRow)    statsRow.style.display    = 'grid';
-  if (mainUi)      mainUi.style.display      = 'block';
-  if (emptyState)  emptyState.style.display  = 'none';
-  updStats(); renderActive(); renderResolved();
-}
-
 // ── Stats & filtering ────────────────────────────────────────
-function active()   { const rv = res(); return devices.filter(d => !rv[d.uid]); }
-function resolved() { const rv = res(); return devices.filter(d => !!rv[d.uid]); }
 
-function updStats() {
-  const a = active(), rv = resolved();
-  document.getElementById('s-total').textContent = a.length;
-  document.getElementById('s-crit').textContent  = a.filter(d => d.p === 'c').length;
-  document.getElementById('s-high').textContent  = a.filter(d => d.p === 'h').length;
-  document.getElementById('s-temp').textContent  = a.filter(d => d.p === 't').length;
-  document.getElementById('s-res').textContent   = rv.length;
-  const tabR = document.getElementById('tab-r');
-  if (tabR) tabR.textContent = 'Resolved (' + rv.length + ')';
-
-  // Engineer summary cards — only meaningful for admin
-  if (isAdmin(getCurrentUser())) {
-    const engRow = document.getElementById('eng-summary-row');
-    if (engRow) engRow.style.display = 'grid';
-    ['Ayush E P','Swethaswan'].forEach(engName => {
-      const key = engName === 'Ayush E P' ? 'a' : 's';
-      const myActive   = a.filter(d  => getEngineerForLoc(d.loc) === engName);
-      const myResolved = rv.filter(d => getEngineerForLoc(d.loc) === engName);
-      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-      set('ec-'+key+'-crit', myActive.filter(d => d.p === 'c').length);
-      set('ec-'+key+'-high', myActive.filter(d => d.p === 'h').length);
-      set('ec-'+key+'-temp', myActive.filter(d => d.p === 't').length);
-      set('ec-'+key+'-res',  myResolved.length);
-    });
-  }
-}
-
-function setFilter(f, el) {
-  filter = f;
-  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  const s = document.getElementById('eng-filter-sel');
-  if (s) s.value = '';
-  renderActive();
-}
-function setEngFilter(v) {
-  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
-  document.getElementById('pill-all').classList.add('active');
-  filter = v ? 'eng:' + v : 'all';
-  renderActive();
-}
-function setSort(v) { sort = v; renderActive(); }
 
 function switchTab(t) {
   tab = t;
-  const panels = ['active','resolved','notifs','log','reports','visit'];
+  const panels = ['notifs','log','reports','visit'];
   panels.forEach(id => {
-    const tabId  = id === 'active' ? 'a' : id === 'resolved' ? 'r' : id === 'notifs' ? 'n' : id === 'log' ? 'l' : id === 'reports' ? 'rep' : 'visit';
+    const tabId  = id === 'notifs' ? 'n' : id === 'log' ? 'l' : id === 'reports' ? 'rep' : 'visit';
     const tabEl  = document.getElementById('tab-' + tabId);
     const panel  = document.getElementById('panel-' + id);
     if (tabEl) tabEl.classList.toggle('active', id === t);
@@ -2021,255 +2014,8 @@ function switchTab(t) {
   });
   if (t === 'notifs')  { markNotifsRead(); renderNotifInbox(); }
   if (t === 'log')     { renderActivityLog(); loadKvReports(); loadAdminInbox(); }
-  if (t === 'reports') { closeReportWizard(); }
+  if (t === 'reports') { closeReportWizard(); fetchDeviceListForReports(); updateReportAdminBar(); }
   if (t === 'visit')   { onVisitTabOpen(); }
-}
-
-function applySearch(data, query) {
-  if (!query) return data;
-  const q = query.toLowerCase();
-  const e = eng();
-  return data.filter(d => {
-    const engName = (e[nk(d.loc)] || '').toLowerCase();
-    return d.loc.toLowerCase().includes(q) || d.id.toLowerCase().includes(q) ||
-           engName.includes(q) || (rem()[d.uid] || '').toLowerCase().includes(q);
-  });
-}
-
-function getSorted() {
-  let d = active();
-  if (filter !== 'all') {
-    d = d.filter(x => {
-      if (filter === 'critical') return x.p === 'c';
-      if (filter === 'high')     return x.p === 'h';
-      if (filter === 'temp')     return x.p === 't';
-      if (filter.startsWith('eng:')) return getEngineerForLoc(x.loc) === filter.slice(4);
-      return true;
-    });
-  }
-  const q = document.getElementById('search-active') ? document.getElementById('search-active').value : '';
-  d = applySearch(d, q);
-  d.sort((a, b) => {
-    if (sort === 'days_desc') return (b.hours != null ? b.hours : -1) - (a.hours != null ? a.hours : -1);
-    if (sort === 'days_asc')  return (a.hours != null ? a.hours : 999999) - (b.hours != null ? b.hours : 999999);
-    if (sort === 'sync_desc') return (b.sd ? b.sd.getTime() : 0) - (a.sd ? a.sd.getTime() : 0);
-    if (sort === 'sync_asc')  return (a.sd ? a.sd.getTime() : 0) - (b.sd ? b.sd.getTime() : 0);
-    return (b.hours != null ? b.hours : -1) - (a.hours != null ? a.hours : -1);
-  });
-  return d;
-}
-
-// ── Render helpers ───────────────────────────────────────────
-function dotH(p) {
-  const cls = { c:'dot-c', h:'dot-h', t:'dot-t', r:'dot-r' };
-  return '<span class="dot ' + (cls[p] || '') + '"></span>';
-}
-function badgeH(p) {
-  const map = { c:['badge-c','Critical'], h:['badge-h','High'], t:['badge-t','Temp'], u:['badge-r','Unknown'] };
-  const [cls, lbl] = map[p] || map.u;
-  return '<span class="badge ' + cls + '">' + lbl + '</span>';
-}
-function daysH(d) {
-  if (d === null || d === undefined) return '<span class="days" style="color:var(--text3)">—</span>';
-  const cls = d <= 1 ? 'days-t' : d <= 7 ? 'days-h' : 'days-c';
-  return '<span class="days ' + cls + '">' + d + 'd</span>';
-}
-
-// ── Render active ────────────────────────────────────────────
-function renderActive() {
-  const data = getSorted(), e = eng(), r = rem();
-  const el = document.getElementById('active-tbl');
-  const countEl = document.getElementById('active-count');
-  const total = active().length;
-  const acks = lj(K.ACK, {});
-  const user = getCurrentUser();
-  const admin = isAdmin(user);
-  const engUser = isEngineer(user);
-  if (data.length !== total || document.getElementById('search-active').value) {
-    countEl.style.display = 'block';
-    countEl.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + total + ' active issues';
-  } else { countEl.style.display = 'none'; }
-  if (!data.length) { el.innerHTML = '<div class="empty">No devices match.</div>'; return; }
-  el.innerHTML = '<div class="table-wrap"><table>' +
-    '<thead><tr>' +
-    '<th style="width:40%">Location</th>' +
-    '<th style="width:10%">Priority</th>' +
-    '<th style="width:8%;text-align:center">Down</th>' +
-    '<th style="width:13%">Engineer</th>' +
-    '<th style="width:12%"></th>' +
-    '</tr></thead><tbody>' +
-    data.map((d, i) => {
-      const ek = nk(d.loc), ev = e[ek] || '', rv = r[d.uid] || '';
-      const uid = esc(d.uid), loc = esc(d.loc), days = d.days || 0;
-      const ackData = acks[d.uid];
-      const myAck   = ackData && ackData.user === user;
-
-      // Ack chip
-      const ackChip = admin && ackData
-        ? '<div class="ack-chip" style="margin-top:4px">' +
-            '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-            esc(ackData.user) + ' · ' + timeAgo(ackData.ts) +
-          '</div>' : '';
-
-      // Action buttons
-      const resolveBtn = '<button class="btn-res" style="font-size:12px;padding:7px 14px;min-height:34px;white-space:nowrap" onclick="event.stopPropagation();resolve(\'' + uid + '\')">Resolve</button>';
-      const alertBtn   = admin
-        ? '<button class="btn-row-alert" style="padding:6px 8px;min-height:34px;display:inline-flex;align-items:center" onclick="event.stopPropagation();openAlertFromRow(\'' + uid + '\',\'' + loc + '\',' + days + ')" title="Send alert">' +
-          '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
-          '</button>' : '';
-      const ackBtn = engUser
-        ? (myAck
-            ? '<span class="btn-ack acked" style="font-size:12px;padding:7px 12px;min-height:34px;display:inline-flex;align-items:center">✓ On it</span>'
-            : '<button class="btn-ack" style="font-size:12px;padding:7px 12px;min-height:34px" onclick="event.stopPropagation();acknowledgeDevice(\'' + uid + '\',\'' + loc + '\')">I\'m on it</button>')
-        : '';
-
-      // Compact secondary info (MAC · Asset · LastSync)
-      const secondary = [
-        d.id ? '<span style="font-family:monospace">' + esc(d.id) + '</span>' : null,
-        d.assetId ? esc(d.assetId) : null,
-        d.sr ? esc(d.sr) : null
-      ].filter(Boolean).join(' <span style="color:var(--border2);margin:0 2px">·</span> ');
-
-      // Detail drawer
-      const drawerHtml =
-        '<tr class="device-detail-row" id="detail-' + uid + '" style="display:none"><td colspan="5">' +
-          '<div class="device-detail-inner">' +
-            '<div class="device-detail-item"><span class="device-detail-lbl">MAC ID</span><span class="device-detail-val mono">' + esc(d.id) + '</span></div>' +
-            '<div class="device-detail-item"><span class="device-detail-lbl">Asset ID</span><span class="device-detail-val">' + (esc(d.assetId)||'—') + '</span></div>' +
-            '<div class="device-detail-item"><span class="device-detail-lbl">Last sync</span><span class="device-detail-val">' + (esc(d.sr)||'—') + '</span></div>' +
-            '<div class="device-detail-item"><span class="device-detail-lbl">Days down</span><span class="device-detail-val">' + (d.days !== null ? d.days + (d.days === 1 ? ' day' : ' days') : '—') + '</span></div>' +
-            '<div class="device-detail-item"><span class="device-detail-lbl">Priority</span><span class="device-detail-val">' + badgeH(d.p) + '</span></div>' +
-            '<div class="device-detail-item"><span class="device-detail-lbl">Remark</span><span class="device-detail-val">' +
-              '<input class="einput" type="text" placeholder="Add remark…" value="' + esc(rv) + '" data-uid="' + esc(d.uid) + '" onclick="event.stopPropagation()" onchange="saveRem(this)" onblur="saveRem(this)" style="width:100%;font-size:12px"/>' +
-            '</span></div>' +
-            '<div class="device-detail-actions">' +
-              resolveBtn + alertBtn + ackBtn +
-              '<span class="device-detail-hint">Tap row to close</span>' +
-            '</div>' +
-          '</div>' +
-        '</td></tr>';
-
-      return '<tr class="device-row" onclick="toggleDeviceDetail(\'' + uid + '\',event)">' +
-        '<td>' +
-          '<div class="loc-cell" style="margin-bottom:2px">' + dotH(d.p) + '<span class="loc-text" style="font-size:13px;font-weight:600;color:var(--text)">' + esc(d.loc) + '</span></div>' +
-          (secondary ? '<div style="font-size:10.5px;color:var(--text3);line-height:1.6;padding-left:18px">' + secondary + '</div>' : '') +
-          ackChip +
-        '</td>' +
-        '<td>' + badgeH(d.p) + '</td>' +
-        '<td style="text-align:center">' + daysH(d.days) + '</td>' +
-        '<td>' +
-          '<input class="einput" type="text" placeholder="—" value="' + esc(ev) + '" data-key="' + esc(ek) + '" onclick="event.stopPropagation()" onchange="saveEng(this)" onblur="saveEng(this)" style="font-size:12px;width:100%;min-width:0"/>' +
-        '</td>' +
-        '<td onclick="event.stopPropagation()" style="white-space:nowrap">' +
-          '<div style="display:flex;gap:5px;align-items:center">' + resolveBtn + alertBtn + '</div>' +
-          (ackBtn ? '<div style="margin-top:5px">' + ackBtn + '</div>' : '') +
-        '</td>' +
-        '</tr>' + drawerHtml;
-    }).join('') +
-    '</tbody></table></div>';
-}
-
-function toggleDeviceDetail(uid, e) {
-  // Don't trigger if clicking inputs or buttons
-  if (e && (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT')) return;
-  const row = document.getElementById('detail-' + uid);
-  if (!row) return;
-  const isOpen = row.style.display !== 'none';
-  // Close all other open drawers first
-  document.querySelectorAll('.device-detail-row').forEach(r => r.style.display = 'none');
-  row.style.display = isOpen ? 'none' : 'table-row';
-}
-
-// ── Render resolved ──────────────────────────────────────────
-function renderResolved() {
-  const q = document.getElementById('search-resolved') ? document.getElementById('search-resolved').value : '';
-  const all = resolved();
-  const data = applySearch(all, q);
-  const rv = res(), e = eng(), r = rem();
-  const el = document.getElementById('resolved-tbl');
-  const countEl = document.getElementById('resolved-count');
-  if (q) { countEl.style.display = 'block'; countEl.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + all.length + ' resolved'; }
-  else { countEl.style.display = 'none'; }
-  if (!data.length) { el.innerHTML = '<div class="empty" style="padding:2rem">' + (q ? 'No matches.' : 'No resolved devices yet.') + '</div>'; return; }
-  el.innerHTML = '<div class="table-wrap"><table>' +
-    '<thead><tr>' +
-    '<th style="width:32px">#</th>' +
-    '<th style="width:20%">Location</th>' +
-    '<th style="width:12%">MAC ID</th>' +
-    '<th style="width:8%">Asset ID</th>' +
-    '<th style="width:6%;text-align:center">Down</th>' +
-    '<th style="width:13%">Engineer</th>' +
-    '<th style="width:17%">Remarks</th>' +
-    '<th style="width:16%">Resolved at</th>' +
-    '<th style="width:8%"></th>' +
-    '</tr></thead><tbody>' +
-    data.map((d, i) => {
-      const ek = nk(d.loc), ev = e[ek] || '', rmv = r[d.uid] || '';
-      const rat = rv[d.uid] ? new Date(rv[d.uid]).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
-      return '<tr class="resolved-row">' +
-        '<td style="color:var(--text2);font-size:11px">' + (i+1) + '</td>' +
-        '<td><div class="loc-cell">' + dotH('r') + '<span class="loc-text" title="' + esc(d.loc) + '">' + esc(d.loc) + '</span></div></td>' +
-        '<td style="font-size:11px;color:var(--text2);font-family:monospace">' + esc(d.id) + '</td>' +
-        '<td style="font-size:11.5px;color:var(--text2)">' + (esc(d.assetId) || '—') + '</td>' +
-        '<td style="text-align:center">' + daysH(d.days) + '</td>' +
-        '<td style="font-size:12px;color:var(--text2)">' + (esc(ev) || '—') + '</td>' +
-        '<td style="font-size:12px;color:var(--text2)">' + (esc(rmv) || '—') + '</td>' +
-        '<td><span class="ts">' + rat + '</span></td>' +
-        '<td><button class="btn-reopen" onclick="reopen(\'' + esc(d.uid) + '\')">Reopen</button></td>' +
-        '</tr>';
-    }).join('') +
-    '</tbody></table></div>';
-}
-
-function saveEng(el) { const e = eng(); e[el.dataset.key] = el.value.trim(); sj(K.ENG, e); }
-function saveRem(el) {
-  const r = rem();
-  const old = r[el.dataset.uid] || '';
-  const newVal = el.value.trim();
-  if (newVal !== old) {
-    r[el.dataset.uid] = newVal;
-    sj(K.REM, r);
-    if (newVal) {
-      const d = devices.find(x => x.uid === el.dataset.uid);
-      logActivity(getCurrentUser(), 'remark', 'Remarked on <strong>' + esc(d ? d.loc : el.dataset.uid) + '</strong>: ' + esc(newVal));
-    }
-  }
-}
-function resolve(uid) {
-  const r = res(); r[uid] = Date.now(); sj(K.RES, r);
-  // Clear acknowledgement when resolved
-  const acks = lj(K.ACK, {}); delete acks[uid]; sj(K.ACK, acks);
-  const d = devices.find(x => x.uid === uid);
-  logActivity(getCurrentUser(), 'resolve', 'Resolved <strong>' + esc(d ? d.loc : uid) + '</strong>');
-  updStats(); renderActive(); renderResolved(); showToast('Marked as resolved');
-}
-function reopen(uid) {
-  const r = res(); delete r[uid]; sj(K.RES, r);
-  const d = devices.find(x => x.uid === uid);
-  logActivity(getCurrentUser(), 'reopen', 'Reopened <strong>' + esc(d ? d.loc : uid) + '</strong>');
-  updStats(); renderActive(); renderResolved(); switchTab('active'); showToast('Reopened');
-}
-
-// ── Acknowledge ──────────────────────────────────────────────
-function acknowledgeDevice(uid, loc) {
-  const user = getCurrentUser();
-  const acks = lj(K.ACK, {});
-  acks[uid] = { user, ts: Date.now() };
-  sj(K.ACK, acks);
-  renderActive();
-  logActivity(user, 'ack', 'Acknowledged <strong>' + esc(loc) + '</strong> — I\'m on it');
-  // Notify admin via Worker
-  fetch(WORKER_URL + '/manual-alert', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      title: '✅ Device acknowledged',
-      body: user + ' is handling: ' + loc,
-      recipients: ['admin'],
-      sender: user
-    })
-  }).catch(() => {});
-  showToast('Acknowledged — admin has been notified');
 }
 
 // Acknowledge directly from a notification (alert sent by admin)
@@ -2302,26 +2048,6 @@ function timeAgo(ts) {
   return Math.floor(diff / 86400) + 'd ago';
 }
 
-// ── Engineer modal ───────────────────────────────────────────
-function openSetup() {
-  const e = eng();
-  document.getElementById('eng-list').innerHTML = SITE_MAP.map(entry => {
-    const k = nk(entry.site), v = e[k] || entry.engineer || '';
-    return '<div class="eng-row"><div class="eng-lbl" title="' + esc(entry.site) + '">' + esc(entry.site) + '</div>' +
-           '<input class="eng-inp" type="text" placeholder="Name" value="' + esc(v) + '" data-key="' + esc(k) + '"/></div>';
-  }).join('');
-  document.getElementById('modal-backdrop').classList.add('open');
-}
-function closeSetup() { document.getElementById('modal-backdrop').classList.remove('open'); }
-function handleBackdropClick(e) { if (e.target === document.getElementById('modal-backdrop')) closeSetup(); }
-function saveEngineers() {
-  const e = eng();
-  document.querySelectorAll('#eng-list .eng-inp').forEach(i => { e[i.dataset.key] = i.value.trim(); });
-  sj(K.ENG, e); closeSetup();
-  if (devices.length) { renderActive(); renderResolved(); }
-  showToast('Engineer assignments saved');
-}
-
 // ── Error / toast ────────────────────────────────────────────
 function showErr(msg, type, closable) {
   document.getElementById('error-area').innerHTML =
@@ -2336,58 +2062,6 @@ function showToast(msg) {
   t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-// ── Export ───────────────────────────────────────────────────
-function getExportRows(which) {
-  const e = eng(), r = rem(), rv = res();
-  const pLabel = { c:'Critical', h:'High', t:'Possibly Temporary', u:'Unknown' };
-  if (which === 'active') {
-    return getSorted().map(d => ({
-      Location: d.loc, 'MAC ID': d.id, 'Asset ID': d.assetId || '',
-      'Last Sync': d.sr, 'Down Days': d.days ?? '', Priority: pLabel[d.p] || '',
-      Engineer: e[nk(d.loc)] || '', Remarks: r[d.uid] || '', Status: 'Active'
-    }));
-  } else {
-    const q = document.getElementById('search-resolved') ? document.getElementById('search-resolved').value : '';
-    return applySearch(resolved(), q).map(d => ({
-      Location: d.loc, 'MAC ID': d.id, 'Asset ID': d.assetId || '',
-      'Last Sync': d.sr, 'Down Days': d.days ?? '', Priority: pLabel[d.p] || '',
-      Engineer: e[nk(d.loc)] || '', Remarks: r[d.uid] || '',
-      'Resolved At': rv[d.uid] ? new Date(rv[d.uid]).toLocaleString('en-IN') : '', Status: 'Resolved'
-    }));
-  }
-}
-function exportCSV(which) {
-  const rows = getExportRows(which);
-  if (!rows.length) { showToast('Nothing to export'); return; }
-  const keys = Object.keys(rows[0]);
-  const escape = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-  const csv = [keys.map(escape).join(','), ...rows.map(r => keys.map(k => escape(r[k])).join(','))].join('\r\n');
-  dlBlob(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }), 'device-status-' + which + '-' + new Date().toISOString().slice(0,10) + '.csv');
-  showToast('CSV exported');
-}
-function exportExcel(which) {
-  const rows = getExportRows(which);
-  if (!rows.length) { showToast('Nothing to export'); return; }
-  const keys = Object.keys(rows[0]);
-  const toXML = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const prioColor = { Critical:'FFCDD2', High:'FFE0B2', 'Possibly Temporary':'DCEDC8', Unknown:'F5F5F5' };
-  const hdrStyle = '<Style ss:ID="hdr"><Font ss:Bold="1"/><Interior ss:Color="#E0E0E0" ss:Pattern="Solid"/></Style>';
-  let xml = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>\n' +
-    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n' +
-    '<Styles>' + hdrStyle + '</Styles>\n' +
-    '<Worksheet ss:Name="' + (which === 'active' ? 'Active Issues' : 'Resolved') + '"><Table>\n' +
-    '<Row>' + keys.map(k => '<Cell ss:StyleID="hdr"><Data ss:Type="String">' + toXML(k) + '</Data></Cell>').join('') + '</Row>\n' +
-    rows.map(r => '<Row>' + keys.map(k => '<Cell><Data ss:Type="' + (typeof r[k] === 'number' ? 'Number' : 'String') + '">' + toXML(r[k]) + '</Data></Cell>').join('') + '</Row>').join('\n') +
-    '\n</Table></Worksheet></Workbook>';
-  dlBlob(new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' }), 'device-status-' + which + '-' + new Date().toISOString().slice(0,10) + '.xls');
-  showToast('Excel exported');
-}
-function dlBlob(blob, name) {
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // ── Offline ──────────────────────────────────────────────────
@@ -2678,36 +2352,6 @@ async function sendManualAlert() {
 
 // ── Row alert button (admin) ─────────────────────────────────
 // Opens the alert modal pre-filled for the device's engineer
-function openAlertFromRow(uid, locName, days) {
-  const tmp = document.createElement('textarea');
-  tmp.innerHTML = locName;
-  const loc = tmp.value;
-
-  // Determine which user is assigned to this device
-  const engName = getEngineerForLoc(loc);
-  const allUsers = getAllUserList();
-  const engUser  = allUsers.find(u => u.name === engName || u.key === engName);
-
-  // Build recipient list first (populates the modal)
-  openAlertModal();
-
-  // Pre-select the assigned engineer
-  if (engUser) {
-    const cb  = document.getElementById('rec-' + engUser.key);
-    const row = document.getElementById('rec-row-' + engUser.key);
-    if (cb)  cb.checked = true;
-    if (row) row.classList.add('selected');
-  }
-
-  // Pre-fill title and body
-  const titleInp = document.getElementById('alert-title-inp');
-  const bodyInp  = document.getElementById('alert-body-inp');
-  if (titleInp) titleInp.value = 'Device down — ' + loc;
-  if (bodyInp)  bodyInp.value  = loc + ' has been down for ' + days + ' day' + (days !== 1 ? 's' : '') + '. Please check and update status.';
-
-  updateAlertPreview();
-}
-
 // ── Activity log ─────────────────────────────────────────────
 function logActivity(user, type, message, expandBody) {
   const log = lj(K.LOG, []);
@@ -2790,105 +2434,7 @@ function clearActivityLog() {
   }
 }
 
-// ── Onboarding ───────────────────────────────────────────────
-let pendingEngMap = {};
-function fuzzyMatch(a, b) {
-  a = a.toLowerCase().replace(/[^a-z0-9]/g, '');
-  b = b.toLowerCase().replace(/[^a-z0-9]/g, '');
-  if (!a || !b) return false;
-  return a.includes(b) || b.includes(a) || levenshtein(a, b) <= Math.floor(Math.max(a.length, b.length) * 0.25);
-}
-function levenshtein(a, b) {
-  const m = a.length, n = b.length;
-  const dp = Array.from({ length: m+1 }, (_, i) => Array.from({ length: n+1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0));
-  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
-    dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
-  return dp[m][n];
-}
-function parseEngFile(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    const isCSV = file.name.toLowerCase().endsWith('.csv');
-    reader.onload = e => {
-      try {
-        let rows = [];
-        if (isCSV) {
-          rows = e.target.result.split(/\r?\n/).map(l => l.split(',').map(c => c.replace(/^"|"$/g,'').trim())).filter(r => r.length >= 2 && r[0]);
-        } else {
-          const wb = XLSX.read(e.target.result, { type: 'array' });
-          rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' })
-            .map(r => [String(r[0]||'').trim(), String(r[1]||'').trim()]).filter(r => r[0]);
-        }
-        if (rows.length && rows[0][0].toLowerCase().replace(/\s/g,'').includes('sitename')) rows.shift();
-        resolve(rows);
-      } catch (err) { reject(err); }
-    };
-    reader.onerror = () => reject(new Error('Could not read file'));
-    if (isCSV) reader.readAsText(file); else reader.readAsArrayBuffer(file);
-  });
-}
-async function handleFileSelect(input) { if (input.files && input.files[0]) await processEngFile(input.files[0]); }
-async function handleFileDrop(evt) {
-  evt.preventDefault(); document.getElementById('upload-zone').classList.remove('drag');
-  const file = evt.dataTransfer.files[0]; if (file) await processEngFile(file);
-}
-async function processEngFile(file) {
-  const sumEl = document.getElementById('upload-summary');
-  sumEl.style.display = 'block'; sumEl.innerHTML = '<span style="color:var(--text2);font-size:13px">Reading file…</span>';
-  try {
-    const rows = await parseEngFile(file);
-    pendingEngMap = {};
-    const matched = [], unmatched = [];
-    rows.forEach(row => {
-      const site = row[0], engineer = row[1];
-      if (!site || !engineer) return;
-      const hit = LOCS.find(loc => fuzzyMatch(loc, site));
-      if (hit) { pendingEngMap[nk(hit)] = engineer; matched.push({ site, engineer, loc: hit }); }
-      else { unmatched.push({ site, engineer }); }
-    });
-    const gapLocs = LOCS.filter(l => !pendingEngMap[nk(l)]);
-    sumEl.innerHTML =
-      '<div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--text)">' + rows.length + ' rows read · ' + matched.length + ' matched</div>' +
-      '<div style="margin-bottom:8px">' + (matched.length ? matched.map(m => '<span class="tag-matched">' + esc(m.site) + ' → ' + esc(m.engineer) + '</span>').join('') : '<span style="color:var(--text2);font-size:12px">No sites matched</span>') + '</div>' +
-      (unmatched.length ? '<div style="font-size:12px;color:var(--amber-text);margin-bottom:4px">' + unmatched.length + ' row(s) did not match any site</div>' : '') +
-      (gapLocs.length ? '<div style="font-size:12px;color:var(--text2)">' + gapLocs.length + ' site(s) still unassigned</div>' : '');
-    document.getElementById('btn-next-step').style.display = gapLocs.length ? 'inline-flex' : 'none';
-    document.getElementById('btn-finish-upload').style.display = gapLocs.length ? 'none' : 'inline-flex';
-  } catch (err) { sumEl.innerHTML = '<div style="color:var(--red-text);font-size:13px">Could not read file: ' + err.message + '</div>'; }
-}
-function goToGapsStep() {
-  const gapLocs = SITE_MAP.filter(e => !pendingEngMap[nk(e.site)] && !e.engineer).map(e => e.site);
-  const preFilled = SITE_MAP.filter(e => !!(pendingEngMap[nk(e.site)] || e.engineer));
-  document.getElementById('gaps-matched-note').innerHTML =
-    '<strong>' + preFilled.length + '</strong> site(s) auto-assigned. <strong>' + gapLocs.length + '</strong> need manual assignment.';
-  document.getElementById('gaps-list').innerHTML = gapLocs.map(loc =>
-    '<div class="gap-row"><div class="gap-lbl" title="' + esc(loc) + '">' + esc(loc) + '</div>' +
-    '<input class="gap-inp" type="text" placeholder="Engineer name" data-key="' + esc(nk(loc)) + '"/></div>'
-  ).join('');
-  document.getElementById('onboard-step-upload').style.display = 'none';
-  document.getElementById('onboard-step-gaps').style.display = 'block';
-}
-function goBackToUpload() { document.getElementById('onboard-step-gaps').style.display = 'none'; document.getElementById('onboard-step-upload').style.display = 'block'; }
-function finishOnboarding() {
-  const e = eng();
-  Object.keys(pendingEngMap).forEach(k => { e[k] = pendingEngMap[k]; });
-  document.querySelectorAll('#gaps-list .gap-inp').forEach(inp => { if (inp.value.trim()) e[inp.dataset.key] = inp.value.trim(); });
-  sj(K.ENG, e); lset(K_SETUP, '1');
-  document.getElementById('onboard').style.display = 'none';
-  if (devices.length) { renderActive(); renderResolved(); }
-  showToast('Engineer assignments saved');
-}
-function skipOnboarding() { lset(K_SETUP, '1'); document.getElementById('onboard').style.display = 'none'; }
-function reopenUploadFromModal() {
-  closeSetup(); pendingEngMap = {};
-  document.getElementById('upload-summary').style.display = 'none';
-  document.getElementById('btn-next-step').style.display = 'none';
-  document.getElementById('btn-finish-upload').style.display = 'none';
-  document.getElementById('onboard-step-gaps').style.display = 'none';
-  document.getElementById('onboard-step-upload').style.display = 'block';
-  document.getElementById('onboard').style.display = 'flex';
-}
-
+;
 // ── Mail contacts ─────────────────────────────────────────────
 // Default contacts pre-loaded if none configured yet
 const DEFAULT_CONTACTS = [
@@ -3324,18 +2870,191 @@ function previewAndSend() {
     </div>`;
 }
 
-function buildSiteSelector(user) {
-  // Filter to engineer's own sites
-  const mySites = SITE_MAP.filter(s => {
-    const engName = USER_ENGINEER[user] || user;
-    return !user || s.engineer === engName || user === 'admin';
-  }).map(s => s.site);
+// ── Fetch device list when Reports tab opens (engineers) ──────
+async function fetchDeviceListForReports() {
+  const user = getCurrentUser();
+  if (!user) return;
+  try {
+    const rd = await fetch(WORKER_URL + '/device-list');
+    if (!rd.ok) return;
+    const dd = await rd.json();
+    if (dd.ok && dd.version) {
+      const localVer = parseInt(ls(K.DEV_VER) || '0');
+      if (dd.version > localVer) {
+        saveDeviceListLocal(dd);
+        showToast('Device list updated ✓');
+      }
+    }
+  } catch(e) { /* offline — use local cache */ }
+}
 
-  const allSites = mySites.length ? mySites : SITE_MAP.map(s => s.site);
-  return '<select class="report-select" id="wizard-site" onchange="loadDevicesForSite(this.value)">' +
-    '<option value="">— Select site —</option>' +
-    allSites.map(s => '<option value="' + esc(s) + '">' + esc(s.replace(/_/g,' ')) + '</option>').join('') +
-    '</select>';
+// ── Show/update the admin upload bar in Reports tab ───────────
+function updateReportAdminBar() {
+  const bar    = document.getElementById('report-admin-upload-bar');
+  const statEl = document.getElementById('report-devlist-status');
+  const user   = getCurrentUser();
+  if (!bar) return;
+  if (isAdmin(user)) {
+    bar.style.display = 'flex';
+    const dl = getDeviceList();
+    const count = (dl.devices || []).length;
+    const sites = getDeviceSites().length;
+    if (count) {
+      const ago = dl.updatedAt ? ' · updated ' + timeAgo(new Date(dl.updatedAt).getTime()) : '';
+      statEl.textContent = count + ' devices across ' + sites + ' sites' + ago;
+    } else {
+      statEl.textContent = 'No device list uploaded yet.';
+    }
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// ── Handle CSV or Excel upload from Reports tab ───────────────
+function handleReportDeviceUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const statEl = document.getElementById('report-devlist-status');
+  if (statEl) statEl.textContent = 'Reading file…';
+
+  if (ext === 'csv') {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const parsed = parseReportDeviceCsv(e.target.result);
+      applyReportDeviceList(parsed, 'csv_upload');
+    };
+    reader.onerror = () => { showToast('Could not read CSV'); };
+    reader.readAsText(file);
+  } else if (ext === 'xlsx' || ext === 'xls') {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        // Minimal XLSX parser — reads first sheet as CSV rows
+        const ab   = e.target.result;
+        const rows = parseXlsxToRows(ab);
+        if (!rows || rows.length < 2) { showToast('Excel file appears empty'); return; }
+        // Convert rows array to CSV text and reuse CSV parser
+        const csvText = rows.map(r => r.map(c => '"' + String(c||'').replace(/"/g,'""') + '"').join(',')).join('\n');
+        const parsed = parseReportDeviceCsv(csvText);
+        applyReportDeviceList(parsed, 'xlsx_upload');
+      } catch(err) { showToast('Could not parse Excel: ' + err.message); }
+    };
+    reader.onerror = () => { showToast('Could not read Excel file'); };
+    reader.readAsArrayBuffer(file);
+  } else {
+    showToast('Please upload a .csv or .xlsx file');
+  }
+  input.value = '';
+}
+
+// Parse CSV text into device array — columns: Site Name, Asset ID, Reader MAC ID, Engineer
+// parseReportDeviceCsv — unified with parseDeviceCsvText (same column logic)
+function parseReportDeviceCsv(txt) { return parseDeviceCsvText(txt); }
+
+// Minimal XLSX binary parser — extracts shared strings + sheet data as 2D array
+function parseXlsxToRows(ab) {
+  // Use SheetJS if available (loaded via CDN), else fall back to basic approach
+  if (typeof XLSX !== 'undefined') {
+    const wb = XLSX.read(new Uint8Array(ab), { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+  }
+  throw new Error('Excel parser not loaded — please use a CSV file instead');
+}
+
+function applyReportDeviceList(devices, source) {
+  if (!devices || !devices.length) { showToast('No valid devices found in file'); return; }
+  const dl = getDeviceList();
+  dl.devices   = devices;
+  dl.updatedAt = new Date().toISOString();
+  dl.source    = source;
+  dl.version   = Date.now();
+  saveDeviceListLocal(dl);
+  updateReportAdminBar();
+  showToast(devices.length + ' devices loaded — tap "Sync to server" to push to engineers');
+}
+
+
+function buildSiteSelector(user) {
+  // Use KV device list sites; fall back to empty if none configured yet
+  const allSitesFromKV = getDeviceSites();
+  const engName = USER_ENGINEER[user] || user;
+  // Filter to engineer's assigned sites if possible, otherwise show all
+  const mySites = allSitesFromKV.filter(site => {
+    const devs = getDevicesForSite(site);
+    return !devs.length || user === 'admin' || devs.some(d => true); // show all sites to all engineers
+  });
+
+  // Fall back to legacy CSV devices[] array if KV list is empty
+  let allSites = mySites.length ? mySites : allSitesFromKV;
+  if (!allSites.length && typeof devices !== 'undefined' && devices && devices.length) {
+    allSites = [...new Set(devices.map(d => d.loc).filter(Boolean))].sort();
+  }
+  // Build a searchable dropdown (same pattern as visit wizard)
+  // Store sites globally so dropdown functions (defined below) can access them
+  window._wizardSites = allSites;
+
+  return '<div class="visit-search-wrap" id="wizard-site-wrap">' +
+    '<input class="report-inp" type="text" id="wizard-site-search" placeholder="Search site…" autocomplete="off"' +
+    ' oninput="filterWizardSites(this.value)"' +
+    ' onfocus="showWizardSiteDropdown()"' +
+    ' onblur="hideWizardSiteDropdownDelayed()"' +
+    ' style="width:100%"/>' +
+    '<input type="hidden" id="wizard-site" value=""/>' +
+    '<div class="visit-dropdown" id="wizard-site-dropdown" style="display:none"></div>' +
+    '</div>';
+}
+
+// ── Wizard site dropdown functions (global, safe) ─────────────
+let _wizardDdTimeout = null;
+
+function filterWizardSites(q) {
+  const sites = window._wizardSites || [];
+  const matches = sites.filter(s => !q || s.toLowerCase().replace(/_/g,' ').includes(q.toLowerCase()));
+  renderWizardSiteDropdown(matches);
+}
+
+function showWizardSiteDropdown() {
+  filterWizardSites(document.getElementById('wizard-site-search')?.value || '');
+}
+
+function hideWizardSiteDropdownDelayed() {
+  _wizardDdTimeout = setTimeout(function() {
+    const d = document.getElementById('wizard-site-dropdown');
+    if (d) d.style.display = 'none';
+  }, 200);
+}
+
+function renderWizardSiteDropdown(matches) {
+  const dd = document.getElementById('wizard-site-dropdown');
+  if (!dd) return;
+  if (!matches.length) {
+    dd.innerHTML = '<div class="visit-dropdown-empty">No sites found</div>';
+    dd.style.display = 'block';
+    return;
+  }
+  dd.innerHTML = matches.map(function(s) {
+    return '<div class="visit-dropdown-item" data-site="' + s.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '">' +
+      '<div class="visit-dropdown-item-name">' + s.replace(/_/g,' ') + '</div></div>';
+  }).join('');
+  dd.querySelectorAll('.visit-dropdown-item').forEach(function(el) {
+    el.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      selectWizardSite(el.getAttribute('data-site'));
+    });
+  });
+  dd.style.display = 'block';
+}
+
+function selectWizardSite(site) {
+  const inp = document.getElementById('wizard-site-search');
+  const hid = document.getElementById('wizard-site');
+  const dd  = document.getElementById('wizard-site-dropdown');
+  if (inp) inp.value = site.replace(/_/g,' ');
+  if (hid) hid.value = site;
+  if (dd)  dd.style.display = 'none';
+  loadDevicesForSite(site);
 }
 
 function loadDevicesForSite(site) {
@@ -3343,26 +3062,44 @@ function loadDevicesForSite(site) {
   if (!container) return;
   if (!site) { container.innerHTML = '<div style="font-size:12px;color:var(--text2)">Select a site first.</div>'; return; }
 
-  // Find devices at this site from loaded data
-  const siteDevices = devices.filter(d => d.loc === site || norms(d.loc) === norms(site));
+  // Use KV device list (falls back to old devices[] if no KV list yet)
+  let siteDevices = getDevicesForSite(site);
+
+  // Fallback: check old CSV devices[] array if KV list is empty
+  if (!siteDevices.length && devices && devices.length) {
+    const csvDevs = devices.filter(d => d.loc === site || norms(d.loc) === norms(site));
+    siteDevices = csvDevs.map(d => ({ site: d.loc, mac: d.id, assetId: d.assetId, label: d.assetId ? d.assetId + ' — ' + d.id : d.id }));
+  }
+
   if (!siteDevices.length) {
-    container.innerHTML = '<div style="font-size:12px;color:var(--text2)">No device data for this site. Fetch Latest first, or enter details manually.</div>';
-    // Still allow manual entry
-    container.innerHTML += '<div class="report-field" style="margin-top:8px"><label>Manual MAC ID</label><input class="report-inp" type="text" id="wizard-manual-mac" placeholder="e.g. 84:24:8D:F1:40:35"/></div>';
+    container.innerHTML =
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:8px">No devices configured for this site — enter details manually, or ask admin to add devices in Settings.</div>' +
+      '<div class="report-field"><label>MAC ID</label><input class="report-inp" type="text" id="wizard-manual-mac" placeholder="e.g. 84:24:8D:F1:40:35"/></div>' +
+      '<div class="report-field"><label>Asset ID <span style="font-size:10px;color:var(--text3);font-weight:400">(optional)</span></label><input class="report-inp" type="text" id="wizard-manual-asset" placeholder="e.g. IN/OUT LHS"/></div>';
     return;
   }
 
-  container.innerHTML = siteDevices.map(d => {
-    const assetLabel = d.assetId ? ' · ' + d.assetId : '';
-    const daysLabel  = d.days !== null ? ' · Down ' + d.days + 'd' : '';
-    return '<label class="device-checkbox-row">' +
-      '<input type="checkbox" name="wizard-device" value="' + esc(d.uid) + '" data-mac="' + esc(d.id) + '" data-asset="' + esc(d.assetId||'') + '" data-loc="' + esc(d.loc) + '"/>' +
-      '<div>' +
-        '<div class="device-checkbox-label">' + esc(d.id) + assetLabel + '</div>' +
-        '<div class="device-checkbox-sub">' + esc(d.loc) + daysLabel + '</div>' +
-      '</div>' +
-    '</label>';
-  }).join('');
+  container.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px;padding:4px 0 8px;font-size:12px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);margin-bottom:6px">' +
+      '<input type="checkbox" id="wizard-select-all" onchange="toggleAllWizardDevices(this.checked)" style="accent-color:var(--accent);width:14px;height:14px"/> Select all</label>' +
+    siteDevices.map(d => {
+      const assetLabel = d.assetId || '';
+      const engineer   = d.engineer || '';
+      // Primary line: asset label (+ engineer if present), Secondary line: MAC ID
+      const primaryLine = [assetLabel, engineer].filter(Boolean).join(' · ') || d.mac;
+      const showMac = primaryLine !== d.mac; // only show MAC as secondary if it's not already the primary
+      return '<label class="device-checkbox-row">' +
+        '<input type="checkbox" name="wizard-device" value="' + esc(d.mac + '_' + d.site) + '" data-mac="' + esc(d.mac) + '" data-asset="' + esc(assetLabel) + '" data-loc="' + esc(d.site) + '"/>' +
+        '<div>' +
+          '<div class="device-checkbox-label">' + esc(primaryLine) + '</div>' +
+          (showMac ? '<div style="font-size:10.5px;color:var(--text3);font-family:monospace;margin-top:1px">' + esc(d.mac) + '</div>' : '') +
+        '</div>' +
+        '</label>';
+    }).join('');
+}
+
+function toggleAllWizardDevices(checked) {
+  document.querySelectorAll('input[name="wizard-device"]').forEach(cb => { cb.checked = checked; });
 }
 
 function selectCarrier(btn, carrier) {
@@ -3548,10 +3285,11 @@ function getWizardDevices() {
     return Array.from(checked).map(cb => ({ mac: cb.dataset.mac, asset: cb.dataset.asset, loc: cb.dataset.loc }));
   }
   // Manual entry fallback
-  const manualMac = document.getElementById('wizard-manual-mac');
+  const manualMac   = document.getElementById('wizard-manual-mac');
+  const manualAsset = document.getElementById('wizard-manual-asset');
   if (manualMac && manualMac.value.trim()) {
     const site = document.getElementById('wizard-site') ? document.getElementById('wizard-site').value : '';
-    return [{ mac: manualMac.value.trim(), asset: '', loc: site }];
+    return [{ mac: manualMac.value.trim(), asset: manualAsset ? manualAsset.value.trim() : '', loc: site }];
   }
   return [];
 }
@@ -3998,6 +3736,21 @@ function sendReport() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ user: getCurrentUser(), subject, reportBody: body, type, ts: Date.now() })
+  }).catch(() => {});
+
+  // 3. Notify admin via push + KV inbox
+  const _repUser = getCurrentUser();
+  const _repName = (credCache && credCache[_repUser] && credCache[_repUser].name) || USER_ENGINEER[_repUser] || _repUser;
+  const _repTypeLabel = { accident: '🚨 Accident', renovation: '🏗️ Renovation', electrical: '⚡ Electrical', rma: '🔧 RMA', sim: '📶 SIM fault' };
+  fetch(WORKER_URL + '/manual-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: (_repTypeLabel[type] || '📋 Report') + ' — ' + _repName,
+      body: subject,
+      recipients: ['admin'],
+      sender: _repUser
+    })
   }).catch(() => {});
 
   // 3. Show in-app photo reminder if photos are selected
@@ -4861,21 +4614,8 @@ async function sendVisitRequest() {
   // Falls back to localStorage cache then hardcoded defaults
   fetchCredentials();
   checkAuth();
-  autoAssignEngineers();
   checkPushStatus();
-  if (!ls(K_SETUP) && isAdmin(getCurrentUser())) document.getElementById('onboard').style.display = 'flex';
-  const c = lj(K.DATA, null);
-  if (c && c.devices && c.devices.length) {
-    devices = c.devices;
-    loaded(new Date(c.ts), true);
-    const age = Math.round((Date.now() - c.ts) / 36e5);
-    showErr(
-      age >= 24
-        ? 'Data is ' + age + 'h old — press Fetch Latest to refresh.'
-        : 'Cached data from ' + new Date(c.ts).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) + '. Press Fetch Latest to refresh.',
-      age >= 24 ? 'stale' : 'info', true
-    );
-  }
+
 })();
 </script>
 </body>
