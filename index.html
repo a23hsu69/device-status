@@ -3121,13 +3121,8 @@ function selectSimReplace(replaced) {
 const RMA_MODELS = {
   'Reader':         ['Impinj', 'Zebra', 'IDtech', 'Dristi'],
   'Router':         ['Nirad N1000', 'Telcom', 'Robustel'],
-<<<<<<< HEAD
   'Reader Adapter': ['Impinj Reader Adapter', 'IDtech Reader Adapter', 'Zebra Reader Adapter', 'Dristi Reader Adapter'],
   'Router Adapter': ['Telcom Router Adapter', 'Nirad Router Adapter', 'Robustel Router Adapter']
-=======
-  'Reader Adapter': ['Standard Adapter'],
-  'Router Adapter': ['Standard Adapter']
->>>>>>> b0ecba6b6b5aecebf9990affd3ce3425ac1f1686
 };
 
 // ── RMA multi-component builder ──────────────────────────────
@@ -3140,11 +3135,7 @@ function addRmaComponent() {
   if (!list) return;
 
   const modelOptions = Object.keys(RMA_MODELS).map(type =>
-<<<<<<< HEAD
     `<optgroup label="${type}">${(RMA_MODELS[type]||[]).map(m=>`<option value="${type}||${m}">${m}</option>`).join('')}</optgroup>`
-=======
-    `<optgroup label="${type}">${(RMA_MODELS[type]||[]).map(m=>`<option value="${type}||${m}">${m} ${type}</option>`).join('')}</optgroup>`
->>>>>>> b0ecba6b6b5aecebf9990affd3ce3425ac1f1686
   ).join('');
 
   const card = document.createElement('div');
@@ -3181,7 +3172,6 @@ function addRmaComponent() {
           <input class="report-inp" type="text" id="rma-nirad-serial-${idx}" placeholder="e.g. NRD2024001234"/>
         </div>
       </div>
-<<<<<<< HEAD
     </div>
     <div id="rma-reader-extra-${idx}" style="display:none;margin-top:8px">
       <div class="rma-component-grid">
@@ -3194,8 +3184,6 @@ function addRmaComponent() {
           <input class="report-inp" type="text" id="rma-reader-serial-${idx}" placeholder="e.g. IMP-2024-001234"/>
         </div>
       </div>
-=======
->>>>>>> b0ecba6b6b5aecebf9990affd3ce3425ac1f1686
     </div>`;
   list.appendChild(card);
 }
@@ -3209,7 +3197,6 @@ function onRmaTypeModelChange(idx) {
   const sel = document.getElementById('rma-type-model-' + idx);
   if (!sel) return;
   const val   = sel.value;
-<<<<<<< HEAD
   const type  = val.split('||')[0] || '';
   const model = val.split('||')[1] || '';
   const nirad = document.getElementById('rma-nirad-' + idx);
@@ -3228,11 +3215,6 @@ function onRmaTypeModelChange(idx) {
       }
     }
   }
-=======
-  const model = val.split('||')[1] || '';
-  const nirad = document.getElementById('rma-nirad-' + idx);
-  if (nirad) nirad.style.display = model === 'Nirad N1000' ? 'block' : 'none';
->>>>>>> b0ecba6b6b5aecebf9990affd3ce3425ac1f1686
 }
 
 function getRmaComponents() {
@@ -3242,15 +3224,10 @@ function getRmaComponents() {
     const id    = card.id.replace('rma-card-','');
     const sel   = document.getElementById('rma-type-model-' + id);
     const qty   = parseInt(document.getElementById('rma-qty-' + id)?.value || '1');
-<<<<<<< HEAD
     const mac   = document.getElementById('rma-nirad-mac-' + id)?.value.trim()
                   || document.getElementById('rma-reader-mac-' + id)?.value.trim() || '';
     const serial= document.getElementById('rma-nirad-serial-' + id)?.value.trim()
                   || document.getElementById('rma-reader-serial-' + id)?.value.trim() || '';
-=======
-    const mac   = document.getElementById('rma-nirad-mac-' + id)?.value.trim() || '';
-    const serial= document.getElementById('rma-nirad-serial-' + id)?.value.trim() || '';
->>>>>>> b0ecba6b6b5aecebf9990affd3ce3425ac1f1686
     if (!sel || !sel.value) return;
     const parts = sel.value.split('||');
     const type  = parts[0] || '';
@@ -3651,19 +3628,11 @@ function buildReportContent(type) {
       ? '\nPlease find the attached image' + (photoCount > 1 ? 's (' + photoCount + ' images)' : '') + ' for your reference and records.\n'
       : '';
     if (!components.length) return { subject: '', body: '' };
-<<<<<<< HEAD
     const compSummary = components.map(c => (c.model || c.type) + ' x' + c.qty).join(', ');
     const compBullets = components.map((c, i) => {
       const label = c.model || c.type;
       let lines = '  Component ' + (i + 1) + ': ' + label + ' x' + c.qty;
       if (c.type === 'Reader' || c.model === 'Nirad N1000') {
-=======
-    const compSummary = components.map(c => (c.model ? c.model + ' ' + c.type : c.type) + ' x' + c.qty).join(', ');
-    const compBullets = components.map((c, i) => {
-      const label = c.model ? c.model + ' ' + c.type : c.type;
-      let lines = '  Component ' + (i + 1) + ': ' + label + ' x' + c.qty;
-      if (c.model === 'Nirad N1000') {
->>>>>>> b0ecba6b6b5aecebf9990affd3ce3425ac1f1686
         if (c.mac)    lines += '\n    MAC ID: ' + c.mac;
         if (c.serial) lines += '\n    Serial No: ' + c.serial;
       }
