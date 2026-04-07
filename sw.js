@@ -1,4 +1,4 @@
-const CACHE = 'dsc-v60';
+const CACHE = 'dsc-v70';
 const STATIC = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {

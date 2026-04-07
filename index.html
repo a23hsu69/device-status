@@ -457,6 +457,698 @@ body{display:flex;flex-direction:column;min-height:100vh}
   table{font-size:11px;min-width:700px}
   td,thead th{padding:7px 5px}
 }
+
+/* ── v7.0 Phase 1: Reporter role ── */
+.role-badge.reporter{background:#eff6ff;color:#2563eb}
+@media(prefers-color-scheme:dark){.role-badge.reporter{background:#1e3a5f;color:#93c5fd}}
+#tab-reporter{color:var(--text2)}
+#tab-reporter.active{color:var(--accent);border-bottom-color:var(--accent)}
+.sett-user-chip.reporter-chip{border-color:#2563eb;color:#2563eb}
+/* ── v7.0 Phase 3: Admin Dashboard ── */
+.admin-dash{padding:1.25rem}
+.admin-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.25rem}
+.admin-stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.9rem 1rem;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.admin-stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.10)}
+.admin-stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+.admin-stat-card.c-amber::before{background:var(--amber-dot)}.admin-stat-card.c-red::before{background:var(--red-dot)}.admin-stat-card.c-green::before{background:var(--green-dot)}.admin-stat-card.c-teal::before{background:var(--teal-dot)}.admin-stat-card.c-accent::before{background:var(--accent)}
+.admin-stat-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.admin-stat-num{font-size:28px;font-weight:800;line-height:1;letter-spacing:-0.03em}
+.admin-stat-num.c-amber{color:var(--amber-dot)}.admin-stat-num.c-red{color:var(--red-dot)}.admin-stat-num.c-green{color:var(--green-dot)}.admin-stat-num.c-teal{color:var(--teal-dot)}.admin-stat-num.c-accent{color:var(--accent)}
+.admin-stat-sub{font-size:10.5px;color:var(--text3);margin-top:4px}
+.dash-section{margin-bottom:1.5rem}
+.dash-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.dash-section-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:6px}
+.dash-section-action{font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--font);padding:0}
+.dash-section-action:hover{text-decoration:underline}
+.leave-summary-table{width:100%;border-collapse:collapse;font-size:12px}
+.leave-summary-table th{text-align:left;padding:7px 10px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--border);white-space:nowrap}
+.leave-summary-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.leave-summary-table tr:last-child td{border-bottom:none}
+.leave-summary-table tr:hover td{background:var(--bg2)}
+.leave-eng-cell{display:flex;align-items:center;gap:8px}
+.leave-eng-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0}
+.leave-eng-name{font-size:12px;font-weight:600;color:var(--text)}
+.leave-quota-bar{display:flex;align-items:center;gap:6px}
+.leave-bar-track{flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;min-width:50px}
+.leave-bar-fill{height:100%;border-radius:99px;transition:width .3s ease}
+.leave-bar-fill.personal{background:var(--accent)}.leave-bar-fill.health{background:var(--red-dot)}.leave-bar-fill.full{background:var(--amber-dot)}
+.leave-bar-label{font-size:10.5px;font-weight:600;color:var(--text2);white-space:nowrap}
+.leave-status-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.leave-status-chip.pending{background:var(--amber-bg);color:var(--amber-text)}.leave-status-chip.approved{background:var(--green-bg);color:var(--green-text)}.leave-status-chip.none{background:var(--bg2);color:var(--text3)}
+.leave-detail-btn{font-size:10px;padding:3px 8px;border-radius:var(--radius);background:var(--bg);border:1px solid var(--border2);color:var(--text2);cursor:pointer;font-family:var(--font);white-space:nowrap}
+.leave-detail-btn:hover{border-color:var(--accent);color:var(--accent)}
+.alert-ack-table{width:100%;border-collapse:collapse;font-size:12px}
+.alert-ack-table th{text-align:left;padding:7px 10px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--border)}
+.alert-ack-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.alert-ack-table tr:last-child td{border-bottom:none}
+.alert-ack-table tr:hover td{background:var(--bg2)}
+.ack-progress{display:flex;align-items:center;gap:8px}
+.ack-progress-track{flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;min-width:60px}
+.ack-progress-fill{height:100%;border-radius:99px;transition:width .3s ease}
+.ack-progress-fill.none{background:var(--red-dot)}.ack-progress-fill.some{background:var(--amber-dot)}.ack-progress-fill.all{background:var(--green-dot)}
+.ack-fraction{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap}
+.ack-detail-list{display:none;padding:8px 10px 10px 38px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.ack-detail-list.open{display:block}
+.ack-detail-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11.5px;color:var(--text2)}
+.ack-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ack-dot.yes{background:var(--green-dot)}.ack-dot.no{background:var(--red-dot)}
+.dash-month-row{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
+.dash-month-picker{border:1px solid var(--border2);border-radius:var(--radius);padding:6px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font)}
+.dash-refresh-btn{font-size:12px;padding:6px 12px}
+.leave-reasons-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.leave-reason-tag{font-size:10px;padding:1px 7px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text2);white-space:nowrap}
+.visit-dash-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.visit-dash-item:last-child{border-bottom:none}
+.visit-dash-type{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.visit-dash-type.approval{background:var(--accent-bg);color:var(--accent)}.visit-dash-type.advance{background:var(--amber-bg);color:var(--amber-text)}
+.visit-dash-subject{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.visit-dash-meta{font-size:10.5px;color:var(--text3);white-space:nowrap}
+.report-dash-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.report-dash-item:last-child{border-bottom:none}
+.report-dash-icon{width:30px;height:30px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.report-dash-subject{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.report-dash-meta{font-size:10.5px;color:var(--text3)}
+.btn-quick-reply{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg);border:1px solid var(--border2);color:var(--accent);cursor:pointer;font-family:var(--font);font-weight:500;white-space:nowrap;flex-shrink:0}
+.btn-quick-reply:hover{background:var(--accent-bg);border-color:var(--accent)}
+.dash-skeleton{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:var(--radius);height:14px;margin-bottom:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.dash-empty{text-align:center;padding:1.5rem 1rem;color:var(--text3);font-size:12px}
+.dash-subnav{display:flex;gap:4px;margin-bottom:1.25rem;background:var(--bg2);border-radius:var(--radius-lg);padding:3px}
+.dash-subnav-btn{flex:1;padding:7px 8px;border:none;border-radius:var(--radius);background:transparent;font-size:11.5px;font-weight:500;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .15s;text-align:center;white-space:nowrap}
+.dash-subnav-btn.active{background:var(--bg);color:var(--text);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* ══════════════════════════════════════════════════════════
+   v7.0 Phase 4 — Engineer Dashboard
+   ══════════════════════════════════════════════════════════ */
+
+/* Engineer dashboard wrapper */
+.eng-dash { padding: 1.25rem; }
+
+/* Greeting header */
+.eng-dash-greeting {
+  margin-bottom: 1.25rem;
+}
+.eng-dash-greeting-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.eng-dash-greeting-sub {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 3px;
+}
+
+/* Leave balance cards */
+.leave-balance-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.leave-balance-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: .9rem 1rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.leave-balance-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.leave-balance-card.personal::before { background: var(--accent); }
+.leave-balance-card.health::before   { background: var(--red-dot); }
+.leave-balance-type {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+.leave-balance-num {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.leave-balance-card.personal .leave-balance-num { color: var(--accent); }
+.leave-balance-card.health   .leave-balance-num { color: var(--red-dot); }
+.leave-balance-card.personal.exhausted .leave-balance-num { color: var(--amber-dot); }
+.leave-balance-card.health.exhausted   .leave-balance-num { color: var(--amber-dot); }
+.leave-balance-sub {
+  font-size: 10.5px;
+  color: var(--text3);
+}
+.leave-balance-bar {
+  margin-top: 8px;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.leave-balance-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+.leave-balance-card.personal .leave-balance-bar-fill { background: var(--accent); }
+.leave-balance-card.health   .leave-balance-bar-fill { background: var(--red-dot); }
+
+/* Pending submissions */
+.eng-pending-section { margin-bottom: 1.25rem; }
+.eng-pending-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.eng-pending-item:last-child { border-bottom: none; }
+.eng-pending-icon {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.eng-pending-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.eng-pending-meta  { font-size: 10.5px; color: var(--text3); }
+.eng-pending-status {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+  white-space: nowrap; margin-left: auto; flex-shrink: 0;
+}
+.eng-pending-status.pending  { background: var(--amber-bg); color: var(--amber-text); }
+.eng-pending-status.approved { background: var(--green-bg); color: var(--green-text); }
+.eng-pending-status.declined { background: var(--red-bg);   color: var(--red-text); }
+
+/* Notification preview in eng dash */
+.eng-notif-preview {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.eng-notif-preview-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .1s;
+}
+.eng-notif-preview-item:last-child { border-bottom: none; }
+.eng-notif-preview-item:hover { background: var(--bg2); }
+.eng-notif-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.eng-notif-dot.read { background: var(--border2); }
+.eng-notif-preview-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+.eng-notif-preview-body  { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eng-notif-preview-time  { font-size: 10px; color: var(--text3); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
+
+/* FAB — floating action button */
+.fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,.20);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  z-index: 150;
+  transition: transform .15s, box-shadow .15s;
+}
+.fab:hover  { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+.fab:active { transform: scale(0.95); }
+.fab.visible { display: flex; }
+
+/* FAB speed-dial menu */
+.fab-menu {
+  position: fixed;
+  bottom: 4.5rem;
+  right: 1.5rem;
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 149;
+}
+.fab-menu.open { display: flex; }
+.fab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  animation: fabIn .2s ease both;
+}
+@keyframes fabIn {
+  from { opacity:0; transform: translateY(8px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.fab-menu-label {
+  background: var(--text);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.fab-menu-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Pull-to-refresh indicator */
+.ptr-indicator {
+  position: fixed;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-60px);
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  z-index: 200;
+  transition: transform .25s ease;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.ptr-indicator.visible { transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════════════════════════════════════
+   v7.0 Phase 5 — Reporter Dashboard
+   ══════════════════════════════════════════════════════════ */
+
+/* Reporter dash layout */
+.rep-dash { padding: 1.25rem; }
+
+/* Reporter header controls */
+.rep-dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.rep-dash-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.rep-dash-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Reporter sub-nav */
+.rep-subnav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1.25rem;
+  background: var(--bg2);
+  border-radius: var(--radius-lg);
+  padding: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.rep-subnav::-webkit-scrollbar { display: none; }
+.rep-subnav-btn {
+  flex: 1;
+  padding: 7px 10px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .15s;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 60px;
+}
+.rep-subnav-btn.active {
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+/* Reporter stat row */
+.rep-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.rep-stat {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: .85rem 1rem;
+  box-shadow: var(--shadow);
+}
+.rep-stat-lbl { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 5px; }
+.rep-stat-val { font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+.rep-stat-val.accent { color: var(--accent); }
+.rep-stat-val.amber  { color: var(--amber-dot); }
+.rep-stat-val.green  { color: var(--green-dot); }
+.rep-stat-val.red    { color: var(--red-dot); }
+
+/* Reporter data table */
+.rep-table-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.rep-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.rep-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+  background: var(--bg2);
+}
+.rep-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.rep-table tr:last-child td { border-bottom: none; }
+.rep-table tr:hover td { background: var(--bg2); }
+.rep-table .expandable { cursor: pointer; }
+.rep-eng-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rep-eng-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+  color: var(--accent); flex-shrink: 0;
+}
+.rep-eng-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.rep-expand-row td {
+  padding: 0 !important;
+  border-bottom: 2px solid var(--border) !important;
+}
+.rep-expand-inner {
+  display: none;
+  padding: 10px 12px;
+  background: var(--bg2);
+  font-size: 11.5px;
+  color: var(--text2);
+}
+.rep-expand-inner.open { display: block; }
+
+/* Download bar */
+.rep-download-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.rep-dl-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .12s;
+  white-space: nowrap;
+}
+.rep-dl-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.rep-dl-btn svg { flex-shrink: 0; }
+
+/* Reporter empty state */
+.rep-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text3);
+  font-size: 12px;
+}
+.rep-empty-icon { font-size: 28px; margin-bottom: 8px; }
+
+/* ══════════════════════════════════════════════════════════
+   v7.0 Phase 6 — UI Polish
+   ══════════════════════════════════════════════════════════ */
+
+/* PIN lock overlay */
+.pin-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg3);
+  z-index: 998;
+  display: none;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+}
+.pin-overlay.show { display: flex; }
+.pin-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  width: 100%; max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  text-align: center;
+}
+.pin-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 2px solid var(--accent-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800;
+  color: var(--accent);
+  margin: 0 auto 1rem;
+}
+.pin-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.pin-sub   { font-size: 12px; color: var(--text2); margin-bottom: 1.5rem; }
+.pin-dots  {
+  display: flex; gap: 12px; justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.pin-dot-indicator {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  transition: all .15s;
+}
+.pin-dot-indicator.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+.pin-dot-indicator.error {
+  background: var(--red-dot);
+  border-color: var(--red-dot);
+  animation: pinShake .3s ease;
+}
+@keyframes pinShake {
+  0%,100%{ transform:translateX(0); }
+  25%{ transform:translateX(-4px); }
+  75%{ transform:translateX(4px); }
+}
+.pin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-bottom: 1rem;
+}
+.pin-key {
+  aspect-ratio: 1;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  background: var(--bg2);
+  font-size: 20px; font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s, transform .1s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--font);
+}
+.pin-key:active { background: var(--bg3); transform: scale(0.94); }
+.pin-key.wide { grid-column: span 1; }
+.pin-key.del  { font-size: 16px; color: var(--text2); }
+.pin-switch-btn {
+  background: none; border: none;
+  font-size: 12px; color: var(--accent);
+  cursor: pointer; font-family: var(--font);
+  margin-top: .5rem;
+}
+
+/* Report wizard progress bar */
+.wizard-progress {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 1.25rem;
+  padding: 0 .5rem;
+}
+.wizard-step {
+  display: flex; flex-direction: column; align-items: center;
+  flex: 1;
+  position: relative;
+}
+.wizard-step-circle {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  color: var(--text3);
+  z-index: 1;
+  transition: all .2s;
+}
+.wizard-step.done .wizard-step-circle  { background: var(--accent); border-color: var(--accent); color: #fff; }
+.wizard-step.active .wizard-step-circle{ background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.wizard-step-label {
+  font-size: 9px; color: var(--text3);
+  margin-top: 4px; text-align: center;
+  white-space: nowrap;
+}
+.wizard-step.done .wizard-step-label   { color: var(--accent); }
+.wizard-step.active .wizard-step-label { color: var(--accent); font-weight: 700; }
+.wizard-step-line {
+  position: absolute;
+  top: 12px; left: 50%; right: -50%;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+.wizard-step.done .wizard-step-line { background: var(--accent); }
+.wizard-step:last-child .wizard-step-line { display: none; }
+
+/* Leave calendar */
+.leave-cal-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.leave-cal {
+  min-width: 340px;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 11px;
+}
+.leave-cal th {
+  text-align: center;
+  padding: 6px 4px;
+  font-size: 10px; font-weight: 700;
+  color: var(--text3); text-transform: uppercase; letter-spacing: .05em;
+  border-bottom: 1px solid var(--border);
+}
+.leave-cal td {
+  text-align: center;
+  padding: 5px 3px;
+  border: 1px solid var(--border);
+  position: relative;
+  min-width: 32px;
+  vertical-align: middle;
+}
+.cal-day { font-size: 11px; color: var(--text2); line-height: 1; }
+.cal-day.today { font-weight: 700; color: var(--accent); }
+.cal-day.other-month { color: var(--text3); opacity: .4; }
+.cal-leave {
+  display: block;
+  margin-top: 2px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  font-size: 8px; font-weight: 700;
+  white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.cal-leave.approved { background: var(--green-bg); color: var(--green-text); }
+.cal-leave.pending  { background: var(--amber-bg); color: var(--amber-text); }
+.cal-leave.declined { background: var(--red-bg);   color: var(--red-text); }
+
+/* Leave calendar controls */
+.cal-controls {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: .75rem; flex-wrap: wrap;
+}
+.cal-nav-btn {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  color: var(--text2);
+  font-family: var(--font); font-size: 14px;
+}
+.cal-nav-btn:hover { background: var(--bg2); }
+.cal-month-label { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
+.cal-eng-filter {
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 5px 8px; font-size: 12px;
+  background: var(--bg); color: var(--text);
+  font-family: var(--font);
+}
 </style>
 </head>
 <body>
@@ -477,7 +1169,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
       <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
-    <div class="login-footer">LDB Field Management · v6.0 · Sessions expire after 24 hours</div>
+    <div class="login-footer">LDB Field Management · v7.0 · Sessions expire after 24 hours</div>
   </div>
 </div>
 
@@ -501,7 +1193,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
     <div>
       <div class="topbar-title">
         Field Manager
-        <span class="version-tag">v6.0</span>
+        <span class="version-tag">v7.0</span>
         <span class="offline-badge" id="offline-badge" style="display:none">Offline</span>
       </div>
       <div class="topbar-sub" id="last-fetched">Field Management — Kochi Region</div>
@@ -579,13 +1271,17 @@ body{display:flex;flex-direction:column;min-height:100vh}
           <span class="notif-badge" id="notif-badge" style="display:none">0</span>
         </button>
         <!-- Activity log: only shown to admin via JS -->
-        <button class="tab" id="tab-l" onclick="switchTab('log')" style="display:none">Activity Log</button>
+        <button class="tab" id="tab-l" onclick="switchTab('log')" style="display:none">Dashboard</button>
         <!-- Reports tab: only shown to engineers via JS -->
         <button class="tab" id="tab-rep" onclick="switchTab('reports')" style="display:none">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M4 7h8M4 10h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.3"/></svg>
           Reports
         </button>
         <!-- Distant Visit tab: shown to both engineers and admin -->
+        <button class="tab" id="tab-reporter" onclick="switchTab('reporter')" style="display:none">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h6M5 8.5h4M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Reporter
+        </button>
         <button class="tab" id="tab-visit" onclick="switchTab('visit')" style="display:none">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
           Distant Visit
@@ -749,6 +1445,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
     </div>
   </div>
 
+
+      <!-- Reporter panel — Phase 5 will build full dashboard -->
+      <div id="panel-reporter" style="display:none"></div>
+
   <!-- Add/Edit site modal -->
   <div class="modal-backdrop" id="add-site-modal-backdrop" onclick="if(event.target===this)closeAddSiteModal()">
     <div class="modal" style="max-width:420px">
@@ -901,7 +1601,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
             <div class="cred-field"><label>Full name</label><input class="cred-inp" type="text" id="new-eng-name" placeholder="e.g. Rahul K" maxlength="40"/></div>
             <div class="cred-field"><label>Username</label><input class="cred-inp" type="text" id="new-eng-username" placeholder="e.g. rahul" autocomplete="off" maxlength="32"/></div>
             <div class="cred-field"><label>Password</label><input class="cred-inp" type="password" id="new-eng-password" placeholder="Min 6 chars" autocomplete="new-password"/></div>
-            <div class="cred-field"><label>Role</label><select class="cred-inp" id="new-eng-role"><option value="engineer">Engineer</option><option value="admin">Admin</option></select></div>
+            <div class="cred-field"><label>Role</label><select class="cred-inp" id="new-eng-role"><option value="engineer">Engineer</option><option value="admin">Admin</option><option value="reporter">Reporter</option></select></div>
           </div>
           <button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="addNewEngineer()">Add user</button>
         </div>
@@ -999,7 +1699,43 @@ body{display:flex;flex-direction:column;min-height:100vh}
         </div>
       </div>
 
+      <!-- SECTION: Leave Quota -->
+      <div class="sett-section-hdr">&#x1F4CB; Leave Quota</div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-leave-quota')" id="row-leave-quota">
+        <div class="sett-row-icon" style="background:#fef3c7">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#f59e0b" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body">
+          <div class="sett-row-title">Leave allowances per engineer</div>
+          <div class="sett-row-sub" id="leave-quota-sub">Personal: 2 &middot; Health: 2 per month</div>
+        </div>
+        <svg class="sett-chevron" id="chev-leave-quota" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-leave-quota">
+        <div class="sett-panel-inner">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div class="cred-field"><label>Personal leave / month</label><input class="cred-inp" type="number" id="quota-personal" value="2" min="0" max="30"/></div>
+            <div class="cred-field"><label>Health leave / month</label><input class="cred-inp" type="number" id="quota-health" value="2" min="0" max="30"/></div>
+          </div>
+          <div class="cred-hint" style="margin-bottom:8px">Health leave is for urgent medical situations only. Changes apply from next month.</div>
+          <button class="btn btn-primary btn-sm" style="width:100%" onclick="saveLeaveQuotaFromSettings()">Save quota</button>
+        </div>
+      </div>
+
+      <!-- SECTION: About / Credits -->
+      <div class="sett-section-hdr">&#x2139;&#xFE0F; About</div>
+      <div class="sett-row" id="row-credits">
+        <div class="sett-row-icon" style="background:var(--accent-bg)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="var(--accent)" stroke-width="1.3"/><path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sett-row-body">
+          <div class="sett-row-title">Field Manager <span id="credits-version" style="font-size:11px;color:var(--text3);font-weight:400">v7.0</span></div>
+          <div class="sett-row-sub">Developed by Ayush E P &middot; RFID Engineer &mdash; Cochin Port</div>
+        </div>
+      </div>
+
       <!-- SECTION: Mail contacts -->
+
       <div class="sett-section-hdr">&#x2709;&#xFE0F; Mail Contacts</div>
       <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-contacts')" id="row-contacts">
         <div class="sett-row-icon" style="background:#eff6ff">
@@ -1179,12 +1915,9 @@ function getCurrentUser() { return ls(K_AUTH_US) || ''; }
 
 function getUserRole(u) {
   if (!u) return null;
-  // Original admin account is always admin
   if (u === 'admin') return 'admin';
   const creds = credCache || lj(K.CREDS, {});
-  // Direct key match
   if (creds && creds[u]) return creds[u].role || 'engineer';
-  // Match by username field (in case key differs from login username)
   if (creds) {
     for (const entry of Object.values(creds)) {
       if (entry && entry.username && entry.username.toLowerCase() === u.toLowerCase()) {
@@ -1192,13 +1925,18 @@ function getUserRole(u) {
       }
     }
   }
-  // Hardcoded fallback for core accounts
   if (u === 'ayush' || u === 'swethaswan') return 'engineer';
   return null;
 }
 
 function isEngineer(u) { return getUserRole(u) === 'engineer'; }
 function isAdmin(u)    { return getUserRole(u) === 'admin'; }
+function isReporter(u) { return getUserRole(u) === 'reporter'; }
+function getRoleLabel(role) {
+  if (role === 'admin')    return 'Admin';
+  if (role === 'reporter') return 'Reporter';
+  return 'Engineer';
+}
 
 function isAuthValid() {
   const ts = ls(K_AUTH_TS), ok = ls(K_AUTH);
@@ -1211,12 +1949,15 @@ function clearSession() {
 }
 
 function applyRoleUI(user) {
-  const admin  = isAdmin(user);
-  const eng_u  = isEngineer(user);
+  const admin    = isAdmin(user);
+  const eng_u    = isEngineer(user);
+  const reporter = isReporter(user);
   const pill = document.getElementById('user-pill');
   const disp = document.getElementById('user-display');
   if (pill) pill.style.display = user ? 'flex' : 'none';
   if (disp) disp.textContent = user || '';
+  const changePwLink = document.getElementById('change-pw-link');
+  if (changePwLink) changePwLink.style.display = eng_u ? 'inline' : 'none';
   const alertBtn    = document.getElementById('send-alert-btn');
   const notifBtn    = document.getElementById('notif-btn');
   const notifTab    = document.getElementById('tab-n');
@@ -1224,17 +1965,20 @@ function applyRoleUI(user) {
   const repTab      = document.getElementById('tab-rep');
   const visitTab    = document.getElementById('tab-visit');
   const settingsBtn = document.getElementById('settings-btn');
-  if (alertBtn)    alertBtn.style.display    = admin ? 'inline-flex' : 'none';
-  if (notifBtn)    notifBtn.style.display    = eng_u ? 'inline-flex' : 'none';
-  if (notifTab)    notifTab.style.display    = eng_u ? 'inline-flex' : 'none';
-  if (logTab)      logTab.style.display      = admin ? 'inline-flex' : 'none';
-  if (repTab)      repTab.style.display      = eng_u ? 'inline-flex' : 'none';
+  const reporterTab = document.getElementById('tab-reporter');
+  if (alertBtn)    alertBtn.style.display    = admin    ? 'inline-flex' : 'none';
+  if (notifBtn)    notifBtn.style.display    = eng_u    ? 'inline-flex' : 'none';
+  if (notifTab)    notifTab.style.display    = eng_u    ? 'inline-flex' : 'none';
+  if (logTab)      logTab.style.display      = admin    ? 'inline-flex' : 'none';
+  if (repTab)      repTab.style.display      = eng_u    ? 'inline-flex' : 'none';
   if (visitTab)    visitTab.style.display    = (admin || eng_u) ? 'inline-flex' : 'none';
-  if (settingsBtn) settingsBtn.style.display = admin ? 'inline-flex' : 'none';
+  if (settingsBtn) settingsBtn.style.display = admin    ? 'inline-flex' : 'none';
+  if (reporterTab) reporterTab.style.display = reporter ? 'inline-flex' : 'none';
   const leaveRow = document.getElementById('leave-requests-row');
   if (leaveRow) leaveRow.style.display = admin ? 'block' : 'none';
-  if (admin) { loadLeaveRequests(); }
-  if (eng_u) { updateUnreadBadge(); loadNotifInbox(); }
+  if (admin)    { loadLeaveRequests(); switchTab('log'); }
+  if (eng_u)    { updateUnreadBadge(); loadNotifInbox(); switchTab('notifs'); initFab(); }
+  if (reporter) { switchTab('reporter'); }
 }
 
 function checkAuth() {
@@ -1308,6 +2052,8 @@ async function fetchCredentials() {
       }
     }
   } catch(e) { /* offline — use local cache */ }
+  // Phase 2: fetch leave quota
+  await fetchLeaveQuota();
 }
 
 // Resolve username → { username, hash } from cache or defaults
@@ -1422,6 +2168,8 @@ async function openSettingsModal() {
   renderVisitContactsList('approval');
   renderVisitContactsList('advance');
   renderDeviceListSettings();
+  populateLeaveQuotaFields();
+  populateCreditsVersion();
 }
 
 function renderEngMgmtList() {
@@ -1432,7 +2180,7 @@ function renderEngMgmtList() {
       const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
       const isCore   = u.key === 'admin';
       const role     = u.role || 'engineer';
-      const roleLabel = role === 'admin' ? 'Admin' : 'Engineer';
+      const roleLabel = role === 'admin' ? 'Admin' : role === 'reporter' ? 'Reporter' : 'Engineer';
       return '<div class="sett-user-row">' +
         '<div class="sett-user-avatar">' + initials + '</div>' +
         '<div style="flex:1;min-width:0">' +
@@ -1442,7 +2190,7 @@ function renderEngMgmtList() {
         '<div class="sett-user-actions">' +
         (!isCore
           ? '<button class="sett-user-chip role" onclick="changeUserRole(\'' + esc(u.key) + '\',\'' + role + '\')">' +
-              (role === 'admin' ? '→ Engineer' : '→ Admin') + '</button>' +
+              (role === 'admin' ? '→ Reporter' : role === 'reporter' ? '→ Engineer' : '→ Admin') + '</button>' +
             '<button class="sett-user-chip del" onclick="removeEngineer(\'' + esc(u.key) + '\')">Remove</button>'
           : '') +
         '</div>' +
@@ -1486,8 +2234,8 @@ function getAllUserList() {
   // Dynamic users
   Object.entries(creds).forEach(([key, val]) => {
     if (['admin','ayush','swethaswan'].includes(key)) return;
-    if (key.startsWith('__removed_')) return; // skip tombstones
-    if (val && (val.role === 'engineer' || val.role === 'admin')) {
+    if (key.startsWith('__removed_')) return;
+    if (val && (val.role === 'engineer' || val.role === 'admin' || val.role === 'reporter')) {
       list.push({ key, name: val.name || key, username: val.username || key, role: val.role });
     }
   });
@@ -1501,7 +2249,9 @@ function getEngineerList() {
 
 function changeUserRole(key, currentRole) {
   if (!credCache) credCache = {};
-  const newRole = currentRole === 'admin' ? 'engineer' : 'admin';
+  // Cycle: engineer → admin → reporter → engineer
+  const cycle = { engineer:'admin', admin:'reporter', reporter:'engineer' };
+  const newRole = cycle[currentRole] || 'engineer';
   if (!credCache[key]) {
     const def = DEFAULT_HASHES[key];
     credCache[key] = { username: def?.username || key, hash: def?.hash || '', name: key, role: newRole };
@@ -1510,7 +2260,7 @@ function changeUserRole(key, currentRole) {
   }
   sj(K.CREDS, credCache);
   renderEngMgmtList();
-  showToast('Role changed to ' + newRole + ' — tap Save & sync to push to server');
+  showToast('Role changed to ' + newRole + ' — tap Save & sync');
 }
 
 function addNewEngineer() {
@@ -2004,18 +2754,35 @@ async function saveSettings() {
 
 function switchTab(t) {
   tab = t;
-  const panels = ['notifs','log','reports','visit'];
+  const panels = ['notifs','log','reports','visit','reporter'];
   panels.forEach(id => {
-    const tabId  = id === 'notifs' ? 'n' : id === 'log' ? 'l' : id === 'reports' ? 'rep' : 'visit';
-    const tabEl  = document.getElementById('tab-' + tabId);
-    const panel  = document.getElementById('panel-' + id);
+    const tabId = id === 'notifs'   ? 'n'
+                : id === 'log'      ? 'l'
+                : id === 'reports'  ? 'rep'
+                : id === 'reporter' ? 'reporter'
+                : 'visit';
+    const tabEl = document.getElementById('tab-' + tabId);
+    const panel = document.getElementById('panel-' + id);
     if (tabEl) tabEl.classList.toggle('active', id === t);
     if (panel) panel.style.display = id === t ? 'block' : 'none';
   });
-  if (t === 'notifs')  { markNotifsRead(); renderNotifInbox(); }
-  if (t === 'log')     { renderActivityLog(); loadKvReports(); loadAdminInbox(); }
-  if (t === 'reports') { closeReportWizard(); fetchDeviceListForReports(); updateReportAdminBar(); }
-  if (t === 'visit')   { onVisitTabOpen(); }
+  if (t === 'notifs') {
+    const u = getCurrentUser();
+    markNotifsRead(); renderNotifInbox();
+    if (isEngineer(u)) renderEngDashHeader(u);
+  }
+  if (t === 'log')      {
+    const user = getCurrentUser();
+    if (isAdmin(user)) {
+      renderAdminDashboard();
+    } else {
+      renderActivityLog();
+    }
+    loadKvReports(); loadAdminInbox();
+  }
+  if (t === 'reports')  { closeReportWizard(); fetchDeviceListForReports(); updateReportAdminBar(); }
+  if (t === 'visit')    { onVisitTabOpen(); }
+  if (t === 'reporter') { onReporterTabOpen(); }
 }
 
 // Acknowledge directly from a notification (alert sent by admin)
@@ -2026,6 +2793,12 @@ function acknowledgeFromNotif(ackKey, alertTitle) {
   sj(K.ACK, acks);
   renderNotifInbox();
   logActivity(user, 'ack', 'Acknowledged alert: <strong>' + esc(alertTitle) + '</strong>');
+  // Phase 2: sync ack to KV so reporter can see it
+  fetch(WORKER_URL + '/acknowledge-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user, alertId: ackKey, title: alertTitle })
+  }).catch(() => {});
   // Notify admin
   fetch(WORKER_URL + '/manual-alert', {
     method: 'POST',
@@ -2174,44 +2947,6 @@ function updateUnreadBadge() {
 
 function markNotifsRead() { lset(K.NOTIF_READ, Date.now().toString()); updateUnreadBadge(); }
 
-function renderNotifInbox() {
-  const inbox   = getNotifInbox();
-  const listEl  = document.getElementById('notif-inbox-list');
-  const countEl = document.getElementById('notif-inbox-count');
-  if (!listEl) return;
-  if (!inbox.length) {
-    if (countEl) countEl.textContent = 'No notifications';
-    listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">🔔</div>No notifications yet.<br/>Admin will send alerts here when needed.</div>';
-    return;
-  }
-  if (countEl) countEl.textContent = inbox.length + ' notification' + (inbox.length !== 1 ? 's' : '');
-  const lastRead = parseInt(ls(K.NOTIF_READ) || '0');
-  const acks = lj(K.ACK, {});
-  const user = getCurrentUser();
-  listEl.innerHTML = inbox.map(n => {
-    const isNew  = new Date(n.sentAt).getTime() > lastRead;
-    const dt     = new Date(n.sentAt).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-    // Generate a stable ID from notification ID for ack lookup
-    const ackKey = 'notif_' + (n.id || n.sentAt);
-    const acked  = acks[ackKey] && acks[ackKey].user === user;
-    // Acknowledge button — lets engineer respond directly from notification
-    const ackBtn = acked
-      ? '<span class="btn-ack acked" style="margin-top:7px;display:inline-flex">✓ Acknowledged</span>'
-      : '<button class="btn-ack" style="margin-top:7px" onclick="acknowledgeFromNotif(\'' + esc(ackKey) + '\',\'' + esc(n.title) + '\')">I\'m on it</button>';
-    return '<div class="notif-item">' +
-      '<div class="notif-icon-wrap">' +
-        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="var(--accent)" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/></svg>' +
-      '</div>' +
-      '<div class="notif-content">' +
-        (isNew ? '<div class="notif-unread-dot" style="float:right"></div>' : '') +
-        '<div class="notif-title">' + esc(n.title) + '</div>' +
-        '<div class="notif-body">' + esc(n.body) + '</div>' +
-        '<div class="notif-meta"><span>' + dt + '</span><span>From: ' + esc(n.sentBy || 'admin') + '</span></div>' +
-        ackBtn +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
 
 function clearNotifInbox() {
   const lbl = document.getElementById('notif-inbox-count');
@@ -2577,6 +3312,8 @@ function openReportWizard(type) {
   if (type === 'rma') { rmaComponentCount = 0; addRmaComponent(); }
   // Pre-fill To/CC from saved contacts after form is rendered
   fillWizardMailFields();
+  // Phase 6: inject progress bar
+  injectWizardProgressBar(type);
 }
 
 function closeReportWizard() {
@@ -3991,18 +4728,25 @@ function closeLeaveModal() {
 }
 
 async function updateLeaveStatus(id, status) {
+  const approvedBy = getCurrentUser();
   try {
     const r = await fetch(WORKER_URL + '/update-leave', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status })
+      body: JSON.stringify({ id, status, approvedBy })
     });
     const d = await r.json();
     if (d.ok) {
       showToast('Leave ' + status);
-      logActivity(getCurrentUser(), 'remark', 'Marked leave request as <strong>' + status + '</strong>');
+      logActivity(approvedBy, 'remark', 'Marked leave request as <strong>' + status + '</strong>');
+      clearReporterCache();
       closeLeaveModal();
       loadLeaveRequests();
+      // Refresh dashboard if admin is on it
+      if (isAdmin(approvedBy) && tab === 'log') {
+        _adminDashData = null;
+        loadAdminDashData();
+      }
     }
   } catch (e) { showToast('Could not update — try again'); }
 }
@@ -4447,6 +5191,8 @@ function refreshVisitPreview() {
   if (!prevEl || !selectedVisitSites.length) return;
   const { subject, plainBody } = buildVisitContent(currentVisitType);
   if (plainBody) prevEl.textContent = 'Subject: ' + subject + '\n\n' + plainBody;
+  // Phase 6: show distance summary strip
+  renderVisitDistanceStrip();
 }
 
 function buildVisitContent(type) {
@@ -4638,14 +5384,1501 @@ async function sendVisitRequest() {
 }
 
 // ── Init ─────────────────────────────────────────────────────
+
+// ══════════════════════════════════════════════════════════════
+// v7.0 — Phase 1, 2, 3 new functions
+// Dev: Ayush E P | RFID Engineer — Cochin Port
+// ══════════════════════════════════════════════════════════════
+
+const APP_VERSION = 'v7.0';
+const K_LEAVE_QUOTA = 'dsc_leave_quota_v1';
+
+// ── Phase 1: Leave quota helpers ─────────────────────────────
+function getLeaveQuota() { return lj(K_LEAVE_QUOTA, { personal:2, health:2 }); }
+
+async function fetchLeaveQuota() {
+  try {
+    const r = await fetch(WORKER_URL + '/get-leave-quota');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.ok && d.quota) sj(K_LEAVE_QUOTA, d.quota);
+  } catch(e) {}
+}
+
+async function saveLeaveQuotaFromSettings() {
+  const personal = parseInt(document.getElementById('quota-personal')?.value || '2');
+  const health   = parseInt(document.getElementById('quota-health')?.value   || '2');
+  if (isNaN(personal) || isNaN(health) || personal < 0 || health < 0) { showToast('Quota values must be 0 or more'); return; }
+  const adminCurrentPw = document.getElementById('admin-current-pw')?.value.trim();
+  if (!adminCurrentPw) { showToast('Enter your admin password in the Passwords section first'); return; }
+  const adminHash = sha256('admin:' + adminCurrentPw);
+  try {
+    const r = await fetch(WORKER_URL + '/set-leave-quota', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ adminHash, quota:{ personal, health } })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      sj(K_LEAVE_QUOTA, { personal, health });
+      const sub = document.getElementById('leave-quota-sub');
+      if (sub) sub.textContent = 'Personal: ' + personal + ' · Health: ' + health + ' per month';
+      showToast('Leave quota saved ✓');
+    } else { showToast(d.error === 'Unauthorised' ? 'Wrong admin password' : (d.error || 'Save failed')); }
+  } catch(e) { sj(K_LEAVE_QUOTA, { personal, health }); showToast('Saved locally — sync when online'); }
+}
+
+function populateLeaveQuotaFields() {
+  const quota = getLeaveQuota();
+  const pEl   = document.getElementById('quota-personal');
+  const hEl   = document.getElementById('quota-health');
+  const sub   = document.getElementById('leave-quota-sub');
+  if (pEl) pEl.value = quota.personal;
+  if (hEl) hEl.value = quota.health;
+  if (sub) sub.textContent = 'Personal: ' + quota.personal + ' · Health: ' + quota.health + ' per month';
+}
+
+function populateCreditsVersion() {
+  const el = document.getElementById('credits-version');
+  if (el) el.textContent = APP_VERSION;
+}
+
+// ── Phase 2: Reporter data cache & helpers ────────────────────
+let _reporterCache = null;
+let _reporterCacheMonth = null;
+
+function clearReporterCache() { _reporterCache = null; _reporterCacheMonth = null; }
+
+async function fetchReporterSummary(month) {
+  const m = month || new Date().toISOString().slice(0,7);
+  if (_reporterCache && _reporterCacheMonth === m) return _reporterCache;
+  try {
+    const r = await fetch(WORKER_URL + '/reporter-summary?month=' + encodeURIComponent(m));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || 'Unknown error');
+    _reporterCache = data; _reporterCacheMonth = m;
+    return data;
+  } catch(e) { showToast('Could not load reporter data: ' + e.message); return null; }
+}
+
+async function downloadReporterCsv(type, month) {
+  const m   = month || new Date().toISOString().slice(0,7);
+  const url = WORKER_URL + '/reporter-download?month=' + encodeURIComponent(m) + '&type=' + encodeURIComponent(type);
+  try {
+    showToast('Preparing download…');
+    const r    = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const blob = await r.blob();
+    const fname= 'fieldmanager_' + (type === 'all' ? 'full_report' : type) + '_' + m + '.csv';
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = fname;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    showToast('Downloaded: ' + fname);
+  } catch(e) { showToast('Download failed: ' + e.message); }
+}
+
+async function fetchOwnLeaveBalance(userKey) {
+  const month = new Date().toISOString().slice(0,7);
+  try {
+    const r = await fetch(WORKER_URL + '/reporter-summary?month=' + encodeURIComponent(month));
+    if (!r.ok) return null;
+    const data = await r.json();
+    if (!data.ok) return null;
+    _reporterCache = data; _reporterCacheMonth = month;
+    return data.leaves?.summary?.find(s => s.user === userKey) || null;
+  } catch(e) { return null; }
+}
+
+// ── Phase 2: Reporter tab ─────────────────────────────────────
+function onReporterTabOpen() {
+  const panel = document.getElementById('panel-reporter');
+  if (!panel) return;
+  const month = _repDashMonth || new Date().toISOString().slice(0,7);
+  _repDashMonth = month;
+  panel.innerHTML = buildRepDashShell(month);
+  setRepDashTab(_repDashTab);
+  loadRepDashData(month);
+}
+
+// ── Phase 5: Reporter Dashboard state ──────────────────────
+let _repDashMonth = new Date().toISOString().slice(0,7);
+let _repDashTab   = 'leaves';  // 'leaves' | 'visits' | 'alerts'
+let _repDashData  = null;
+let _repLoading   = false;
+
+function buildRepDashShell(month) {
+  return '<div class="rep-dash">' +
+    '<div class="rep-dash-header">' +
+      '<div class="rep-dash-title">📊 Reporter Dashboard</div>' +
+      '<div class="rep-dash-controls">' +
+        '<input type="month" id="rep-month-picker" value="' + month + '" ' +
+          'style="border:1px solid var(--border2);border-radius:var(--radius);padding:6px 10px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font)" ' +
+          'onchange="onRepMonthChange(this.value)"/>' +
+        '<button class="btn btn-sm" onclick="refreshRepDash()">↻ Refresh</button>' +
+        '<button class="btn btn-sm btn-primary" onclick="downloadReporterCsv(&quot;all&quot;,document.getElementById(&quot;rep-month-picker&quot;).value)">⬇ Full CSV</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="rep-subnav">' +
+      '<button class="rep-subnav-btn" id="rsnav-leaves"  onclick="setRepDashTab(&quot;leaves&quot;)">🗓 Leaves</button>' +
+      '<button class="rep-subnav-btn" id="rsnav-visits"  onclick="setRepDashTab(&quot;visits&quot;)">📍 Visits</button>' +
+      '<button class="rep-subnav-btn" id="rsnav-alerts"  onclick="setRepDashTab(&quot;alerts&quot;)">📢 Alerts</button>' +
+    '</div>' +
+    '<div id="rep-dash-content">' + buildRepSkeleton() + '</div>' +
+  '</div>';
+}
+
+function setRepDashTab(tabName) {
+  _repDashTab = tabName;
+  ['leaves','visits','alerts'].forEach(t => {
+    const btn = document.getElementById('rsnav-' + t);
+    if (btn) btn.classList.toggle('active', t === tabName);
+  });
+  renderRepDashContent();
+}
+
+function renderRepDashContent() {
+  const el = document.getElementById('rep-dash-content');
+  if (!el) return;
+  if (!_repDashData) { el.innerHTML = buildRepSkeleton(); return; }
+  if (_repDashTab === 'leaves') el.innerHTML = buildRepLeavesTab();
+  if (_repDashTab === 'visits') el.innerHTML = buildRepVisitsTab();
+  if (_repDashTab === 'alerts') el.innerHTML = buildRepAlertsTab();
+}
+
+async function loadRepDashData(month) {
+  _repLoading = true;
+  const m = month || _repDashMonth;
+  try {
+    const r = await fetch(WORKER_URL + '/reporter-summary?month=' + encodeURIComponent(m));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || 'Failed');
+    _repDashData = data;
+    _reporterCache = data; _reporterCacheMonth = m;
+  } catch(e) { showToast('Reporter data: ' + e.message); }
+  _repLoading = false;
+  renderRepDashContent();
+}
+
+function onRepMonthChange(val) {
+  _repDashMonth = val; _repDashData = null;
+  const el = document.getElementById('rep-dash-content');
+  if (el) el.innerHTML = buildRepSkeleton();
+  loadRepDashData(val);
+}
+
+function refreshRepDash() {
+  _repDashData = null; clearReporterCache();
+  const el = document.getElementById('rep-dash-content');
+  if (el) el.innerHTML = buildRepSkeleton();
+  loadRepDashData(_repDashMonth);
+}
+
+// ── Phase 5: Leaves tab ─────────────────────────────────────
+function buildRepLeavesTab() {
+  const summary = _repDashData?.leaves?.summary || [];
+  const quota   = _repDashData?.leaves?.quota   || { personal:2, health:2 };
+  if (!summary.length) return '<div class="rep-empty"><div class="rep-empty-icon">🗓️</div>No leave data for ' + _repDashMonth + '</div>';
+
+  const totalTaken   = summary.reduce((a,e)=>a+e.total_taken,0);
+  const totalPending = summary.reduce((a,e)=>a+(e.personal_pending+e.health_pending),0);
+  const totalPersonal= summary.reduce((a,e)=>a+e.personal_taken,0);
+  const totalHealth  = summary.reduce((a,e)=>a+e.health_taken,0);
+
+  return '<div class="rep-stats-row">' +
+    repStat('Total Taken',   totalTaken,   'amber') +
+    repStat('Pending',       totalPending, 'red') +
+    repStat('Personal Leaves', totalPersonal, 'accent') +
+    repStat('Health Leaves', totalHealth,  'red') +
+  '</div>' +
+  '<div class="rep-download-bar">' +
+    repDlBtn('leaves',       '📊 Summary CSV') +
+    repDlBtn('leave_details','📋 Details CSV') +
+  '</div>' +
+  '<div class="rep-table-wrap">' +
+    '<table class="rep-table">' +
+      '<thead><tr><th>Engineer</th><th>Personal</th><th>Health</th><th>Total</th><th>Pending</th><th>Reasons</th></tr></thead>' +
+      '<tbody>' +
+      summary.map((eng,idx) => {
+        const initials = eng.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const pPct = quota.personal>0?Math.min(100,(eng.personal_taken/quota.personal)*100):0;
+        const hPct = quota.health>0?Math.min(100,(eng.health_taken/quota.health)*100):0;
+        const pending = eng.personal_pending+eng.health_pending;
+        const hasDetails = eng.details&&eng.details.length>0;
+        return '<tr class="' + (hasDetails?'expandable':'') + '" onclick="' + (hasDetails?'toggleRepRow('+idx+')':'') + '">' +
+          '<td><div class="rep-eng-cell">' +
+            (hasDetails?'<span id="rep-expand-icon-'+idx+'" style="font-size:10px;color:var(--text3);flex-shrink:0">▸</span>':'') +
+            '<div class="rep-eng-avatar">' + initials + '</div>' +
+            '<div class="rep-eng-name">' + esc(eng.name) + '</div>' +
+          '</div></td>' +
+          '<td><div class="leave-quota-bar"><div class="leave-bar-track"><div class="leave-bar-fill personal ' + (pPct>=100?'full':'') + '" style="width:' + pPct + '%"></div></div><span class="leave-bar-label">' + eng.personal_taken + '/' + quota.personal + '</span></div></td>' +
+          '<td><div class="leave-quota-bar"><div class="leave-bar-track"><div class="leave-bar-fill health ' + (hPct>=100?'full':'') + '" style="width:' + hPct + '%"></div></div><span class="leave-bar-label">' + eng.health_taken + '/' + quota.health + '</span></div></td>' +
+          '<td style="font-weight:700;color:var(--text)">' + eng.total_taken + '</td>' +
+          '<td>' + (pending>0?'<span class="leave-status-chip pending">'+pending+'</span>':'<span style="color:var(--text3);font-size:11px">—</span>') + '</td>' +
+          '<td style="max-width:140px">' + (eng.reasons&&eng.reasons.length?'<div class="leave-reasons-list">'+eng.reasons.slice(0,2).map(r=>'<span class="leave-reason-tag">'+esc(r)+'</span>').join('')+(eng.reasons.length>2?'<span class="leave-reason-tag">+' + (eng.reasons.length-2)+'</span>':'')+'</div>':'<span style="color:var(--text3);font-size:11px">—</span>') + '</td>' +
+        '</tr>' +
+        (hasDetails?'<tr class="rep-expand-row" id="rep-expand-'+idx+'"><td colspan="6">' +
+          '<div class="rep-expand-inner" id="rep-expand-inner-'+idx+'">' +
+            '<table style="width:100%;font-size:11px;border-collapse:collapse">' +
+              '<tr style="color:var(--text3)"><td style="padding:3px 6px;font-weight:700">Date</td><td style="padding:3px 6px;font-weight:700">Type</td><td style="padding:3px 6px;font-weight:700">Days</td><td style="padding:3px 6px;font-weight:700">Reason</td><td style="padding:3px 6px;font-weight:700">Status</td></tr>' +
+              eng.details.map(d =>
+                '<tr style="border-top:1px solid var(--border)">' +
+                  '<td style="padding:4px 6px">' + (d.fromDate?new Date(d.fromDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'—') + '</td>' +
+                  '<td style="padding:4px 6px">' + esc(d.type||'—') + '</td>' +
+                  '<td style="padding:4px 6px">' + (d.days||1) + '</td>' +
+                  '<td style="padding:4px 6px">' + esc(d.reason||'—') + '</td>' +
+                  '<td style="padding:4px 6px"><span class="leave-status-chip ' + (d.status==='approved'?'approved':d.status==='declined'?'none':'pending') + '" style="font-size:9px">' + esc(d.status) + '</span></td>' +
+                '</tr>'
+              ).join('') +
+            '</table>' +
+          '</div>' +
+        '</td></tr>':'');
+      }).join('') +
+      '</tbody>' +
+    '</table>' +
+  '</div>';
+}
+
+// ── Phase 5: Visits tab ─────────────────────────────────────
+function buildRepVisitsTab() {
+  const summary = _repDashData?.visits?.summary || [];
+  if (!summary.length) return '<div class="rep-empty"><div class="rep-empty-icon">📍</div>No visit data for ' + _repDashMonth + '</div>';
+
+  const totalVisits   = summary.reduce((a,v)=>a+v.total_visits,0);
+  const totalApproved = summary.reduce((a,v)=>a+v.approved,0);
+  const totalPending  = summary.reduce((a,v)=>a+v.pending,0);
+
+  return '<div class="rep-stats-row">' +
+    repStat('Total Requests', totalVisits,   'accent') +
+    repStat('Approved',       totalApproved, 'green') +
+    repStat('Pending',        totalPending,  'amber') +
+  '</div>' +
+  '<div class="rep-download-bar">' +
+    repDlBtn('visits',        '📊 Summary CSV') +
+    repDlBtn('visit_details', '🗺️ Details CSV') +
+  '</div>' +
+  '<div class="rep-table-wrap">' +
+    '<table class="rep-table">' +
+      '<thead><tr><th>Engineer</th><th>Total</th><th>Approved</th><th>Pending</th></tr></thead>' +
+      '<tbody>' +
+      summary.map((eng,idx) => {
+        const initials = eng.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const hasDetails = eng.details&&eng.details.length>0;
+        return '<tr class="' + (hasDetails?'expandable':'') + '" onclick="' + (hasDetails?'toggleRepVisitRow('+idx+')':'') + '">' +
+          '<td><div class="rep-eng-cell">' +
+            (hasDetails?'<span id="rep-vexpand-icon-'+idx+'" style="font-size:10px;color:var(--text3);flex-shrink:0">▸</span>':'') +
+            '<div class="rep-eng-avatar">' + initials + '</div>' +
+            '<div class="rep-eng-name">' + esc(eng.name) + '</div>' +
+          '</div></td>' +
+          '<td style="font-weight:700;color:var(--text)">' + eng.total_visits + '</td>' +
+          '<td><span style="color:var(--green-text);font-weight:600">' + eng.approved + '</span></td>' +
+          '<td>' + (eng.pending>0?'<span class="leave-status-chip pending">'+eng.pending+'</span>':'<span style="color:var(--text3)">—</span>') + '</td>' +
+        '</tr>' +
+        (hasDetails?'<tr class="rep-expand-row" id="rep-vexpand-'+idx+'"><td colspan="4">' +
+          '<div class="rep-expand-inner" id="rep-vexpand-inner-'+idx+'">' +
+            eng.details.map(d =>
+              '<div style="padding:5px 0;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+                '<span class="visit-dash-type ' + (d.type||'approval') + '">' + (d.type==='advance'?'💰':'📋') + ' ' + esc(d.type||'approval') + '</span>' +
+                '<div style="flex:1;min-width:0"><div style="font-size:11.5px;font-weight:600;color:var(--text)">' + esc(d.subject) + '</div>' +
+                '<div style="font-size:10.5px;color:var(--text3)">' + d.submittedAt + '</div></div>' +
+                '<span class="leave-status-chip ' + (d.status==='approved'?'approved':d.status==='pending'?'pending':'none') + '" style="font-size:9px">' + esc(d.status) + '</span>' +
+              '</div>'
+            ).join('') +
+          '</div>' +
+        '</td></tr>':'');
+      }).join('') +
+      '</tbody>' +
+    '</table>' +
+  '</div>';
+}
+
+// ── Phase 5: Alerts tab ─────────────────────────────────────
+function buildRepAlertsTab() {
+  const alerts = _repDashData?.alerts?.alerts || [];
+  if (!alerts.length) return '<div class="rep-empty"><div class="rep-empty-icon">📢</div>No alerts sent in ' + _repDashMonth + '</div>';
+
+  const totalSent  = alerts.reduce((a,al)=>a+al.total_sent,0);
+  const totalAcked = alerts.reduce((a,al)=>a+al.total_acked,0);
+  const ackRate    = totalSent>0?Math.round((totalAcked/totalSent)*100):0;
+
+  return '<div class="rep-stats-row">' +
+    repStat('Alerts Sent', alerts.length, 'accent') +
+    repStat('Total Recipients', totalSent, 'amber') +
+    repStat('Acknowledged', totalAcked, 'green') +
+    repStat('Ack Rate', ackRate+'%', ackRate>=80?'green':ackRate>=50?'amber':'red') +
+  '</div>' +
+  '<div class="rep-download-bar">' +
+    repDlBtn('alerts',        '📊 Summary CSV') +
+    repDlBtn('alert_details', '✅ Ack Detail CSV') +
+  '</div>' +
+  '<div class="rep-table-wrap">' +
+    '<table class="rep-table">' +
+      '<thead><tr><th>Alert</th><th>Sent</th><th>Acknowledged</th><th>Rate</th></tr></thead>' +
+      '<tbody>' +
+      alerts.map((a,idx) => {
+        const total  = a.total_sent||0;
+        const acked  = a.total_acked||0;
+        const pct    = total>0?Math.round((acked/total)*100):0;
+        const fillCls= pct===0?'none':pct===100?'all':'some';
+        const dt     = a.sentAt?new Date(a.sentAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):' —';
+        const recips = Object.entries(a.recipients||{});
+        return '<tr class="expandable" onclick="toggleRepAlertRow(' + idx + ')">' +
+          '<td>' +
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<span id="rep-aexpand-icon-'+idx+'" style="font-size:10px;color:var(--text3)">▸</span>' +
+              '<div><div style="font-size:12px;font-weight:600;color:var(--text)">' + esc(a.title) + '</div>' +
+              (a.body?'<div style="font-size:10.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">'+esc(a.body)+'</div>':'') +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td style="font-size:11px;color:var(--text2);white-space:nowrap">' + dt + '</td>' +
+          '<td><div class="ack-progress"><div class="ack-progress-track"><div class="ack-progress-fill ' + fillCls + '" style="width:' + pct + '%"></div></div><span class="ack-fraction">' + acked + '/' + total + '</span></div></td>' +
+          '<td style="font-weight:700;color:' + (pct>=80?'var(--green-dot)':pct>=50?'var(--amber-dot)':'var(--red-dot)') + '">' + pct + '%</td>' +
+        '</tr>' +
+        '<tr class="rep-expand-row" id="rep-aexpand-'+idx+'"><td colspan="4">' +
+          '<div class="rep-expand-inner" id="rep-aexpand-inner-'+idx+'">' +
+            (recips.length?recips.map(([user,rec])=>
+              '<div class="ack-detail-item">' +
+                '<div class="ack-dot ' + (rec.acknowledged?'yes':'no') + '"></div>' +
+                '<span style="font-weight:600;color:var(--text)">' + esc(rec.name||user) + '</span>' +
+                (rec.acknowledged?'<span style="color:var(--green-text);font-size:11px">✓ ' + (rec.acknowledgedAt?new Date(rec.acknowledgedAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'') + '</span>':'<span style="color:var(--red-text);font-size:11px">Not acknowledged</span>') +
+              '</div>'
+            ).join(''):'<div style="font-size:11px;color:var(--text3)">No recipient data</div>') +
+          '</div>' +
+        '</td></tr>';
+      }).join('') +
+      '</tbody>' +
+    '</table>' +
+  '</div>';
+}
+
+// ── Phase 5: Toggle expand rows ─────────────────────────────
+function toggleRepRow(idx) {
+  const inner = document.getElementById('rep-expand-inner-' + idx);
+  const icon  = document.getElementById('rep-expand-icon-'  + idx);
+  if (!inner) return;
+  const open = inner.classList.toggle('open');
+  if (icon) icon.textContent = open ? '▾' : '▸';
+}
+function toggleRepVisitRow(idx) {
+  const inner = document.getElementById('rep-vexpand-inner-' + idx);
+  const icon  = document.getElementById('rep-vexpand-icon-'  + idx);
+  if (!inner) return;
+  const open = inner.classList.toggle('open');
+  if (icon) icon.textContent = open ? '▾' : '▸';
+}
+function toggleRepAlertRow(idx) {
+  const inner = document.getElementById('rep-aexpand-inner-' + idx);
+  const icon  = document.getElementById('rep-aexpand-icon-'  + idx);
+  if (!inner) return;
+  const open = inner.classList.toggle('open');
+  if (icon) icon.textContent = open ? '▾' : '▸';
+}
+
+// ── Phase 5: Helper builders ─────────────────────────────────
+function repStat(lbl, val, cls) {
+  return '<div class="rep-stat"><div class="rep-stat-lbl">' + lbl + '</div><div class="rep-stat-val ' + cls + '">' + val + '</div></div>';
+}
+function repDlBtn(type, label) {
+  return '<button class="rep-dl-btn" onclick="downloadReporterCsv(&quot;' + type + '&quot;,document.getElementById(&quot;rep-month-picker&quot;).value)">' +
+    '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    label + '</button>';
+}
+function buildRepSkeleton() {
+  let h = '<div style="padding:.5rem 0">';
+  for(let i=0;i<4;i++) h += '<div class="dash-skeleton" style="width:' + (60+(i%3)*15) + '%;margin-bottom:12px"></div>';
+  return h + '</div>';
+}
+
+
+// ── Phase 3: Admin Dashboard state ───────────────────────────
+let _adminDashMonth   = new Date().toISOString().slice(0,7);
+let _adminDashTab     = 'overview';
+let _adminDashData    = null;
+let _adminDashLoading = false;
+
+async function renderAdminDashboard() {
+  const panel = document.getElementById('panel-log');
+  if (!panel) return;
+  if (_adminDashLoading) return;
+  panel.innerHTML = buildAdminDashShell();
+  const picker = document.getElementById('admin-dash-month');
+  if (picker) picker.value = _adminDashMonth;
+  setAdminDashTab(_adminDashTab);
+  await loadAdminDashData();
+}
+
+function buildAdminDashShell() {
+  return '<div class="admin-dash">' +
+    '<div class="dash-month-row">' +
+      '<input type="month" id="admin-dash-month" class="dash-month-picker" value="' + _adminDashMonth + '" onchange="onAdminDashMonthChange(this.value)"/>' +
+      '<button class="btn btn-sm dash-refresh-btn" onclick="refreshAdminDash()">' +
+        '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 112 8a5 5 0 014-4.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M6 3H2V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        'Refresh</button>' +
+      '<span id="admin-dash-sync-lbl" style="font-size:10.5px;color:var(--text3);margin-left:auto"></span>' +
+    '</div>' +
+    '<div class="dash-subnav">' +
+      '<button class="dash-subnav-btn" id="dsnav-overview" onclick="setAdminDashTab(&quot;overview&quot;)">Overview</button>' +
+      '<button class="dash-subnav-btn" id="dsnav-leaves"   onclick="setAdminDashTab(&quot;leaves&quot;)">Leaves</button>' +
+      '<button class="dash-subnav-btn" id="dsnav-alerts"   onclick="setAdminDashTab(&quot;alerts&quot;)">Alerts</button>' +
+      '<button class="dash-subnav-btn" id="dsnav-log"      onclick="setAdminDashTab(&quot;log&quot;)">Activity</button>' +
+    '</div>' +
+    '<div id="admin-dash-content">' + buildSkeletonRows(4) + '</div>' +
+  '</div>';
+}
+
+function setAdminDashTab(tabName) {
+  _adminDashTab = tabName;
+  ['overview','leaves','alerts','log'].forEach(t => {
+    const btn = document.getElementById('dsnav-' + t);
+    if (btn) btn.classList.toggle('active', t === tabName);
+  });
+  renderAdminDashContent();
+  if (tabName === 'log') setTimeout(renderActivityLogInDash, 0);
+}
+
+function renderAdminDashContent() {
+  const el = document.getElementById('admin-dash-content');
+  if (!el) return;
+  if (!_adminDashData) { el.innerHTML = buildSkeletonRows(4); return; }
+  if (_adminDashTab === 'overview') el.innerHTML = buildOverviewTab();
+  if (_adminDashTab === 'leaves')   el.innerHTML = buildLeavesTabWithCalBtn();
+  if (_adminDashTab === 'alerts')   el.innerHTML = buildAlertsTab();
+  if (_adminDashTab === 'log')      el.innerHTML = buildActivityTab();
+}
+
+async function loadAdminDashData() {
+  _adminDashLoading = true;
+  const lbl = document.getElementById('admin-dash-sync-lbl');
+  if (lbl) lbl.textContent = 'Loading…';
+  try {
+    const r = await fetch(WORKER_URL + '/reporter-summary?month=' + encodeURIComponent(_adminDashMonth));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || 'Failed');
+    _adminDashData = data;
+    if (lbl) lbl.textContent = 'Updated just now';
+  } catch(e) { if (lbl) lbl.textContent = 'Could not load — ' + e.message; }
+  _adminDashLoading = false;
+  renderAdminDashContent();
+  loadKvReports(); loadAdminInbox();
+}
+
+function onAdminDashMonthChange(val) {
+  _adminDashMonth = val; _adminDashData = null;
+  const el = document.getElementById('admin-dash-content');
+  if (el) el.innerHTML = buildSkeletonRows(4);
+  loadAdminDashData();
+}
+
+function refreshAdminDash() {
+  _adminDashData = null;
+  const el = document.getElementById('admin-dash-content');
+  if (el) el.innerHTML = buildSkeletonRows(4);
+  loadAdminDashData();
+}
+
+function buildOverviewTab() {
+  const d      = _adminDashData;
+  const leaves = d?.leaves?.summary || [];
+  const visits = d?.visits?.summary || [];
+  const alerts = d?.alerts?.alerts  || [];
+  const quota  = d?.leaves?.quota   || { personal:2, health:2 };
+  const reports= lj(K.LOG,[]).filter(e=>e.type==='report');
+  const totalPendingLeaves = leaves.reduce((a,e)=>a+(e.personal_pending+e.health_pending),0);
+  const totalLeaveTaken    = leaves.reduce((a,e)=>a+e.total_taken,0);
+  const totalPendingVisits = visits.reduce((a,v)=>a+v.pending,0);
+  const totalAcked         = alerts.reduce((a,al)=>a+al.total_acked,0);
+  const totalRecips        = alerts.reduce((a,al)=>a+al.total_sent,0);
+  const ackRate            = totalRecips>0 ? Math.round((totalAcked/totalRecips)*100) : 0;
+
+  return '<div class="admin-stats-row">' +
+    mkStat('c-amber','Pending Leaves',totalPendingLeaves,totalLeaveTaken+' taken this month',"setAdminDashTab('leaves')") +
+    mkStat('c-teal','Leave Quota',quota.personal+'+'+quota.health,'Personal + Health',"openSettingsModal()") +
+    mkStat('c-green','Pending Visits',totalPendingVisits,'This month',"switchTab('visit')") +
+    mkStat('c-accent','Alerts Sent',alerts.length,ackRate+'% acknowledged',"setAdminDashTab('alerts')") +
+    mkStat('c-red','Reports Filed',reports.length,'Recent submissions',"setAdminDashTab('log')") +
+  '</div>' +
+  (leaves.length ? buildLeaveSnapshotSection(leaves) : '') +
+  buildPendingVisitsSection(visits) +
+  buildRecentReportsSection(reports.slice(0,5));
+}
+
+function mkStat(cls,lbl,num,sub,onclick) {
+  return '<div class="admin-stat-card ' + cls + '" onclick="' + onclick + '">' +
+    '<div class="admin-stat-lbl">' + lbl + '</div>' +
+    '<div class="admin-stat-num ' + cls + '">' + num + '</div>' +
+    '<div class="admin-stat-sub">' + sub + '</div>' +
+  '</div>';
+}
+
+function buildLeaveSnapshotSection(leaves) {
+  return '<div class="dash-section">' +
+    '<div class="dash-section-hdr">' +
+      '<div class="dash-section-title">🗓 Leave snapshot — ' + _adminDashMonth + '</div>' +
+      '<button class="dash-section-action" onclick="setAdminDashTab(&quot;leaves&quot;)">View all →</button>' +
+    '</div>' +
+    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">' +
+      '<table class="leave-summary-table"><thead><tr><th>Engineer</th><th>Personal</th><th>Health</th><th>Pending</th></tr></thead><tbody>' +
+      leaves.map(eng => {
+        const pPct = eng.personal_quota>0 ? Math.min(100,(eng.personal_taken/eng.personal_quota)*100) : 0;
+        const hPct = eng.health_quota>0   ? Math.min(100,(eng.health_taken/eng.health_quota)*100)     : 0;
+        const initials = eng.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const pending  = eng.personal_pending + eng.health_pending;
+        return '<tr>' +
+          '<td><div class="leave-eng-cell"><div class="leave-eng-avatar">' + initials + '</div><div class="leave-eng-name">' + esc(eng.name) + '</div></div></td>' +
+          '<td><div class="leave-quota-bar"><div class="leave-bar-track"><div class="leave-bar-fill personal ' + (pPct>=100?'full':'') + '" style="width:' + pPct + '%"></div></div><span class="leave-bar-label">' + eng.personal_taken + '/' + eng.personal_quota + '</span></div></td>' +
+          '<td><div class="leave-quota-bar"><div class="leave-bar-track"><div class="leave-bar-fill health ' + (hPct>=100?'full':'') + '" style="width:' + hPct + '%"></div></div><span class="leave-bar-label">' + eng.health_taken + '/' + eng.health_quota + '</span></div></td>' +
+          '<td>' + (pending>0 ? '<span class="leave-status-chip pending">⏳ '+pending+' day'+(pending!==1?'s':'')+'</span>' : '<span class="leave-status-chip none">None</span>') + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildLeavesTab() {
+  const leaves = _adminDashData?.leaves?.summary || [];
+  const quota  = _adminDashData?.leaves?.quota   || { personal:2, health:2 };
+  if (!leaves.length) return '<div class="dash-empty">No leave data for ' + _adminDashMonth + '</div>';
+  return '<div style="display:flex;align-items:center;gap:12px;padding:.75rem 1rem;background:var(--accent-bg);border:1px solid var(--accent-light,var(--accent));border-radius:var(--radius-lg);margin-bottom:1rem;flex-wrap:wrap">' +
+    '<div style="font-size:12px;color:var(--accent);flex:1"><strong>Current quota:</strong> ' + quota.personal + ' personal + ' + quota.health + ' health days per engineer per month.</div>' +
+    '<button class="btn btn-sm" style="font-size:11px" onclick="openSettingsModal()">Edit quota →</button>' +
+  '</div>' +
+  leaves.map(eng => buildEngLeaveCard(eng, quota)).join('');
+}
+
+function buildEngLeaveCard(eng, quota) {
+  const initials = eng.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const pPct     = quota.personal>0 ? Math.min(100,(eng.personal_taken/quota.personal)*100) : 0;
+  const hPct     = quota.health>0   ? Math.min(100,(eng.health_taken/quota.health)*100)     : 0;
+  const hasPending = (eng.personal_pending+eng.health_pending)>0;
+  return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:10px">' +
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">' +
+      '<div class="leave-eng-avatar" style="width:36px;height:36px;font-size:12px">' + initials + '</div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text)">' + esc(eng.name) + '</div>' +
+      '<div style="font-size:10.5px;color:var(--text3)">@' + esc(eng.user) + ' · ' + eng.total_taken + ' day' + (eng.total_taken!==1?'s':'') + ' taken</div></div>' +
+      (hasPending ? '<span class="leave-status-chip pending">⏳ '+(eng.personal_pending+eng.health_pending)+' pending</span>' : '') +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">' +
+      '<div><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Personal Leave</div>' +
+        '<div class="leave-quota-bar"><div class="leave-bar-track" style="flex:1"><div class="leave-bar-fill personal ' + (pPct>=100?'full':'') + '" style="width:' + pPct + '%"></div></div><span class="leave-bar-label">' + eng.personal_taken + '/' + quota.personal + '</span></div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:3px">' + eng.personal_remaining + ' remaining</div></div>' +
+      '<div><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Health Leave</div>' +
+        '<div class="leave-quota-bar"><div class="leave-bar-track" style="flex:1"><div class="leave-bar-fill health ' + (hPct>=100?'full':'') + '" style="width:' + hPct + '%"></div></div><span class="leave-bar-label">' + eng.health_taken + '/' + quota.health + '</span></div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:3px">' + eng.health_remaining + ' remaining</div></div>' +
+    '</div>' +
+    (eng.reasons&&eng.reasons.length ? '<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Reasons given</div><div class="leave-reasons-list">' + eng.reasons.map(r=>'<span class="leave-reason-tag">'+esc(r)+'</span>').join('') + '</div></div>' : '') +
+    (eng.details&&eng.details.length ? '<div><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Leave history</div>' +
+      eng.details.map(d => '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--border);flex-wrap:wrap">' +
+        '<span class="leave-status-chip ' + (d.status==='approved'?'approved':d.status==='declined'?'none':'pending') + '" style="font-size:9px">' + (d.status==='approved'?'✓':d.status==='declined'?'✗':'⏳') + ' ' + d.status + '</span>' +
+        '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text)">' + esc(d.subject||'Leave request') + '</div>' +
+        '<div style="font-size:10.5px;color:var(--text3)">' + (d.fromDate?new Date(d.fromDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'') + (d.toDate&&d.toDate!==d.fromDate?' → '+new Date(d.toDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'') + ' · ' + d.days + ' day' + (d.days!==1?'s':'') + ' · ' + esc(d.reason||'—') + '</div></div>' +
+        (d.status==='pending' ? '<div style="display:flex;gap:5px"><button class="btn-approve" onclick="updateLeaveStatus(&quot;'+esc(d.id)+'&quot;,&quot;approved&quot;)">✓</button><button class="btn-decline" onclick="updateLeaveStatus(&quot;'+esc(d.id)+'&quot;,&quot;declined&quot;)">✗</button></div>' : '<div style="font-size:10px;color:var(--text3)">' + (d.approvedBy?'By '+esc(d.approvedBy):'') + '</div>') +
+      '</div>').join('') +
+    '</div>' : '') +
+  '</div>';
+}
+
+function buildAlertsTab() {
+  const alerts = _adminDashData?.alerts?.alerts || [];
+  if (!alerts.length) return '<div class="dash-empty">No alerts sent in ' + _adminDashMonth + '</div>';
+  return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">' +
+    '<table class="alert-ack-table"><thead><tr><th style="width:36%">Alert</th><th>Sent</th><th>Acknowledgement</th><th></th></tr></thead>' +
+    '<tbody>' + alerts.map((a,idx) => buildAlertAckRow(a,idx)).join('') + '</tbody>' +
+    '</table></div>';
+}
+
+function buildAlertAckRow(alert, idx) {
+  const total  = alert.total_sent||0;
+  const acked  = alert.total_acked||0;
+  const pct    = total>0 ? Math.round((acked/total)*100) : 0;
+  const fillCls= pct===0?'none':pct===100?'all':'some';
+  const dt     = alert.sentAt ? new Date(alert.sentAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+  const recips = Object.entries(alert.recipients||{});
+  return '<tr>' +
+    '<td><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">' + esc(alert.title) + '</div>' +
+    (alert.body?'<div style="font-size:10.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px">'+esc(alert.body)+'</div>':'') + '</td>' +
+    '<td style="font-size:11px;color:var(--text2);white-space:nowrap">' + dt + '</td>' +
+    '<td><div class="ack-progress"><div class="ack-progress-track"><div class="ack-progress-fill ' + fillCls + '" style="width:' + pct + '%"></div></div><span class="ack-fraction">' + acked + '/' + total + '</span></div></td>' +
+    '<td style="text-align:right"><div style="display:flex;gap:5px;justify-content:flex-end">' +
+      '<button class="leave-detail-btn" onclick="toggleAckDetail(' + idx + ')">Details</button>' +
+      '<button class="btn-quick-reply" onclick="openQuickReply(&quot;' + esc(alert.alertId) + '&quot;,&quot;' + esc(alert.title) + '&quot;,' + JSON.stringify(Object.keys(alert.recipients||{})) + ')">Reply</button>' +
+    '</div></td></tr>' +
+    '<tr id="alert-detail-' + idx + '" style="display:none"><td colspan="4" style="padding:0"><div class="ack-detail-list open">' +
+      (recips.length ? recips.map(([user,rec]) =>
+        '<div class="ack-detail-item"><div class="ack-dot ' + (rec.acknowledged?'yes':'no') + '"></div>' +
+        '<span style="font-weight:600;color:var(--text)">' + esc(rec.name||user) + '</span>' +
+        (rec.acknowledged ? '<span style="color:var(--green-text)">✓ Acknowledged ' + (rec.acknowledgedAt?new Date(rec.acknowledgedAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'') + '</span>' : '<span style="color:var(--red-text)">Not yet acknowledged</span>') +
+        '</div>'
+      ).join('') : '<div style="font-size:11px;color:var(--text3)">No recipient data</div>') +
+    '</div></td></tr>';
+}
+
+function toggleAckDetail(idx) {
+  const row = document.getElementById('alert-detail-' + idx);
+  if (row) row.style.display = row.style.display === 'none' ? '' : 'none';
+}
+
+function openQuickReply(alertId, originalTitle, recipients) {
+  openAlertModal();
+  setTimeout(() => {
+    const titleInp = document.getElementById('alert-title-inp');
+    if (titleInp) { titleInp.value = 'Re: ' + originalTitle.replace(/^📢\s*/,''); updateAlertPreview(); }
+    if (Array.isArray(recipients)) {
+      recipients.forEach(user => {
+        const cb  = document.getElementById('rec-' + user);
+        const row = document.getElementById('rec-row-' + user);
+        if (cb && row) { cb.checked = true; row.classList.add('selected'); }
+      });
+    }
+  }, 50);
+}
+
+function buildActivityTab() {
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">' +
+    '<span id="log-count-lbl" style="font-size:12px;color:var(--text2)">Activity log</span>' +
+    '<button class="log-clear-btn" onclick="clearActivityLog()">Clear log</button>' +
+  '</div>' +
+  '<div class="log-list" id="log-list" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0 1rem"></div>';
+}
+
+function renderActivityLogInDash() {
+  renderActivityLog();
+}
+
+function buildPendingVisitsSection(visits) {
+  const pending = [];
+  visits.forEach(eng => (eng.details||[]).forEach(d => { if(d.status==='pending') pending.push({...d,engName:eng.name}); }));
+  if (!pending.length) return '';
+  return '<div class="dash-section">' +
+    '<div class="dash-section-hdr"><div class="dash-section-title">📍 Pending visit requests (' + pending.length + ')</div></div>' +
+    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0 1rem">' +
+    pending.slice(0,5).map(v =>
+      '<div class="visit-dash-item">' +
+        '<span class="visit-dash-type ' + (v.type||'approval') + '">' + (v.type==='advance'?'💰':'📋') + ' ' + (v.type||'approval') + '</span>' +
+        '<div style="flex:1;min-width:0"><div class="visit-dash-subject">' + esc(v.subject) + '</div><div class="visit-dash-meta">' + esc(v.engName) + ' · ' + v.submittedAt + '</div></div>' +
+      '</div>'
+    ).join('') +
+    (pending.length>5?'<div style="font-size:11px;color:var(--text3);padding:8px 0 4px">+' + (pending.length-5) + ' more</div>':'') +
+    '</div></div>';
+}
+
+function buildRecentReportsSection(reports) {
+  if (!reports.length) return '';
+  const typeIcon = {accident:'🚨',renovation:'🏗️',electrical:'⚡',rma:'🔧',sim:'📶',leave:'🗓️',report:'📋'};
+  return '<div class="dash-section">' +
+    '<div class="dash-section-hdr"><div class="dash-section-title">📋 Recent reports</div><button class="dash-section-action" onclick="setAdminDashTab(&quot;log&quot;)">View all →</button></div>' +
+    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0 1rem">' +
+    reports.map(r =>
+      '<div class="report-dash-item">' +
+        '<div class="report-dash-icon">' + (typeIcon[r.type]||'📋') + '</div>' +
+        '<div style="flex:1;min-width:0"><div class="report-dash-subject">' + r.message.replace(/<[^>]+>/g,'') + '</div>' +
+        '<div class="report-dash-meta">' + esc(r.user) + ' · ' + timeAgo(r.ts) + '</div></div>' +
+      '</div>'
+    ).join('') +
+    '</div></div>';
+}
+
+function buildSkeletonRows(count) {
+  let html = '<div style="padding:.5rem 0">';
+  for(let i=0;i<count;i++) html += '<div class="dash-skeleton" style="width:' + (70+(i%3)*10) + '%;margin-bottom:10px"></div>';
+  return html + '</div>';
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// v7.0 Phase 4 — Engineer Dashboard
+// ══════════════════════════════════════════════════════════════
+
+// ── Engineer dashboard main renderer ─────────────────────────
+async function renderEngineerDashboard(panel) {
+  if (!panel) return;
+  const user = getCurrentUser();
+  const name = (credCache && credCache[user] && credCache[user].name) || USER_ENGINEER[user] || user;
+
+  // Show skeleton immediately
+  panel.innerHTML = buildEngDashSkeleton(name);
+
+  // Fetch own leave balance from worker
+  const balance = await fetchOwnLeaveBalance(user);
+
+  // Get recent notifications
+  const inbox    = getNotifInbox();
+  const lastRead = parseInt(ls(K.NOTIF_READ) || '0');
+
+  // Get pending submissions from activity log
+  const log     = lj(K.LOG, []);
+  const pending = log.filter(e => e.type === 'report' || e.type === 'ack').slice(0, 5);
+
+  // Get pending leave & visits from KV data if available
+  let pendingLeaves  = [];
+  let pendingVisits  = [];
+  try {
+    const lr = await fetch(WORKER_URL + '/get-leaves');
+    const ld = await lr.json();
+    if (ld.ok) pendingLeaves = (ld.leaves||[]).filter(l => l.user===user && l.status==='pending');
+  } catch(e) {}
+  try {
+    const vr = await fetch(WORKER_URL + '/get-visits');
+    const vd = await vr.json();
+    if (vd.ok) pendingVisits = (vd.visits||[]).filter(v => v.user===user && v.status==='pending');
+  } catch(e) {}
+
+  panel.innerHTML = buildEngDashHTML(user, name, balance, inbox, lastRead, pendingLeaves, pendingVisits, pending);
+}
+
+function buildEngDashSkeleton(name) {
+  const hour = new Date().getHours();
+  const greet= hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  return '<div class="eng-dash">' +
+    '<div class="eng-dash-greeting">' +
+      '<div class="eng-dash-greeting-name">👋 ' + (name.split(' ')[0] || name) + '</div>' +
+      '<div class="eng-dash-greeting-sub">Loading your dashboard…</div>' +
+    '</div>' +
+    '<div class="leave-balance-row">' +
+      '<div class="leave-balance-card personal"><div class="dash-skeleton" style="width:60%"></div><div class="dash-skeleton" style="width:40%;margin-top:8px"></div></div>' +
+      '<div class="leave-balance-card health"><div class="dash-skeleton" style="width:60%"></div><div class="dash-skeleton" style="width:40%;margin-top:8px"></div></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildEngDashHTML(user, name, balance, inbox, lastRead, pendingLeaves, pendingVisits, recentActivity) {
+  const quota  = getLeaveQuota();
+  const pTaken = balance ? balance.personal_taken : 0;
+  const hTaken = balance ? balance.health_taken   : 0;
+  const pRem   = balance ? balance.personal_remaining : quota.personal;
+  const hRem   = balance ? balance.health_remaining   : quota.health;
+  const pPct   = quota.personal > 0 ? Math.min(100,(pTaken/quota.personal)*100) : 0;
+  const hPct   = quota.health   > 0 ? Math.min(100,(hTaken/quota.health)*100)   : 0;
+
+  const hour   = new Date().getHours();
+  const greet  = hour<12 ? 'Good morning' : hour<17 ? 'Good afternoon' : 'Good evening';
+  const firstName = name.split(' ')[0];
+
+  // Recent 5 notifications
+  const recentNotifs = inbox.slice(0, 5);
+  const unread = inbox.filter(n => new Date(n.sentAt).getTime() > lastRead).length;
+
+  return '<div class="eng-dash">' +
+
+    // Greeting
+    '<div class="eng-dash-greeting">' +
+      '<div class="eng-dash-greeting-name">' + greet + ', ' + esc(firstName) + ' 👋</div>' +
+      '<div class="eng-dash-greeting-sub">' + new Date().toLocaleDateString("en-IN",{weekday:"long",day:"2-digit",month:"long"}) + '</div>' +
+    '</div>' +
+
+    // Leave balance cards
+    '<div class="leave-balance-row">' +
+      '<div class="leave-balance-card personal' + (pRem===0?' exhausted':'') + '">' +
+        '<div class="leave-balance-type">Personal Leave</div>' +
+        '<div class="leave-balance-num">' + pRem + '</div>' +
+        '<div class="leave-balance-sub">' + pTaken + ' used · ' + quota.personal + ' total</div>' +
+        '<div class="leave-balance-bar"><div class="leave-balance-bar-fill" style="width:' + pPct + '%"></div></div>' +
+      '</div>' +
+      '<div class="leave-balance-card health' + (hRem===0?' exhausted':'') + '">' +
+        '<div class="leave-balance-type">Health Leave</div>' +
+        '<div class="leave-balance-num">' + hRem + '</div>' +
+        '<div class="leave-balance-sub">' + hTaken + ' used · ' + quota.health + ' total</div>' +
+        '<div class="leave-balance-bar"><div class="leave-balance-bar-fill" style="width:' + hPct + '%"></div></div>' +
+      '</div>' +
+    '</div>' +
+
+    // Pending submissions
+    buildEngPendingSection(pendingLeaves, pendingVisits) +
+
+    // Recent notifications
+    buildEngNotifsSection(recentNotifs, lastRead, unread) +
+
+  '</div>';
+}
+
+function buildEngPendingSection(pendingLeaves, pendingVisits) {
+  const items = [];
+  pendingLeaves.forEach(l => items.push({ icon:'🗓️', title: l.subject||'Leave request', meta: l.days+' day'+(l.days!==1?'s':'')+' · '+new Date(l.ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}), status:'pending' }));
+  pendingVisits.forEach(v => items.push({ icon: v.type==='advance'?'💰':'📋', title: v.subject||'Visit request', meta: new Date(v.ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}), status:'pending' }));
+
+  if (!items.length) return '';
+
+  return '<div class="eng-pending-section">' +
+    '<div class="dash-section-hdr" style="margin-bottom:.6rem">' +
+      '<div class="dash-section-title">⏳ Pending submissions (' + items.length + ')</div>' +
+    '</div>' +
+    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0 1rem">' +
+      items.map(item =>
+        '<div class="eng-pending-item">' +
+          '<div class="eng-pending-icon">' + item.icon + '</div>' +
+          '<div style="flex:1;min-width:0"><div class="eng-pending-title">' + esc(item.title) + '</div><div class="eng-pending-meta">' + item.meta + '</div></div>' +
+          '<span class="eng-pending-status ' + item.status + '">' + item.status + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>' +
+  '</div>';
+}
+
+function buildEngNotifsSection(notifs, lastRead, unread) {
+  if (!notifs.length) return '<div style="text-align:center;padding:2rem 1rem;color:var(--text3);font-size:12px">🔔 No notifications yet</div>';
+
+  return '<div class="dash-section">' +
+    '<div class="dash-section-hdr">' +
+      '<div class="dash-section-title">🔔 Recent notifications' + (unread>0?' <span class="notif-badge" style="display:inline-flex;margin-left:4px">'+unread+'</span>':'') + '</div>' +
+      '<button class="dash-section-action" onclick="switchTab(&quot;notifs&quot;)">View all →</button>' +
+    '</div>' +
+    '<div class="eng-notif-preview">' +
+      notifs.map(n => {
+        const isNew = new Date(n.sentAt).getTime() > lastRead;
+        const dt    = timeAgo(new Date(n.sentAt).getTime());
+        return '<div class="eng-notif-preview-item" onclick="switchTab(&quot;notifs&quot;)">' +
+          '<div class="eng-notif-dot' + (isNew?'':' read') + '"></div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div class="eng-notif-preview-title">' + esc(n.title) + '</div>' +
+            '<div class="eng-notif-preview-body">' + esc(n.body||'') + '</div>' +
+          '</div>' +
+          '<div class="eng-notif-preview-time">' + dt + '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>' +
+  '</div>';
+}
+
+// ── Phase 4: FAB (Floating Action Button) ────────────────────
+const K_LAST_REPORT = 'dsc_last_report_type_v1';
+let _fabOpen = false;
+
+function initFab() {
+  const user = getCurrentUser();
+  if (!isEngineer(user)) return;
+  const fab = document.getElementById('fab-btn');
+  if (fab) fab.classList.add('visible');
+}
+
+function toggleFabMenu() {
+  _fabOpen = !_fabOpen;
+  const menu = document.getElementById('fab-menu');
+  const btn  = document.getElementById('fab-btn');
+  if (menu) menu.classList.toggle('open', _fabOpen);
+  if (btn) {
+    btn.innerHTML = _fabOpen
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
+      : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  }
+}
+
+function fabLaunch(type) {
+  _fabOpen = false;
+  const menu = document.getElementById('fab-menu');
+  const btn  = document.getElementById('fab-btn');
+  if (menu) menu.classList.remove('open');
+  if (btn) btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  lset(K_LAST_REPORT, type);
+  switchTab('reports');
+  setTimeout(() => openReportWizard(type), 150);
+}
+
+// Close FAB menu on outside click
+document.addEventListener('click', e => {
+  if (_fabOpen && !e.target.closest('#fab-btn') && !e.target.closest('#fab-menu')) {
+    _fabOpen = false;
+    const menu = document.getElementById('fab-menu');
+    const btn  = document.getElementById('fab-btn');
+    if (menu) menu.classList.remove('open');
+    if (btn) btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  }
+}, { passive: true });
+
+// ── Phase 4: Pull-to-refresh ─────────────────────────────────
+(function initPullToRefresh() {
+  let startY = 0, pulling = false, triggered = false;
+  const threshold = 80;
+
+  document.addEventListener('touchstart', e => {
+    if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; triggered = false; }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    const dist = e.touches[0].clientY - startY;
+    if (dist > 20 && dist < threshold + 40) {
+      const ind = document.getElementById('ptr-indicator');
+      const lbl = document.getElementById('ptr-label');
+      if (ind) ind.classList.add('visible');
+      if (lbl) lbl.textContent = dist < threshold ? 'Pull to refresh' : 'Release to refresh';
+    }
+    if (dist >= threshold && !triggered) triggered = true;
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => {
+    pulling = false;
+    const ind = document.getElementById('ptr-indicator');
+    if (ind) ind.classList.remove('visible');
+    if (triggered) {
+      triggered = false;
+      // Sync based on current tab
+      const user = getCurrentUser();
+      if (tab === 'notifs' && isEngineer(user)) { loadNotifInbox(); showToast('Refreshed ✓'); }
+      else if (tab === 'log' && isAdmin(user))  { refreshAdminDash(); }
+      else if (tab === 'reporter')              { refreshRepDash(); }
+      else { showToast('Refreshed ✓'); }
+    }
+  }, { passive: true });
+})();
+
+// ── Phase 4: Notification grouping ───────────────────────────
+// REPLACES renderNotifInbox() — groups by Today / Yesterday / This Week / Older
+function renderNotifInbox() {
+  const inbox   = getNotifInbox();
+  const listEl  = document.getElementById('notif-inbox-list');
+  const countEl = document.getElementById('notif-inbox-count');
+  if (!listEl) return;
+  if (!inbox.length) {
+    if (countEl) countEl.textContent = 'No notifications';
+    listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">🔔</div>No notifications yet.<br/>Admin will send alerts here when needed.</div>';
+    return;
+  }
+  if (countEl) countEl.textContent = inbox.length + ' notification' + (inbox.length !== 1 ? 's' : '');
+
+  const now       = Date.now();
+  const lastRead  = parseInt(ls(K.NOTIF_READ) || '0');
+  const acks      = lj(K.ACK, {});
+  const user      = getCurrentUser();
+
+  // Group into buckets
+  const groups = { Today:[], Yesterday:[], 'This Week':[], Older:[] };
+  inbox.forEach(n => {
+    const ts   = new Date(n.sentAt).getTime();
+    const diff = now - ts;
+    const key  = diff < 86400000 ? 'Today' : diff < 172800000 ? 'Yesterday' : diff < 604800000 ? 'This Week' : 'Older';
+    groups[key].push(n);
+  });
+
+  const typeIcon = { Today:'🔔', Yesterday:'📅', 'This Week':'📆', Older:'🗂️' };
+  let html = '';
+
+  ['Today','Yesterday','This Week','Older'].forEach(grpName => {
+    const items = groups[grpName];
+    if (!items.length) return;
+    html += '<div style="padding:8px 0 4px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:5px">' +
+      typeIcon[grpName] + ' ' + grpName +
+      '<span style="font-size:10px;font-weight:400;color:var(--text3);margin-left:3px">(' + items.length + ')</span>' +
+    '</div>';
+
+    html += items.map(n => {
+      const isNew  = new Date(n.sentAt).getTime() > lastRead;
+      const dt     = new Date(n.sentAt).toLocaleString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const ackKey = 'notif_' + (n.id || n.sentAt);
+      const acked  = acks[ackKey] && acks[ackKey].user === user;
+      const ackBtn = acked
+        ? '<span class="btn-ack acked" style="margin-top:7px;display:inline-flex">✓ Acknowledged</span>'
+        : '<button class="btn-ack" style="margin-top:7px" onclick="acknowledgeFromNotif(&quot;' + esc(ackKey) + '&quot;,&quot;' + esc(n.title) + '&quot;)">I\'m on it</button>';
+      return '<div class="notif-item">' +
+        '<div class="notif-icon-wrap">' +
+          '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 00-5 5v3l-1 1v1h12v-1l-1-1V7a5 5 0 00-5-5z" stroke="var(--accent)" stroke-width="1.3"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+        '</div>' +
+        '<div class="notif-content">' +
+          (isNew ? '<div class="notif-unread-dot" style="float:right"></div>' : '') +
+          '<div class="notif-title">' + esc(n.title) + '</div>' +
+          '<div class="notif-body">' + esc(n.body) + '</div>' +
+          '<div class="notif-meta"><span>' + dt + '</span><span>From: ' + esc(n.sentBy||'admin') + '</span></div>' +
+          ackBtn +
+        '</div>' +
+      '</div>';
+    }).join('');
+  });
+
+  listEl.innerHTML = html;
+}
+
+
+// ── Phase 4: Render engineer balance strip above inbox ────────
+async function renderEngDashHeader(user) {
+  const notifPanel = document.getElementById('panel-notifs');
+  if (!notifPanel) return;
+  // Remove old header if exists
+  const old = document.getElementById('eng-dash-header');
+  if (old) old.remove();
+
+  const quota   = getLeaveQuota();
+  const balance = await fetchOwnLeaveBalance(user);
+  const pRem    = balance ? balance.personal_remaining : quota.personal;
+  const hRem    = balance ? balance.health_remaining   : quota.health;
+  const pTaken  = balance ? balance.personal_taken     : 0;
+  const hTaken  = balance ? balance.health_taken       : 0;
+  const pPct    = quota.personal>0 ? Math.min(100,(pTaken/quota.personal)*100) : 0;
+  const hPct    = quota.health>0   ? Math.min(100,(hTaken/quota.health)*100)   : 0;
+  const name    = (credCache && credCache[user] && credCache[user].name) || USER_ENGINEER[user] || user;
+  const hour    = new Date().getHours();
+  const greet   = hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  const firstName = name.split(' ')[0];
+
+  const header = document.createElement('div');
+  header.id = 'eng-dash-header';
+  header.style.cssText = 'padding:.85rem 1.25rem .75rem;border-bottom:1px solid var(--border);background:var(--bg2)';
+  header.innerHTML =
+    '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:.7rem">' + greet + ', ' + esc(firstName) + ' 👋</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+      '<div class="leave-balance-card personal' + (pRem===0?' exhausted':'') + '" style="padding:.65rem .85rem">' +
+        '<div class="leave-balance-type">Personal Leave</div>' +
+        '<div class="leave-balance-num" style="font-size:22px">' + pRem + '</div>' +
+        '<div class="leave-balance-sub">' + pTaken + ' used · ' + quota.personal + ' total</div>' +
+        '<div class="leave-balance-bar"><div class="leave-balance-bar-fill" style="width:' + pPct + '%"></div></div>' +
+      '</div>' +
+      '<div class="leave-balance-card health' + (hRem===0?' exhausted':'') + '" style="padding:.65rem .85rem">' +
+        '<div class="leave-balance-type">Health Leave</div>' +
+        '<div class="leave-balance-num" style="font-size:22px">' + hRem + '</div>' +
+        '<div class="leave-balance-sub">' + hTaken + ' used · ' + quota.health + ' total</div>' +
+        '<div class="leave-balance-bar"><div class="leave-balance-bar-fill" style="width:' + hPct + '%"></div></div>' +
+      '</div>' +
+    '</div>';
+
+  // Insert before notif-toolbar
+  const toolbar = notifPanel.querySelector('.notif-toolbar');
+  if (toolbar) notifPanel.insertBefore(header, toolbar);
+  else notifPanel.prepend(header);
+}
+
+// ══════════════════════════════════════════════════════════════
+// v7.0 Phase 6 — UI Polish: PIN lock, wizard progress,
+//                leave calendar, biometric auth
+// v7.0 Phase 7 — Credits, final cleanup
+// ══════════════════════════════════════════════════════════════
+
+// ── Phase 6a: PIN / Biometric Lock ───────────────────────────
+const K_PIN        = 'dsc_pin_v1';      // stored as sha256(user+':'+pin)
+const K_PIN_SET    = 'dsc_pin_set_v1';  // 'true' if PIN has been configured
+const PIN_TTL      = 24 * 60 * 60 * 1000; // 24 hours — same as session
+
+let _pinBuffer = '';
+let _pinResolve = null;
+
+// Called when session would normally expire mid-use
+// Instead of logging out, show PIN screen
+function showPinLock() {
+  const user     = getCurrentUser();
+  if (!user) return;
+  const hasPIN   = ls(K_PIN_SET) === user;
+  const name     = (credCache && credCache[user] && credCache[user].name) || user;
+  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const avatarEl = document.getElementById('pin-avatar');
+  const titleEl  = document.getElementById('pin-title');
+  const subEl    = document.getElementById('pin-sub');
+  if (avatarEl) avatarEl.textContent = initials;
+  if (titleEl)  titleEl.textContent  = 'Welcome back, ' + name.split(' ')[0];
+  if (subEl)    subEl.textContent    = hasPIN ? 'Enter your PIN to continue' : 'Set a 4-digit PIN to secure your session';
+  _pinBuffer = '';
+  updatePinDots();
+  const _po = document.getElementById('pin-overlay'); if (_po) _po.classList.add('show');
+  // Try biometric first if available
+  if (hasPIN && window.PublicKeyCredential) {
+    setTimeout(() => tryBiometric(), 300);
+  }
+}
+
+function hidePinLock() {
+  const _po2 = document.getElementById('pin-overlay'); if (_po2) _po2.classList.remove('show');
+  _pinBuffer = '';
+  updatePinDots();
+}
+
+function pinPress(key) {
+  if (key === 'bio') { tryBiometric(); return; }
+  if (key === 'del') {
+    _pinBuffer = _pinBuffer.slice(0, -1);
+    updatePinDots();
+    return;
+  }
+  if (_pinBuffer.length >= 4) return;
+  _pinBuffer += key;
+  updatePinDots();
+  if (_pinBuffer.length === 4) {
+    setTimeout(() => checkPin(_pinBuffer), 80);
+  }
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pind' + i);
+    if (dot) dot.classList.toggle('filled', i < _pinBuffer.length);
+  }
+}
+
+function checkPin(pin) {
+  const user    = getCurrentUser();
+  const hasPIN  = ls(K_PIN_SET) === user;
+  const pinHash = sha256(user + ':' + pin);
+
+  if (!hasPIN) {
+    // First time — store the PIN
+    lset(K_PIN, pinHash);
+    lset(K_PIN_SET, user);
+    // Refresh session timestamp
+    lset(K_AUTH_TS, Date.now().toString());
+    hidePinLock();
+    showToast('PIN set ✓ — your session is secure');
+    return;
+  }
+
+  const stored = ls(K_PIN);
+  if (pinHash === stored) {
+    // Correct — refresh session
+    lset(K_AUTH_TS, Date.now().toString());
+    hidePinLock();
+  } else {
+    // Wrong — shake and clear
+    for (let i = 0; i < 4; i++) {
+      const dot = document.getElementById('pind' + i);
+      if (dot) { dot.classList.add('error'); setTimeout(() => dot.classList.remove('error'), 400); }
+    }
+    setTimeout(() => { _pinBuffer = ''; updatePinDots(); }, 400);
+    showToast('Incorrect PIN');
+  }
+}
+
+async function tryBiometric() {
+  if (!window.PublicKeyCredential) { showToast('Biometric not supported on this device'); return; }
+  try {
+    // Use a simple credential get with userVerification: required
+    // This triggers Face ID / fingerprint on supported devices
+    const cred = await navigator.credentials.get({
+      publicKey: {
+        challenge:          crypto.getRandomValues(new Uint8Array(32)),
+        timeout:            30000,
+        userVerification:   'required',
+        rpId:               location.hostname,
+        allowCredentials:   []
+      }
+    });
+    if (cred) {
+      lset(K_AUTH_TS, Date.now().toString());
+      hidePinLock();
+      showToast('Biometric verified ✓');
+    }
+  } catch(e) {
+    // Biometric not enrolled or cancelled — just fall through to PIN
+    if (e.name !== 'NotAllowedError') {
+      showToast('Use PIN to unlock');
+    }
+  }
+}
+
+function pinSignOut() {
+  hidePinLock();
+  doLogout();
+}
+
+// ── Phase 6: PIN-aware session check ─────────────────────────
+// checkAuthWithPin() replaces the standard checkAuth flow.
+// Called from init() instead of checkAuth() so no hoisting conflict.
+function checkAuthWithPin() {
+  const user = getCurrentUser();
+  const ts   = ls(K_AUTH_TS);
+  const ok   = ls(K_AUTH);
+  if (!ok || !ts || !user) {
+    clearSession();
+    document.getElementById('login-screen').style.display = 'flex';
+    applyRoleUI('');
+    return;
+  }
+  const elapsed = Date.now() - parseInt(ts);
+  if (elapsed >= AUTH_TTL) {
+    // Session expired — show PIN lock instead of hard logout
+    document.getElementById('login-screen').style.display = 'none';
+    applyRoleUI(user);
+    showPinLock();
+    return;
+  }
+  document.getElementById('login-screen').style.display = 'none';
+  applyRoleUI(user);
+}
+
+// ── Phase 6b: Report wizard progress bar ─────────────────────
+// Inject a progress bar at the top of the wizard when it opens
+const WIZARD_STEPS = {
+  accident:   ['Site & Device', 'Incident Details', 'Preview & Send'],
+  renovation: ['Site & Device', 'Details & Photo', 'Preview & Send'],
+  electrical: ['Site & Device', 'Issue Details',   'Preview & Send'],
+  rma:        ['Site & Device', 'Components',      'Preview & Send'],
+  sim:        ['Site & Device', 'SIM Details',     'Preview & Send'],
+  leave:      ['Duration',      'Reason & Details', 'Preview & Send'],
+};
+
+function buildWizardProgressBar(type, activeStep) {
+  const steps = WIZARD_STEPS[type] || ['Details', 'Preview & Send'];
+  return '<div class="wizard-progress">' +
+    steps.map((label, i) => {
+      const state = i < activeStep ? 'done' : i === activeStep ? 'active' : '';
+      return '<div class="wizard-step ' + state + '">' +
+        (i < steps.length - 1 ? '<div class="wizard-step-line"></div>' : '') +
+        '<div class="wizard-step-circle">' + (i < activeStep ? '✓' : (i+1)) + '</div>' +
+        '<div class="wizard-step-label">' + label + '</div>' +
+      '</div>';
+    }).join('') +
+  '</div>';
+}
+
+// Phase 6: Wizard progress bar injection — called after openReportWizard renders
+// (Cannot monkey-patch function declarations due to hoisting — call directly instead)
+function injectWizardProgressBar(type) {
+  setTimeout(() => {
+    const wizBody = document.getElementById('wizard-body');
+    if (!wizBody) return;
+    // Don't double-inject
+    if (wizBody.querySelector('.wizard-progress')) return;
+    const bar = document.createElement('div');
+    bar.innerHTML = buildWizardProgressBar(type, 0);
+    if (bar.firstChild) wizBody.prepend(bar.firstChild);
+  }, 50);
+}
+
+// ── Phase 6c: Leave Calendar (admin) ─────────────────────────
+let _calMonth = new Date().getMonth();
+let _calYear  = new Date().getFullYear();
+let _calEng   = 'all';
+
+function openLeaveCalendar() {
+  // Render inside the Leaves sub-tab of admin dashboard
+  // Called from the Leaves tab — replaces the per-engineer card view with calendar
+  const el = document.getElementById('admin-dash-content');
+  if (!el) return;
+  _calMonth = new Date().getMonth();
+  _calYear  = new Date().getFullYear();
+  el.innerHTML = buildCalendarHTML();
+  renderCalendar();
+}
+
+function buildCalendarHTML() {
+  const engineers = _adminDashData?.leaves?.summary || [];
+  const engOptions = '<option value="all">All engineers</option>' +
+    engineers.map(e => '<option value="' + esc(e.user) + '">' + esc(e.name) + '</option>').join('');
+
+  return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1rem">' +
+    '<div class="cal-controls">' +
+      '<button class="cal-nav-btn" onclick="calNav(-1)">‹</button>' +
+      '<div class="cal-month-label" id="cal-month-label"></div>' +
+      '<button class="cal-nav-btn" onclick="calNav(1)">›</button>' +
+      '<select class="cal-eng-filter" id="cal-eng-filter" onchange="_calEng=this.value;renderCalendar()">' + engOptions + '</select>' +
+      '<button class="btn btn-sm" onclick="setAdminDashTab(&quot;leaves&quot;)">← Back to list</button>' +
+    '</div>' +
+    '<div class="leave-cal-wrap"><table class="leave-cal"><thead><tr>' +
+      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>'<th>'+d+'</th>').join('') +
+    '</tr></thead><tbody id="cal-body"></tbody></table></div>' +
+  '</div>';
+}
+
+function calNav(dir) {
+  _calMonth += dir;
+  if (_calMonth > 11) { _calMonth = 0;  _calYear++; }
+  if (_calMonth <  0) { _calMonth = 11; _calYear--; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const lbl  = document.getElementById('cal-month-label');
+  const body = document.getElementById('cal-body');
+  if (!lbl || !body) return;
+
+  const monthName = new Date(_calYear, _calMonth, 1).toLocaleDateString('en-IN', { month:'long', year:'numeric' });
+  lbl.textContent = monthName;
+
+  const firstDay = new Date(_calYear, _calMonth, 1).getDay();
+  const daysInMonth = new Date(_calYear, _calMonth + 1, 0).getDate();
+  const today = new Date();
+
+  // Build leave map: { 'YYYY-MM-DD': [{ name, status }] }
+  const leaveMap = {};
+  const allSummary = _adminDashData?.leaves?.summary || [];
+  const toShow = _calEng === 'all' ? allSummary : allSummary.filter(e => e.user === _calEng);
+
+  toShow.forEach(eng => {
+    (eng.details || []).forEach(d => {
+      if (!d.fromDate) return;
+      const from = new Date(d.fromDate);
+      const to   = d.toDate ? new Date(d.toDate) : from;
+      for (let dt = new Date(from); dt <= to; dt.setDate(dt.getDate()+1)) {
+        if (dt.getMonth() !== _calMonth || dt.getFullYear() !== _calYear) continue;
+        const key = dt.toISOString().slice(0,10);
+        if (!leaveMap[key]) leaveMap[key] = [];
+        leaveMap[key].push({ name: eng.name.split(' ')[0], status: d.status });
+      }
+    });
+  });
+
+  // Build grid
+  let html = '<tr>';
+  let day  = 1;
+  let col  = firstDay;
+
+  // Empty cells before first day
+  for (let i = 0; i < firstDay; i++) html += '<td></td>';
+
+  while (day <= daysInMonth) {
+    const date    = new Date(_calYear, _calMonth, day);
+    const dateStr = date.toISOString().slice(0,10);
+    const isToday = date.toDateString() === today.toDateString();
+    const leaves  = leaveMap[dateStr] || [];
+
+    html += '<td>' +
+      '<div class="cal-day' + (isToday?' today':'') + '">' + day + '</div>' +
+      leaves.slice(0,2).map(l => '<span class="cal-leave ' + l.status + '">' + esc(l.name) + '</span>').join('') +
+      (leaves.length > 2 ? '<span class="cal-leave approved">+' + (leaves.length-2) + '</span>' : '') +
+    '</td>';
+
+    col++;
+    if (col % 7 === 0 && day < daysInMonth) html += '</tr><tr>';
+    day++;
+  }
+
+  // Pad remaining cells
+  const remaining = 7 - (col % 7);
+  if (remaining < 7) for (let i = 0; i < remaining; i++) html += '<td></td>';
+  html += '</tr>';
+  body.innerHTML = html;
+}
+
+// Hook calendar button into leaves tab
+// Phase 6: buildLeavesTab with calendar button
+// (Cannot monkey-patch function declarations — call site updated instead)
+function buildLeavesTabWithCalBtn() {
+  const base = buildLeavesTab();
+  const calBtn = '<button class="btn btn-sm" style="margin-bottom:1rem" onclick="openLeaveCalendar()">' +
+    '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+    ' View Calendar</button>';
+  return calBtn + base;
+}
+
+// ── Phase 6d: Site visit distance preview ────────────────────
+// Phase 6: renderVisitDistanceStrip is called directly from refreshVisitPreview
+// (monkey-patching removed — hooked into original instead)
+
+function renderVisitDistanceStrip() {
+  // Find or create strip after visit-selected-section
+  if (!selectedVisitSites || !selectedVisitSites.length) {
+    const old = document.getElementById('visit-distance-strip');
+    if (old) old.remove();
+    return;
+  }
+
+  let strip = document.getElementById('visit-distance-strip');
+  if (!strip) {
+    strip = document.createElement('div');
+    strip.id = 'visit-distance-strip';
+    strip.style.cssText = 'margin-bottom:1rem';
+    // Insert before the mail compose box
+    const compose = document.querySelector('.mail-compose-box');
+    if (compose) compose.parentNode.insertBefore(strip, compose);
+    else return;
+  }
+
+  const totalKm = selectedVisitSites.reduce((acc, s) => {
+    const km = parseInt((s.km||'0').replace(/[^0-9]/g, '')) || 0;
+    return acc + km;
+  }, 0);
+
+  strip.innerHTML = '<div style="background:var(--accent-bg);border:1px solid var(--accent-light,var(--accent));border-radius:var(--radius-lg);padding:.75rem 1rem">' +
+    '<div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Selected sites distance summary</div>' +
+    '<div style="display:flex;flex-direction:column;gap:5px">' +
+    selectedVisitSites.map(s =>
+      '<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px">' +
+        '<div style="color:var(--text);font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(s.name) + '</div>' +
+        '<div style="font-size:12px;font-weight:700;color:var(--accent);margin-left:12px;flex-shrink:0">' + esc(s.km||'—') + ' one way</div>' +
+      '</div>'
+    ).join('') +
+    '<div style="border-top:1px solid var(--accent-light,var(--accent));margin-top:6px;padding-top:6px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--accent)">' +
+      '<span>' + selectedVisitSites.length + ' site' + (selectedVisitSites.length!==1?'s':'') + ' selected</span>' +
+      '<span>Total: ~' + totalKm + ' KM one way</span>' +
+    '</div>' +
+  '</div></div>';
+}
+
+// ── Phase 6e: Admin quick-reply already added in Phase 3 ──────
+// openQuickReply() is already defined — no additional work needed.
+
+// ── Phase 7: Final cleanup ────────────────────────────────────
+// Bump sw.js cache version notice — remind user on deploy
+// (sw.js itself is a separate file, updated manually)
+
+// Populate credits version on load
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('credits-version');
+  if (el) el.textContent = typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v7.0';
+});
+
 (function init() {
   // Load credentials from KV first (async, non-blocking)
   // Falls back to localStorage cache then hardcoded defaults
   fetchCredentials();
-  checkAuth();
+  checkAuthWithPin();   // Phase 6: PIN-aware session check
   checkPushStatus();
 
 })();
 </script>
+
+<!-- ── FAB — Floating Action Button (engineers only) ── -->
+<div class="fab-menu" id="fab-menu">
+  <div class="fab-menu-item" onclick="fabLaunch('accident')">
+    <span class="fab-menu-label">Accident Report</span>
+    <div class="fab-menu-btn">🚨</div>
+  </div>
+  <div class="fab-menu-item" onclick="fabLaunch('rma')">
+    <span class="fab-menu-label">RMA Request</span>
+    <div class="fab-menu-btn">🔧</div>
+  </div>
+  <div class="fab-menu-item" onclick="fabLaunch('sim')">
+    <span class="fab-menu-label">SIM Fault</span>
+    <div class="fab-menu-btn">📶</div>
+  </div>
+  <div class="fab-menu-item" onclick="fabLaunch('leave')">
+    <span class="fab-menu-label">Leave Application</span>
+    <div class="fab-menu-btn">🗓️</div>
+  </div>
+  <div class="fab-menu-item" onclick="fabLaunch('renovation')">
+    <span class="fab-menu-label">Site Renovation</span>
+    <div class="fab-menu-btn">🏗️</div>
+  </div>
+  <div class="fab-menu-item" onclick="fabLaunch('electrical')">
+    <span class="fab-menu-label">Electrical Issue</span>
+    <div class="fab-menu-btn">⚡</div>
+  </div>
+</div>
+<button class="fab" id="fab-btn" onclick="toggleFabMenu()" title="Quick report">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+</button>
+
+<!-- ── Pull-to-refresh indicator ── -->
+<div class="ptr-indicator" id="ptr-indicator">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 112 8a5 5 0 014-4.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 3H2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="ptr-label">Release to refresh</span>
+</div>
+
+<!-- ── PIN Lock overlay ── -->
+<div class="pin-overlay" id="pin-overlay">
+  <div class="pin-card">
+    <div class="pin-avatar" id="pin-avatar">?</div>
+    <div class="pin-title" id="pin-title">Session locked</div>
+    <div class="pin-sub" id="pin-sub">Enter your 4-digit PIN to continue</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot-indicator" id="pind0"></div>
+      <div class="pin-dot-indicator" id="pind1"></div>
+      <div class="pin-dot-indicator" id="pind2"></div>
+      <div class="pin-dot-indicator" id="pind3"></div>
+    </div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key" onclick="pinPress('bio')">🔐</button>
+      <button class="pin-key" onclick="pinPress('0')">0</button>
+      <button class="pin-key del" onclick="pinPress('del')">⌫</button>
+    </div>
+    <button class="pin-switch-btn" onclick="pinSignOut()">Sign out instead</button>
+  </div>
+</div>
 </body>
 </html>
