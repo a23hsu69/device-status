@@ -6562,6 +6562,123 @@ async function tryBiometric() {
   }
 }
 
+// ── Register biometric credential (fingerprint/Face ID) ──
+async function registerBiometricCredential(user, name) {
+  if (!window.PublicKeyCredential) {
+    showToast('Biometric not supported on this device');
+    return { ok: false, error: 'Not supported' };
+  }
+  
+  try {
+    // Create a new biometric credential
+    const credential = await navigator.credentials.create({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        rp: { 
+          name: 'Field Manager', 
+          id: location.hostname 
+        },
+        user: {
+          id: new TextEncoder().encode(user),
+          name: user,
+          displayName: name
+        },
+        pubKeyCredParams: [
+          { type: 'public-key', alg: -7 }  // ES256
+        ],
+        authenticatorSelection: {
+          authenticatorAttachment: 'platform',   // device biometric only
+          userVerification: 'required',
+          residentKey: 'preferred'
+        },
+        timeout: 60000
+      }
+    });
+    
+    // Store credential.id in localStorage for this user
+    if (credential && credential.rawId) {
+      const credentialId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+      lset('dsc_webauthn_id_' + user, credentialId);
+      console.log('Biometric credential registered for user:', user);
+      showToast('Biometric registered ✓');
+      return { ok: true, credentialId: credentialId };
+    } else {
+      showToast('Failed to register biometric');
+      return { ok: false, error: 'No credential returned' };
+    }
+  } catch(err) {
+    console.error('Biometric registration error:', err);
+    if (err.name === 'NotAllowedError') {
+      showToast('Biometric registration cancelled');
+    } else {
+      showToast('Biometric registration failed: ' + err.message);
+    }
+    return { ok: false, error: err.message };
+  }
+}
+
+// ── Verify biometric credential for authentication ──
+async function verifyBiometricCredential(user) {
+  if (!window.PublicKeyCredential) {
+    return { ok: false, error: 'Not supported' };
+  }
+  
+  try {
+    // Get the stored credential ID for this user
+    const storedCredentialId = ls('dsc_webauthn_id_' + user);
+    if (!storedCredentialId) {
+      return { ok: false, error: 'No biometric enrolled' };
+    }
+    
+    // Decode the credential ID from base64
+    const binaryString = atob(storedCredentialId);
+    const credIdArray = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      credIdArray[i] = binaryString.charCodeAt(i);
+    }
+    
+    // Attempt to authenticate with stored credential
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        timeout: 60000,
+        userVerification: 'required',
+        rpId: location.hostname,
+        allowCredentials: [{
+          type: 'public-key',
+          id: credIdArray,
+          transports: ['internal']
+        }]
+      }
+    });
+    
+    if (assertion) {
+      console.log('Biometric verification successful for user:', user);
+      return { ok: true, assertion: assertion };
+    } else {
+      return { ok: false, error: 'Verification cancelled' };
+    }
+  } catch(err) {
+    console.error('Biometric verification error:', err);
+    if (err.name === 'NotAllowedError') {
+      return { ok: false, error: 'Cancelled' };
+    }
+    return { ok: false, error: err.message };
+  }
+}
+
+// ── Check if user has biometric enrolled ──
+function hasBiometricEnrolled(user) {
+  return !!ls('dsc_webauthn_id_' + user);
+}
+
+// ── Remove biometric credential for user ──
+function removeBiometricCredential(user) {
+  ldel('dsc_webauthn_id_' + user);
+  console.log('Biometric credential removed for user:', user);
+  return true;
+}
+
 function pinSignOut() {
   hidePinLock();
   doLogout();
