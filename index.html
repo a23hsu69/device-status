@@ -1169,6 +1169,12 @@ body{display:flex;flex-direction:column;min-height:100vh}
       <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
+    <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <span style="font-size:12px;color:var(--text2)">or</span>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+    </div>
+    <button class="login-btn" id="login-bio-btn" onclick="doLoginWithBiometric()" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin-top:12px">👆 Login with Fingerprint</button>
     <div class="login-footer">LDB Field Management · v7.0 · Sessions expire after 24 hours</div>
   </div>
 </div>
@@ -2000,7 +2006,7 @@ function applyRoleUI(user) {
   if (logTab)      logTab.style.display      = admin    ? 'inline-flex' : 'none';
   if (repTab)      repTab.style.display      = eng_u    ? 'inline-flex' : 'none';
   if (visitTab)    visitTab.style.display    = (admin || eng_u) ? 'inline-flex' : 'none';
-  if (settingsBtn) settingsBtn.style.display = admin    ? 'inline-flex' : 'none';
+  if (settingsBtn) settingsBtn.style.display = 'inline-flex';  // Available to all users for biometric settings
   if (reporterTab) reporterTab.style.display = reporter ? 'inline-flex' : 'none';
   const leaveRow = document.getElementById('leave-requests-row');
   if (leaveRow) leaveRow.style.display = admin ? 'block' : 'none';
@@ -7019,6 +7025,167 @@ document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('credits-version');
   if (el) el.textContent = typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v7.0';
 });
+
+// ── Login with Biometric Function ────────────────────────────
+async function doLoginWithBiometric() {
+  const loginBioBtn = document.getElementById('login-bio-btn');
+  if (!window.PublicKeyCredential) {
+    showToast('Biometric not supported on this device');
+    return;
+  }
+
+  loginBioBtn.disabled = true;
+  loginBioBtn.textContent = '🔄 Scanning...';
+
+  try {
+    // Get all stored credentials from localStorage
+    const allUsers = getAllUserList ? getAllUserList() : [];
+    const allowedCredentials = [];
+
+    for (const user of allUsers) {
+      const credId = ls('dsc_webauthn_id_' + user.username);
+      if (credId) {
+        // Decode credential ID
+        const binaryString = atob(credId);
+        const credIdArray = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          credIdArray[i] = binaryString.charCodeAt(i);
+        }
+        allowedCredentials.push({
+          type: 'public-key',
+          id: credIdArray,
+          transports: ['internal']
+        });
+      }
+    }
+
+    if (allowedCredentials.length === 0) {
+      showToast('No biometric registered. Please use password login.');
+      loginBioBtn.disabled = false;
+      loginBioBtn.textContent = '👆 Login with Fingerprint';
+      return;
+    }
+
+    // Attempt biometric authentication
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        timeout: 60000,
+        userVerification: 'required',
+        rpId: location.hostname,
+        allowCredentials: allowedCredentials
+      }
+    });
+
+    if (assertion) {
+      // Find which user this credential belongs to
+      const credIdHex = btoa(String.fromCharCode(...new Uint8Array(assertion.id)));
+      let authenticatedUser = null;
+
+      for (const user of allUsers) {
+        if (ls('dsc_webauthn_id_' + user.username) === credIdHex) {
+          authenticatedUser = user.username;
+          break;
+        }
+      }
+
+      if (authenticatedUser) {
+        // Successful authentication
+        lset('currentUser', authenticatedUser);
+        lset(K_AUTH, 'true');
+        lset(K_AUTH_TS, Date.now().toString());
+        document.getElementById('login-screen').style.display = 'none';
+        applyRoleUI(authenticatedUser);
+        showToast('✓ Logged in with fingerprint!');
+        loginBioBtn.disabled = false;
+        loginBioBtn.textContent = '👆 Login with Fingerprint';
+      } else {
+        showToast('Biometric verified but user not found');
+        loginBioBtn.disabled = false;
+        loginBioBtn.textContent = '👆 Login with Fingerprint';
+      }
+    }
+  } catch (err) {
+    console.error('Biometric login error:', err);
+    if (err.name !== 'NotAllowedError') {
+      showToast('Biometric login failed: ' + err.message);
+    }
+    loginBioBtn.disabled = false;
+    loginBioBtn.textContent = '👆 Login with Fingerprint';
+  }
+}
+
+// ── Biometric Security Functions ──────────────────────────
+
+// Initialize biometric UI in settings
+function initBiometricUI() {
+  const user = getCurrentUser();
+  if (!user || !window.PublicKeyCredential) {
+    const row = document.getElementById('row-biometric');
+    if (row) row.style.display = 'none';
+    return;
+  }
+
+  const enrolled = hasBiometricEnrolled(user);
+  const bioStatus = document.getElementById('bio-status');
+  const bioInfoDisplay = document.getElementById('bio-info-display');
+  const registerBtn = document.getElementById('bio-register-btn');
+  const removeBtn = document.getElementById('bio-remove-btn');
+
+  if (enrolled) {
+    if (bioStatus) bioStatus.textContent = '✓ Enrolled';
+    if (bioInfoDisplay) bioInfoDisplay.innerHTML = '✓ <strong>Fingerprint Registered</strong><br>You can use biometric to unlock the app and login.';
+    if (registerBtn) registerBtn.style.display = 'none';
+    if (removeBtn) removeBtn.style.display = 'inline-block';
+  } else {
+    if (bioStatus) bioStatus.textContent = '✗ Not enrolled';
+    if (bioInfoDisplay) bioInfoDisplay.innerHTML = '⚠️ <strong>Not Registered</strong><br>Register your fingerprint for faster and more secure access.';
+    if (registerBtn) registerBtn.style.display = 'inline-block';
+    if (removeBtn) removeBtn.style.display = 'none';
+  }
+}
+
+// Register biometric handler
+async function handleBioRegister() {
+  const user = getCurrentUser();
+  if (!user) {
+    showToast('Please log in first');
+    return;
+  }
+
+  const registerBtn = document.getElementById('bio-register-btn');
+  if (registerBtn) {
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Opening fingerprint...';
+  }
+
+  showToast('Place your finger on the sensor');
+  const result = await registerBiometricCredential(user, user);
+
+  if (result.ok) {
+    showToast('✓ Fingerprint registered successfully!');
+    initBiometricUI();
+  } else {
+    showToast('Failed: ' + result.error);
+    if (registerBtn) {
+      registerBtn.disabled = false;
+      registerBtn.textContent = 'Register Fingerprint';
+    }
+  }
+}
+
+// Remove biometric handler
+function handleBioRemove() {
+  const user = getCurrentUser();
+  
+  if (confirm('Remove fingerprint? You can register again later.')) {
+    removeBiometricCredential(user);
+    showToast('✓ Biometric removed');
+    initBiometricUI();
+  }
+}
+
+// ── End of Biometric Functions ────────────────────────────
 
 (function init() {
   // Load credentials from KV first (async, non-blocking)
