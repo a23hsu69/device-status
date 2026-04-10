@@ -1169,12 +1169,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
       <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
-    <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
-      <div style="flex:1;height:1px;background:var(--border)"></div>
-      <span style="font-size:12px;color:var(--text2)">or</span>
-      <div style="flex:1;height:1px;background:var(--border)"></div>
-    </div>
-    <button class="login-btn" id="login-bio-btn" onclick="doLoginWithBiometric()" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin-top:12px">👆 Login with Fingerprint</button>
     <div class="login-footer">LDB Field Management · v7.0 · Sessions expire after 24 hours</div>
   </div>
 </div>
@@ -1226,10 +1220,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
     <!-- admin settings — admin only -->
     <button class="btn btn-icon" id="settings-btn" onclick="openSettingsModal()" title="Settings" style="display:none">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-    </button>
-    <!-- biometric settings — all users -->
-    <button class="btn btn-icon" id="biometric-settings-btn" onclick="openBiometricModal()" title="Biometric" style="display:none">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2c-3.3 0-6 2.7-6 6v2h2v-2c0-2.2 1.8-4 4-4s4 1.8 4 4v2h2v-2c0-3.3-2.7-6-6-6z" stroke="currentColor" stroke-width="1.3"/><path d="M8 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" stroke="currentColor" stroke-width="1.3"/></svg>
     </button>
 
   </div>
@@ -1843,41 +1833,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </div>
 
 
-<!-- ── Biometric Settings Modal (For All Users) ────────────────────── -->
-<div class="modal-backdrop" id="biometric-backdrop" onclick="if(event.target===this)closeBiometricModal()">
-  <div class="modal" style="max-width:480px;padding:0;overflow:hidden;border-radius:var(--radius-xl);display:flex;flex-direction:column;max-height:90vh">
-    
-    <!-- Header -->
-    <div style="display:flex;align-items:center;gap:10px;padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10">
-      <button onclick="closeBiometricModal()" style="background:none;border:none;cursor:pointer;color:var(--text2);padding:4px;display:flex;align-items:center">
-        <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div>
-        <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em">🔐 Biometric Security</div>
-        <div style="font-size:11px;color:var(--text2)" id="bio-modal-status">Checking support...</div>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div style="overflow-y:auto;flex:1;min-height:0;padding:1.25rem">
-      <div id="bio-modal-info" style="font-size:12px;color:var(--text2);margin-bottom:1.5rem;padding:0.75rem;background:var(--bg2);border-radius:var(--radius);border-left:3px solid var(--accent)">
-        Checking device support...
-      </div>
-      <button class="btn btn-primary" id="bio-modal-register-btn" style="width:100%;display:none;margin-bottom:0.75rem" onclick="handleBioRegister()">
-        Register Fingerprint
-      </button>
-      <button class="btn" id="bio-modal-remove-btn" style="width:100%;display:none;background:#fdf2f2;color:#b91c1c;border:1px solid #ef4444" onclick="handleBioRemove()">
-        Remove Biometric
-      </button>
-    </div>
-
-    <!-- Footer -->
-    <div style="padding:.75rem 1.25rem;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0">
-      <button class="btn btn-primary" style="width:100%" onclick="closeBiometricModal()">Done</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -2046,8 +2001,6 @@ function applyRoleUI(user) {
   if (repTab)      repTab.style.display      = eng_u    ? 'inline-flex' : 'none';
   if (visitTab)    visitTab.style.display    = (admin || eng_u) ? 'inline-flex' : 'none';
   if (settingsBtn) settingsBtn.style.display = admin    ? 'inline-flex' : 'none';
-  const biometricBtn = document.getElementById('biometric-settings-btn');
-  if (biometricBtn) biometricBtn.style.display = user ? 'inline-flex' : 'none';  // Show to all logged-in users
   if (reporterTab) reporterTab.style.display = reporter ? 'inline-flex' : 'none';
   const leaveRow = document.getElementById('leave-requests-row');
   if (leaveRow) leaveRow.style.display = admin ? 'block' : 'none';
@@ -7067,45 +7020,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (el) el.textContent = typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v7.0';
 });
 
-// ── Biometric Modal Functions ────────────────────────────────────
-function openBiometricModal() {
-  document.getElementById('biometric-backdrop').classList.add('open');
-  initBiometricUIModal();
-}
-
-function closeBiometricModal() {
-  document.getElementById('biometric-backdrop').classList.remove('open');
-}
-
-function initBiometricUIModal() {
-  const user = getCurrentUser();
-  if (!user || !window.PublicKeyCredential) {
-    document.getElementById('bio-modal-info').innerHTML = '❌ Biometric not supported on this device';
-    document.getElementById('bio-modal-register-btn').style.display = 'none';
-    document.getElementById('bio-modal-remove-btn').style.display = 'none';
-    return;
-  }
-
-  const enrolled = hasBiometricEnrolled(user);
-  const bioStatus = document.getElementById('bio-modal-status');
-  const bioInfo = document.getElementById('bio-modal-info');
-  const registerBtn = document.getElementById('bio-modal-register-btn');
-  const removeBtn = document.getElementById('bio-modal-remove-btn');
-
-  if (enrolled) {
-    if (bioStatus) bioStatus.textContent = '✓ Enrolled';
-    if (bioInfo) bioInfo.innerHTML = '✅ <strong>Fingerprint Registered</strong><br>You can use biometric to login and unlock the app.';
-    if (registerBtn) registerBtn.style.display = 'none';
-    if (removeBtn) removeBtn.style.display = 'inline-block';
-  } else {
-    if (bioStatus) bioStatus.textContent = '✗ Not enrolled';
-    if (bioInfo) bioInfo.innerHTML = '⚠️ <strong>Not Registered</strong><br>Register your fingerprint for faster and more secure access.';
-    if (registerBtn) registerBtn.style.display = 'inline-block';
-    if (removeBtn) removeBtn.style.display = 'none';
-  }
-}
-
-// ── Login with Biometric (FIXED) ────────────────────────────────────
+// ── FIX #1: Login with Biometric (Auto-Login Without Password) ────────
 async function doLoginWithBiometric() {
   const loginBioBtn = document.getElementById('login-bio-btn');
   if (!window.PublicKeyCredential) {
@@ -7119,18 +7034,14 @@ async function doLoginWithBiometric() {
   }
 
   try {
-    // Get all users and their credentials
     const allUsers = getAllUserList ? getAllUserList() : [];
-    const userCredMap = {}; // Map credential ID (hex) to username
+    const userCredMap = {};
     const allowedCredentials = [];
 
-    // Build list of all registered credentials
     for (const user of allUsers) {
       const credId = ls('dsc_webauthn_id_' + user.username);
       if (credId) {
-        userCredMap[credId] = user.username; // Store mapping
-
-        // Decode credential ID from base64
+        userCredMap[credId] = user.username;
         try {
           const binaryString = atob(credId);
           const credIdArray = new Uint8Array(binaryString.length);
@@ -7143,7 +7054,7 @@ async function doLoginWithBiometric() {
             transports: ['internal']
           });
         } catch (e) {
-          console.error('Error decoding credential for user ' + user.username, e);
+          console.error('Error decoding credential', e);
         }
       }
     }
@@ -7157,7 +7068,6 @@ async function doLoginWithBiometric() {
       return;
     }
 
-    // Attempt biometric authentication
     const assertion = await navigator.credentials.get({
       publicKey: {
         challenge: crypto.getRandomValues(new Uint8Array(32)),
@@ -7169,10 +7079,7 @@ async function doLoginWithBiometric() {
     });
 
     if (assertion) {
-      // Find which user this credential belongs to - encode assertion.id same way we stored it
       let authenticatedUser = null;
-      
-      // Try to match using the same encoding
       try {
         const credIdHex = btoa(String.fromCharCode(...new Uint8Array(assertion.id)));
         authenticatedUser = userCredMap[credIdHex];
@@ -7181,15 +7088,20 @@ async function doLoginWithBiometric() {
       }
 
       if (authenticatedUser) {
-        // Successful authentication - login user
+        // ✅ FIX: AUTO-LOGIN without password requirement
+        const K_AUTH = 'dsc_auth_v1';
+        const K_AUTH_TS = 'dsc_auth_ts';
+        
         lset('currentUser', authenticatedUser);
         lset(K_AUTH, 'true');
         lset(K_AUTH_TS, Date.now().toString());
         
-        // Hide login screen and show main app
+        // Clear login fields
         document.getElementById('login-screen').style.display = 'none';
-        applyRoleUI(authenticatedUser);
+        if (document.getElementById('login-user')) document.getElementById('login-user').value = '';
+        if (document.getElementById('login-pass')) document.getElementById('login-pass').value = '';
         
+        applyRoleUI(authenticatedUser);
         showToast('✓ Logged in with fingerprint!');
         if (loginBioBtn) {
           loginBioBtn.disabled = false;
@@ -7201,12 +7113,6 @@ async function doLoginWithBiometric() {
           loginBioBtn.disabled = false;
           loginBioBtn.textContent = '👆 Login with Fingerprint';
         }
-      }
-    } else {
-      // User cancelled or verification failed
-      if (loginBioBtn) {
-        loginBioBtn.disabled = false;
-        loginBioBtn.textContent = '👆 Login with Fingerprint';
       }
     }
   } catch (err) {
@@ -7221,79 +7127,140 @@ async function doLoginWithBiometric() {
   }
 }
 
-// ── Biometric Security Functions (For Settings) ──────────────────────
-
-// Initialize biometric UI in admin settings
-function initBiometricUI() {
+// ── FIX #2: Delete Logs (Admin Feature) ──────────────────────────────
+function deleteLogsByType(logType) {
   const user = getCurrentUser();
-  if (!user || !window.PublicKeyCredential) {
-    const row = document.getElementById('row-biometric');
-    if (row) row.style.display = 'none';
+  const admin = ls(K.ROLE) === 'admin';
+  
+  if (!admin) {
+    showToast('Only admins can delete logs');
     return;
   }
 
-  const enrolled = hasBiometricEnrolled(user);
-  const bioStatus = document.getElementById('bio-status');
-  const bioInfoDisplay = document.getElementById('bio-info-display');
-  const registerBtn = document.getElementById('bio-register-btn');
-  const removeBtn = document.getElementById('bio-remove-btn');
-
-  if (enrolled) {
-    if (bioStatus) bioStatus.textContent = '✓ Enrolled';
-    if (bioInfoDisplay) bioInfoDisplay.innerHTML = '✓ <strong>Fingerprint Registered</strong><br>You can use biometric to unlock the app and login.';
-    if (registerBtn) registerBtn.style.display = 'none';
-    if (removeBtn) removeBtn.style.display = 'inline-block';
-  } else {
-    if (bioStatus) bioStatus.textContent = '✗ Not enrolled';
-    if (bioInfoDisplay) bioInfoDisplay.innerHTML = '⚠️ <strong>Not Registered</strong><br>Register your fingerprint for faster access.';
-    if (registerBtn) registerBtn.style.display = 'inline-block';
-    if (removeBtn) removeBtn.style.display = 'none';
+  if (!confirm(`Delete all ${logType} logs? This cannot be undone!`)) {
+    return;
   }
+
+  switch(logType) {
+    case 'alerts':
+      ldel(K.ALERTS);
+      showToast('✓ All alert logs deleted');
+      break;
+    case 'reports':
+      // Delete all report types
+      ldel('dsc_reports_accident');
+      ldel('dsc_reports_renovation');
+      ldel('dsc_reports_electrical');
+      ldel('dsc_reports_other');
+      showToast('✓ All report logs deleted');
+      break;
+    case 'leave':
+      ldel(K.LEAVE_REQS);
+      showToast('✓ All leave request logs deleted');
+      break;
+    case 'visits':
+      ldel(K.VISIT_REQS);
+      ldel(K.VISIT_COMPLETED);
+      showToast('✓ All visit logs deleted');
+      break;
+    case 'all':
+      ldel(K.ALERTS);
+      ldel('dsc_reports_accident');
+      ldel('dsc_reports_renovation');
+      ldel('dsc_reports_electrical');
+      ldel('dsc_reports_other');
+      ldel(K.LEAVE_REQS);
+      ldel(K.VISIT_REQS);
+      ldel(K.VISIT_COMPLETED);
+      showToast('✓ All logs deleted');
+      break;
+  }
+
+  // Refresh UI
+  loadLeaveRequests();
+  loadVisitRequests();
 }
 
-// Register biometric handler
-async function handleBioRegister() {
+function deleteSpecificLog(logType, logId) {
   const user = getCurrentUser();
-  if (!user) {
-    showToast('Please log in first');
+  const admin = ls(K.ROLE) === 'admin';
+  
+  if (!admin) {
+    showToast('Only admins can delete logs');
     return;
   }
 
-  const registerBtn = document.getElementById('bio-register-btn') || document.getElementById('bio-modal-register-btn');
-  if (registerBtn) {
-    registerBtn.disabled = true;
-    registerBtn.textContent = 'Opening fingerprint...';
+  if (!confirm(`Delete this ${logType}? This cannot be undone!`)) {
+    return;
   }
 
-  showToast('Place your finger on the sensor');
-  const result = await registerBiometricCredential(user, user);
+  let logs = [];
+  let storageKey = '';
 
-  if (result.ok) {
-    showToast('✓ Fingerprint registered successfully!');
-    initBiometricUI();
-    initBiometricUIModal();
-  } else {
-    showToast('Failed: ' + result.error);
-    if (registerBtn) {
-      registerBtn.disabled = false;
-      registerBtn.textContent = 'Register Fingerprint';
+  switch(logType) {
+    case 'alert':
+      logs = lj(K.ALERTS, []);
+      storageKey = K.ALERTS;
+      break;
+    case 'leave':
+      logs = lj(K.LEAVE_REQS, []);
+      storageKey = K.LEAVE_REQS;
+      break;
+    case 'visit':
+      logs = lj(K.VISIT_REQS, []).concat(lj(K.VISIT_COMPLETED, []));
+      storageKey = logId.includes('completed') ? K.VISIT_COMPLETED : K.VISIT_REQS;
+      break;
+  }
+
+  // Remove the specific log
+  logs = logs.filter(log => log.id !== logId);
+  sj(storageKey, logs);
+  
+  showToast('✓ Log deleted');
+  
+  // Refresh UI
+  loadLeaveRequests();
+  loadVisitRequests();
+}
+
+// ── FIX #3: Auto-Complete Expired Site Visits ────────────────────────
+function autoCompleteExpiredVisits() {
+  const visitReqs = lj(K.VISIT_REQS, []);
+  const visitCompleted = lj(K.VISIT_COMPLETED, []);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  let movedCount = 0;
+  
+  // Check each pending visit
+  for (let i = visitReqs.length - 1; i >= 0; i--) {
+    const visit = visitReqs[i];
+    if (visit.dateStr) {
+      const visitDate = new Date(visit.dateStr);
+      visitDate.setHours(0, 0, 0, 0);
+      
+      // If visit date has passed, move to completed
+      if (visitDate < today) {
+        visit.status = 'completed';
+        visit.completedAt = new Date().toISOString();
+        visitCompleted.push(visit);
+        visitReqs.splice(i, 1);
+        movedCount++;
+      }
     }
   }
-}
-
-// Remove biometric handler
-function handleBioRemove() {
-  const user = getCurrentUser();
   
-  if (confirm('Remove fingerprint? You can register again later.')) {
-    removeBiometricCredential(user);
-    showToast('✓ Biometric removed');
-    initBiometricUI();
-    initBiometricUIModal();
+  // Save updated lists
+  if (movedCount > 0) {
+    sj(K.VISIT_REQS, visitReqs);
+    sj(K.VISIT_COMPLETED, visitCompleted);
+    console.log(`✓ ${movedCount} expired visits moved to completed`);
   }
+  
+  return movedCount;
 }
 
-// ── End of Biometric Functions ────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
 
 (function init() {
   // Load credentials from KV first (async, non-blocking)
@@ -7301,6 +7268,9 @@ function handleBioRemove() {
   fetchCredentials();
   checkAuthWithPin();   // Phase 6: PIN-aware session check
   checkPushStatus();
+  
+  // Auto-complete expired site visits
+  autoCompleteExpiredVisits();
 
 })();
 </script>
