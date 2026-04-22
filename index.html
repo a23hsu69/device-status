@@ -1149,6 +1149,168 @@ body{display:flex;flex-direction:column;min-height:100vh}
   background: var(--bg); color: var(--text);
   font-family: var(--font);
 }
+
+/* ════════════════════════════════════════════════════════════
+   v8 — Device Status + Region Sites CSS
+   ════════════════════════════════════════════════════════════ */
+@keyframes spin { to { transform: rotate(360deg) } }
+
+/* ── index-cds colour vars (mapped to existing theme) ── */
+:root {
+  --cds-green:#22c55e; --cds-green-bg:rgba(34,197,94,.08); --cds-green-border:rgba(34,197,94,.25);
+  --cds-orange:#f97316; --cds-orange-bg:rgba(249,115,22,.08); --cds-orange-border:rgba(249,115,22,.25);
+  --cds-red:#ef4444; --cds-red-bg:rgba(239,68,68,.08); --cds-red-border:rgba(239,68,68,.25);
+}
+@media(prefers-color-scheme:light){
+  :root {
+    --cds-green-bg:#f0fdf4; --cds-orange-bg:#fff7ed; --cds-red-bg:#fef2f2;
+    --cds-green-border:rgba(34,197,94,.3); --cds-orange-border:rgba(249,115,22,.3); --cds-red-border:rgba(239,68,68,.3);
+  }
+}
+
+/* DS downtime badge */
+.ds-dt-badge {
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap;font-family:monospace;
+}
+.ds-dt-green  { background:var(--cds-green-bg);  color:var(--cds-green);  border:1px solid var(--cds-green-border)  }
+.ds-dt-orange { background:var(--cds-orange-bg); color:var(--cds-orange); border:1px solid var(--cds-orange-border) }
+.ds-dt-red    { background:var(--cds-red-bg);    color:var(--cds-red);    border:1px solid var(--cds-red-border)    }
+
+/* DS stat chips */
+.ds-stat-green  { background:var(--cds-green-bg);  color:var(--cds-green);  border:1px solid var(--cds-green-border)  }
+.ds-stat-orange { background:var(--cds-orange-bg); color:var(--cds-orange); border:1px solid var(--cds-orange-border) }
+.ds-stat-red    { background:var(--cds-red-bg);    color:var(--cds-red);    border:1px solid var(--cds-red-border)    }
+
+/* DS status text */
+.ds-status-down        { color:var(--cds-red);   font-family:monospace;font-size:11px;font-weight:600 }
+.ds-status-maintenance { color:var(--cds-orange);font-family:monospace;font-size:11px;font-weight:600 }
+.ds-status-rma         { color:#7c5cfc;          font-family:monospace;font-size:11px;font-weight:600 }
+
+/* DS sort toggle */
+.ds-sort-toggle { display:inline-flex;align-items:center;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;font-size:11px }
+.ds-sort-toggle span { padding:5px 10px;cursor:pointer;color:var(--text2);transition:all .12s;user-select:none;white-space:nowrap }
+.ds-sort-toggle span.active { background:var(--bg2);color:var(--text);font-weight:600 }
+.ds-sort-toggle span:hover:not(.active) { color:var(--accent) }
+
+/* Severity badges */
+.sev-critical   { background:var(--red-bg);  color:var(--red-text);  border:1px solid var(--red-dot)  }
+.sev-high       { background:#fff3e0;         color:#e65100;          border:1px solid #ff9800         }
+.sev-temporary  { background:var(--amber-bg); color:var(--amber-text);border:1px solid var(--amber-dot)}
+.sev-active     { background:var(--green-bg); color:var(--green-text);border:1px solid var(--green-dot)}
+.sev-standby    { background:var(--teal-bg);  color:var(--teal-text); border:1px solid var(--teal-dot) }
+.sev-maintenance{ background:var(--bg2);      color:var(--text2);     border:1px solid var(--border2)  }
+.sev-unknown    { background:var(--bg3);      color:var(--text3);     border:1px solid var(--border)   }
+@media(prefers-color-scheme:dark){
+  .sev-high { background:#3d1f00;color:#ffb74d;border-color:#ff9800 }
+}
+.ds-sev-badge {
+  display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:20px;white-space:nowrap;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+
+/* Device status table */
+.ds-table { width:100%;border-collapse:collapse;font-size:12px }
+.ds-table th {
+  text-align:left;padding:7px 10px;font-size:10px;font-weight:700;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:2px solid var(--border);background:var(--bg2);
+  position:sticky;top:0;z-index:1;
+}
+.ds-table td { padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle }
+.ds-table tr:last-child td { border-bottom:none }
+.ds-table tr:hover td { background:var(--bg2) }
+
+/* Section headers in DS table */
+.ds-section-hdr {
+  display:flex;align-items:center;gap:8px;padding:6px 12px;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:1px solid var(--border);
+}
+.ds-section-hdr.critical  { background:#fef2f2;color:var(--red-text) }
+.ds-section-hdr.high      { background:#fff3e0;color:#e65100 }
+.ds-section-hdr.temporary { background:var(--amber-bg);color:var(--amber-text) }
+.ds-section-hdr.active    { background:var(--green-bg);color:var(--green-text) }
+.ds-section-hdr.standby   { background:var(--teal-bg); color:var(--teal-text) }
+.ds-section-hdr.other     { background:var(--bg2);     color:var(--text2) }
+@media(prefers-color-scheme:dark){
+  .ds-section-hdr.critical { background:#2d1515 }
+  .ds-section-hdr.high     { background:#3d1f00 }
+}
+
+/* DS push meta, stats, filter */
+.ds-push-meta {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;font-size:11px;color:var(--text2);
+  border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;gap:6px;
+}
+.ds-stat-row {
+  display:flex;gap:6px;flex-wrap:wrap;
+  padding:8px 12px;border-bottom:1px solid var(--border);
+}
+.ds-stat-chip {
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;
+}
+.ds-missing-bar {
+  background:var(--amber-bg);border-left:3px solid var(--amber-dot);
+  padding:10px 14px;font-size:12px;color:var(--amber-text);
+  margin:8px 12px;border-radius:var(--radius);
+}
+.ds-filter-bar {
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg2);
+}
+.ds-filter-bar input {
+  flex:1;min-width:120px;border:1px solid var(--border2);border-radius:var(--radius);
+  padding:5px 9px;font-size:12px;background:var(--bg);color:var(--text);
+  font-family:var(--font);outline:none;
+}
+.ds-filter-bar input:focus { border-color:var(--accent) }
+.ds-preview-wrap { overflow-x:auto;max-height:360px;overflow-y:auto }
+
+/* DS history */
+.ds-history-item { padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s }
+.ds-history-item:hover { background:var(--bg2) }
+.ds-history-item-date { font-size:12px;font-weight:600;color:var(--text) }
+.ds-history-item-meta { font-size:11px;color:var(--text2);margin-top:3px }
+
+/* Upload drop zone */
+.upload-drop-zone {
+  border:2px dashed var(--border2);border-radius:var(--radius-lg);
+  padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg2);
+}
+.upload-drop-zone:hover,.upload-drop-zone.dragover { border-color:var(--accent);background:var(--accent-bg) }
+.upload-drop-zone-icon { font-size:28px;margin-bottom:8px }
+.upload-drop-zone-text { font-size:13px;font-weight:500;color:var(--text) }
+.upload-drop-zone-sub  { font-size:11px;color:var(--text2);margin-top:4px }
+
+/* Region site rows */
+.region-site-row {
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  border-bottom:1px solid var(--border);background:var(--bg);
+}
+.region-site-name { flex:1;font-size:13px;font-weight:500;color:var(--text) }
+.region-site-eng  { font-size:11px;color:var(--text2);flex-shrink:0 }
+.btn-remove-site {
+  background:none;border:1px solid var(--border2);border-radius:var(--radius);
+  padding:3px 8px;font-size:11px;cursor:pointer;color:var(--text3);font-family:var(--font);
+}
+.btn-remove-site:hover { background:var(--red-bg);color:var(--red-text);border-color:var(--red-dot) }
+
+/* Ack buttons */
+.ack-pill {
+  display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;
+  padding:1px 7px;border-radius:20px;
+  background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-dot);
+}
+
+/* Visit status badges */
+.visit-status-badge { display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap }
+.visit-status-badge.pending  { background:var(--amber-bg);color:var(--amber-text) }
+.visit-status-badge.approved { background:var(--green-bg); color:var(--green-text) }
+.visit-status-badge.rejected { background:var(--red-bg);   color:var(--red-text)  }
 </style>
 </head>
 <body>
@@ -1169,7 +1331,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
       <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
-    <div class="login-footer">LDB Field Management · v7.0 · Sessions expire after 24 hours</div>
+    <div class="login-footer">LDB Field Management · v8.0 · Sessions expire after 24 hours</div>
   </div>
 </div>
 
@@ -1193,7 +1355,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
     <div>
       <div class="topbar-title">
         Field Manager
-        <span class="version-tag">v7.0</span>
+        <span class="version-tag">v8.0</span>
         <span class="offline-badge" id="offline-badge" style="display:none">Offline</span>
       </div>
       <div class="topbar-sub" id="last-fetched">Field Management — Kochi Region</div>
@@ -1285,6 +1447,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
         <button class="tab" id="tab-visit" onclick="switchTab('visit')" style="display:none">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
           Distant Visit
+        </button>
+        <button class="tab" id="tab-ds" onclick="switchTab('devstatus')" style="display:none">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Device Status
+          <span class="notif-badge" id="ds-badge" style="display:none">!</span>
         </button>
       </div>
 
@@ -1383,6 +1553,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
         <!-- ── ENGINEER VIEW ── -->
         <div id="visit-eng-view">
+          <!-- Engineer visit request status (v8 Phase 3) -->
+          <div id="eng-visit-status-wrap" style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              My Requests
+            </div>
+            <div id="eng-visit-status"><div style="font-size:12px;color:var(--text2)">Loading…</div></div>
+          </div>
           <!-- Two action cards -->
           <div id="visit-type-selector">
             <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)">
@@ -1448,6 +1626,9 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
       <!-- Reporter panel — Phase 5 will build full dashboard -->
       <div id="panel-reporter" style="display:none"></div>
+
+      <!-- Device Status panel — v8 Phase 1 -->
+      <div id="panel-devstatus" style="display:none"></div>
 
   <!-- Add/Edit site modal -->
   <div class="modal-backdrop" id="add-site-modal-backdrop" onclick="if(event.target===this)closeAddSiteModal()">
@@ -1628,77 +1809,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
       </div>
 
       <!-- SECTION: Device list -->
-      <div class="sett-section-hdr">&#x1F4E1; Device List</div>
-      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-upload')" id="row-dev-upload">
-        <div class="sett-row-icon" style="background:#f0fdf4">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3-3 3 3M3 13h10" stroke="var(--green-dot)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="sett-row-body"><div class="sett-row-title">Upload CSV / Excel</div><div class="sett-row-sub" id="dev-list-count">No devices loaded</div></div>
-        <svg class="sett-chevron" id="chev-dev-upload" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="sett-panel" id="panel-dev-upload">
-        <div class="sett-panel-inner">
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
-            <input type="file" id="dev-csv-file" accept=".csv,.xlsx,.xls" style="font-size:12px;flex:1" onchange="previewDeviceCsv(this)"/>
-            <button class="btn btn-sm btn-primary" id="dev-csv-apply-btn" onclick="applyDeviceCsvPreview()" style="display:none">Apply</button>
-          </div>
-          <div id="dev-csv-preview" style="font-size:12px;color:var(--text2)"></div>
-        </div>
-      </div>
-      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-url')" id="row-dev-url">
-        <div class="sett-row-icon" style="background:#f0fdfa">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1012 0A6 6 0 002 8z" stroke="var(--teal-dot)" stroke-width="1.3"/><path d="M8 2c-1.5 2-2 3.8-2 6s.5 4 2 6M8 2c1.5 2 2 3.8 2 6s-.5 4-2 6M2 8h12" stroke="var(--teal-dot)" stroke-width="1.1" stroke-linecap="round"/></svg>
-        </div>
-        <div class="sett-row-body"><div class="sett-row-title">Fetch from URL</div><div class="sett-row-sub" id="dev-fetch-status">Fetch device list from a CSV endpoint</div></div>
-        <svg class="sett-chevron" id="chev-dev-url" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="sett-panel" id="panel-dev-url">
-        <div class="sett-panel-inner">
-          <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
-            <div class="cred-field" style="flex:1;min-width:180px"><label>CSV endpoint URL</label><input class="cred-inp" type="url" id="dev-fetch-url" placeholder="https://&hellip;/DeviceStatus/DownloadAndProcess"/></div>
-            <button class="btn btn-sm btn-primary" style="white-space:nowrap;margin-bottom:1px" onclick="fetchDevicesFromUrl()">Fetch now</button>
-          </div>
-        </div>
-      </div>
-      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-manual')" id="row-dev-manual">
-        <div class="sett-row-icon" style="background:#fff7ed">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="#f59e0b" stroke-width="1.3"/><path d="M8 6v4M6 8h4" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/></svg>
-        </div>
-        <div class="sett-row-body"><div class="sett-row-title">Add device manually</div></div>
-        <svg class="sett-chevron" id="chev-dev-manual" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="sett-panel" id="panel-dev-manual">
-        <div class="sett-panel-inner">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div class="cred-field"><label>Site name</label><input class="cred-inp" type="text" id="new-dev-site" placeholder="e.g. Cochin SEZ" list="dev-site-datalist"/><datalist id="dev-site-datalist"></datalist></div>
-            <div class="cred-field"><label>MAC ID</label><input class="cred-inp" type="text" id="new-dev-mac" placeholder="e.g. 84:24:8D:F1:40:35"/></div>
-            <div class="cred-field"><label>Asset label</label><input class="cred-inp" type="text" id="new-dev-label" placeholder="e.g. IN/OUT LHS"/></div>
-            <div class="cred-field"><label style="opacity:0">_</label><button class="btn btn-primary btn-sm" style="width:100%" onclick="addDeviceManually()">Add device</button></div>
-          </div>
-        </div>
-      </div>
-      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-dev-list')" id="row-dev-list">
-        <div class="sett-row-icon" style="background:#f5f3ff">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round"/></svg>
-        </div>
-        <div class="sett-row-body"><div class="sett-row-title">View / manage device list</div></div>
-        <svg class="sett-chevron" id="chev-dev-list" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="sett-panel" id="panel-dev-list">
-        <div class="sett-panel-inner" style="padding:0">
-          <div id="dev-list-wrap" style="max-height:240px;overflow-y:auto;background:var(--bg)">
-            <div id="dev-list-inner" style="font-size:12px;color:var(--text2);padding:10px">Loading&hellip;</div>
-          </div>
-          <div style="display:flex;justify-content:flex-end;gap:6px;padding:8px 10px;border-top:1px solid var(--border);flex-wrap:wrap">
-            <button class="btn btn-sm" style="color:var(--red-text);border-color:var(--red-dot)" onclick="clearAllDevices()">&#x1F5D1; Clear all</button>
-            <button class="btn btn-sm" onclick="pushDeviceListToKV(true)">
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Save to server
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- SECTION: Leave Quota -->
       <div class="sett-section-hdr">&#x1F4CB; Leave Quota</div>
       <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-leave-quota')" id="row-leave-quota">
@@ -1729,7 +1839,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="var(--accent)" stroke-width="1.3"/><path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/></svg>
         </div>
         <div class="sett-row-body">
-          <div class="sett-row-title">Field Manager <span id="credits-version" style="font-size:11px;color:var(--text3);font-weight:400">v7.0</span></div>
+          <div class="sett-row-title">Field Manager <span id="credits-version" style="font-size:11px;color:var(--text3);font-weight:400">v8.0</span></div>
           <div class="sett-row-sub">Developed by Ayush E P &middot; RFID Engineer &mdash; Cochin Port</div>
         </div>
       </div>
@@ -1839,8 +1949,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
      JAVASCRIPT
 ════════════════════════════════════════════════════════════ -->
 <script>
-'use strict';
-
 // ── Constants & data ─────────────────────────────────────────
 
 
@@ -2000,6 +2108,8 @@ function applyRoleUI(user) {
   if (logTab)      logTab.style.display      = admin    ? 'inline-flex' : 'none';
   if (repTab)      repTab.style.display      = eng_u    ? 'inline-flex' : 'none';
   if (visitTab)    visitTab.style.display    = (admin || eng_u) ? 'inline-flex' : 'none';
+  const dsTab = document.getElementById('tab-ds');
+  if (dsTab) dsTab.style.display = (admin || eng_u) ? 'inline-flex' : 'none';
   if (settingsBtn) settingsBtn.style.display = admin    ? 'inline-flex' : 'none';
   if (reporterTab) reporterTab.style.display = reporter ? 'inline-flex' : 'none';
   const leaveRow = document.getElementById('leave-requests-row');
@@ -2195,9 +2305,9 @@ async function openSettingsModal() {
   renderContactsList();
   renderVisitContactsList('approval');
   renderVisitContactsList('advance');
-  renderDeviceListSettings();
   populateLeaveQuotaFields();
   populateCreditsVersion();
+  // v8 — region sites section removed, sites are baked into SITES_DB
 
 // Initialize biometric UI in settings
   setTimeout(() => initBiometricUI(), 100);
@@ -2737,7 +2847,7 @@ async function saveSettings() {
   if (adminNewPw) { if (adminNewPw.length < 6) { showToast('New admin password must be 6+ chars'); return; } hasChanges = true; }
   if (!hasChanges) { showToast('No changes to save'); return; }
 
-  btn.disabled = true; btn.textContent = 'Saving…';
+  btn.disabled = true; btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="animation:spin .8s linear infinite"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5" stroke-dasharray="20" stroke-dashoffset="5"/></svg> Saving…';
 
   try {
     // Save engineer credentials — send removedKeys so Worker deletes them from KV
@@ -2770,6 +2880,7 @@ async function saveSettings() {
     }
 
     logActivity('admin', 'remark', 'Updated credentials via settings');
+    // v8 — sites baked into SITES_DB, no sync needed
     closeSettingsModal();
     showToast('Credentials saved and synced ✓');
   } catch (e) {
@@ -2785,12 +2896,13 @@ async function saveSettings() {
 
 function switchTab(t) {
   tab = t;
-  const panels = ['notifs','log','reports','visit','reporter'];
+  const panels = ['notifs','log','reports','visit','reporter','devstatus'];
   panels.forEach(id => {
-    const tabId = id === 'notifs'   ? 'n'
-                : id === 'log'      ? 'l'
-                : id === 'reports'  ? 'rep'
-                : id === 'reporter' ? 'reporter'
+    const tabId = id === 'notifs'     ? 'n'
+                : id === 'log'        ? 'l'
+                : id === 'reports'    ? 'rep'
+                : id === 'reporter'   ? 'reporter'
+                : id === 'devstatus'  ? 'ds'
                 : 'visit';
     const tabEl = document.getElementById('tab-' + tabId);
     const panel = document.getElementById('panel-' + id);
@@ -2814,6 +2926,7 @@ function switchTab(t) {
   if (t === 'reports')  { closeReportWizard(); fetchDeviceListForReports(); updateReportAdminBar(); }
   if (t === 'visit')    { onVisitTabOpen(); }
   if (t === 'reporter') { onReporterTabOpen(); }
+  if (t === 'devstatus') { onDevStatusTabOpen(); }
 }
 
 // Acknowledge directly from a notification (alert sent by admin)
@@ -2949,6 +3062,11 @@ function showInAppAlert(title, body) {
   bar.classList.add('show');
   clearTimeout(inAppAlertTimer);
   inAppAlertTimer = setTimeout(dismissInAppAlert, 10000);
+  // v8 Phase 3 — colour bar by notification type
+  if (title && title.includes('✅') && title.includes('Visit')) bar.style.background = '#166534';
+  else if (title && title.includes('❌')) bar.style.background = '#991b1b';
+  else if (title && title.includes('📡')) bar.style.background = '#1e40af';
+  else bar.style.background = '';
 }
 function dismissInAppAlert() { document.getElementById('inapp-alert').classList.remove('show'); clearTimeout(inAppAlertTimer); }
 
@@ -3018,6 +3136,18 @@ function storeIncomingNotif(title, body) {
   if (inbox.length > 200) inbox.length = 200;
   saveNotifInbox(inbox); updateUnreadBadge();
   if (tab === 'notifs') renderNotifInbox();
+  // v8 Phase 2 — DS badge
+  if (title && (title.includes('📡') || title.includes('✅') || title.includes('💬'))) {
+    const badge = document.getElementById('ds-badge');
+    if (badge && tab !== 'devstatus') { badge.style.display = 'inline-flex'; badge.textContent = '!'; }
+  }
+  // v8 Phase 3 — auto-refresh visit status on approval/rejection
+  if (title && (title.includes('Visit request') || title.includes('✅') || title.includes('❌'))) {
+    const u = getCurrentUser();
+    if (typeof isEngineer === 'function' && isEngineer(u)) {
+      if (typeof loadEngineerVisitStatus === 'function') loadEngineerVisitStatus().catch(() => {});
+    }
+  }
 }
 
 async function loadNotifInbox() {
@@ -4879,6 +5009,8 @@ async function onVisitTabOpen() {
   document.getElementById('visit-eng-view').style.display   = eng_u ? 'block' : 'none';
   document.getElementById('visit-admin-view').style.display = admin ? 'block' : 'none';
   if (admin) { renderAdminSitesList(); loadVisitRequests(); }
+  // v8 Phase 3 — load engineer visit status
+  if (eng_u) { if (typeof loadEngineerVisitStatus === 'function') await loadEngineerVisitStatus(); }
 }
 
 // ── Admin: sites management ──────────────────────────────────
@@ -4966,11 +5098,17 @@ async function deleteDistantSite(i) {
 
 // ── Admin: view visit requests ───────────────────────────────
 async function loadVisitRequests() {
+  const user = getCurrentUser();
+  if (!isAdmin(user)) return;
   try {
     const r = await fetch(WORKER_URL + '/get-visits');
     if (!r.ok) return;
     const d = await r.json();
-    if (d.ok && Array.isArray(d.visits)) renderVisitRequests(d.visits);
+    if (d.ok && Array.isArray(d.visits)) {
+      // v8 Phase 3: use enhanced approval UI if available
+      if (typeof renderAdminVisitRequests === 'function') renderAdminVisitRequests(d.visits);
+      else renderVisitRequests(d.visits);
+    }
   } catch(e) {}
 }
 
@@ -5421,7 +5559,7 @@ async function sendVisitRequest() {
 // Dev: Ayush E P | RFID Engineer — Cochin Port
 // ══════════════════════════════════════════════════════════════
 
-const APP_VERSION = 'v7.0';
+const APP_VERSION = 'v8.0';
 const K_LEAVE_QUOTA = 'dsc_leave_quota_v1';
 
 // ── Phase 1: Leave quota helpers ─────────────────────────────
@@ -7273,6 +7411,1359 @@ function autoCompleteExpiredVisits() {
   autoCompleteExpiredVisits();
 
 })();
+
+// ════════════════════════════════════════════════════════════
+// v8 Phase 1 — Device Status (index-cds logic integrated)
+// MAC-based matching against SITES_DB, exact downtime calc,
+// colour coding: green ≤48h, orange 2-8d, red >8d
+// ════════════════════════════════════════════════════════════
+
+// ── Sites database (from sites1.xlsx) ────────────────────────
+const SITES_DB = [{"mac": "C4:7D:CC:68:28:F9", "site": "Bay Container Terminal Pvt Ltd", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:68:29:2C", "site": "Bay Container Terminal Pvt Ltd", "asset": "IN/OUT RHS"}, {"mac": "C4:7D:CC:72:B7:DC", "site": "BHAVANI SHIPPING SERVICES (I) Kerala", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:65:78:04", "site": "BHAVANI SHIPPING SERVICES (I) Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:92:4D", "site": "MIV empty yard cochin", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:1C:1B", "site": "MIV empty yard cochin", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:1C:AA", "site": "Blueocean Container Terminals (I) Pvt Ltd 1 cochin", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:1C:ID", "site": "Blueocean Container Terminals (I) Pvt Ltd 1 cochin", "asset": "IN/OUT RHS"}, {"mac": "C4:7D:CC:68:29:22", "site": "Chakiat Agencies Private Limited", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:68:2D:69", "site": "Chakiat Agencies Private Limited", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F1:40:35", "site": "COCHIN PORT CFS", "asset": "IN/OUT LHS"}, {"mac": "84:24:8D:F1:45:A6", "site": "COCHIN PORT CFS", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:FC:B0:19", "site": "COCHIN SEZ", "asset": "IN LHS"}, {"mac": "84:24:8D:FC:AF:A4", "site": "COCHIN SEZ", "asset": "OUT LHS"}, {"mac": "84:24:8D:FC:AF:A6", "site": "COCHIN SEZ", "asset": "IN RHS"}, {"mac": "84:24:8D:F2:48:61", "site": "COCHIN SEZ", "asset": "OUT RHS"}, {"mac": "00:8D:F4:D0:00:53", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "IN / LHS"}, {"mac": "00:8D:F4:D0:00:9E", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "IN / RHS"}, {"mac": "00:8D:F4:D0:00:59", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "OUT / LHS"}, {"mac": "00:8D:F4:D0:00:08", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "OUT / RHS"}, {"mac": "00:16:25:15:1C:CC", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 1 L.H.S"}, {"mac": "00:16:25:15:1C:D8", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 1 R.H.S"}, {"mac": "00:16:25:15:1C:3A", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 2 L.H.S"}, {"mac": "00:16:25:15:1C:CD", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 2 R.H.S"}, {"mac": "84:24:8D:F1:40:EE", "site": "GDKL CFS COCHIN", "asset": "IN LHS"}, {"mac": "84:24:8D:F1:18:D5", "site": "GDKL CFS COCHIN", "asset": "OUT LHS"}, {"mac": "84:24:8D:F1:18:BB", "site": "GDKL CFS COCHIN", "asset": "IN RHS"}, {"mac": "84:24:8D:F1:40:96", "site": "GDKL CFS COCHIN", "asset": "OUT RHS"}, {"mac": "84:24:8D:F5:6B:26", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 1"}, {"mac": "84:24:8D:F5:4B:B8", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 2"}, {"mac": "84:24:8D:F7:81:62", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 3"}, {"mac": "84:24:8D:F5:4B:BD", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 4"}, {"mac": "84:24:8D:F0:F2:D8", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 5"}, {"mac": "84:24:8D:F5:46:E9", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 6"}, {"mac": "84:24:8D:F5:43:10", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 7"}, {"mac": "84:24:8D:FD:DC:18", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 8"}, {"mac": "84:24:8D:F5:46:EB", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 9"}, {"mac": "84:24:8D:F5:6B:3F", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 10"}, {"mac": "84:24:8D:F5:6B:36", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 11"}, {"mac": "84:24:8D:F5:6B:27", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 12"}, {"mac": "84:24:8D:F5:76:5A", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 13"}, {"mac": "84:24:8D:F1:3E:DB", "site": "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN", "asset": "IN LHS"}, {"mac": "84:24:8D:F1:3F:1B", "site": "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN", "asset": "IN RHS"}, {"mac": "00:16:25:15:22:83", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 1 LHS"}, {"mac": "00:16:25:15:22:55", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:21:E0", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:23:AD", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:BF", "site": "KINFRA Industrial Park, Adoor", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:22:54", "site": "KINFRA Industrial Park, Adoor", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:22:5D", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 1 LHS"}, {"mac": "00:8D:F4:D0:11:DD", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:23:19", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:23:16", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:BD", "site": "KINFRA IITP,Palakkad", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:23:13", "site": "KINFRA IITP,Palakkad", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:00:86", "site": "KINFRA Kalamassery", "asset": "IN / LHS"}, {"mac": "00:8D:F4:D0:00:95", "site": "KINFRA Kalamassery", "asset": "IN / RHS"}, {"mac": "00:8D:F4:D0:02:A2", "site": "KINFRA Kalamassery", "asset": "OUT / LHS"}, {"mac": "00:8D:F4:D0:00:8C", "site": "KINFRA Kalamassery", "asset": "OUT / RHS"}, {"mac": "00:16:25:15:23:1B", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "LHS"}, {"mac": "00:16:25:15:23:15", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "Middile"}, {"mac": "00:16:25:15:23:24", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "RHS"}, {"mac": "00:16:25:15:23:0B", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 1 LHS"}, {"mac": "00:16:25:15:22:86", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:23:59", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:23:BF", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:9F", "site": "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:23:2D", "site": "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:24:08", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 1 LHS"}, {"mac": "00:16:25:15:24:07", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:24:0B", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:24:09", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:63", "site": "KINFRA Small Industries Park, Thalassery, Kannur", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:23:2C", "site": "KINFRA Small Industries Park, Thalassery, Kannur", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:21:DB", "site": "KINFRA Techno Industrial\u00a0 Park, Kakkancherry\u00a0 Malappuram", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:24:06", "site": "KINFRA Techno Industrial\u00a0 Park, Kakkancherry\u00a0 Malappuram", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:24:01", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "LHS"}, {"mac": "00:16:25:15:23:E1", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "Middile"}, {"mac": "00:16:25:15:24:04", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "RHS"}, {"mac": "84:24:8D:FB:5A:E0", "site": "KOTTAYAM ICD", "asset": "IN/OUT LHS"}, {"mac": "84:24:8D:F3:27:4A", "site": "KOTTAYAM ICD", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F1:40:86", "site": "KSIE CFS COCHIN", "asset": "IN/OUT LHS"}, {"mac": "84:24:8D:F1:40:DA", "site": "KSIE CFS COCHIN", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F0:F6:56", "site": "KSIE CFS COCHIN", "asset": "IN/OUT MIDDILE"}, {"mac": "84:24:8D:F5:3E:BD", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 1"}, {"mac": "84:24:8D:F6:08:04", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 2"}, {"mac": "84:24:8D:F0:F5:CB", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 3"}, {"mac": "84:24:8D:F5:6B:6F", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 4"}, {"mac": "84:24:8D:F3:25:F0", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 5"}, {"mac": "84:24:8D:F5:6B:2E", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 6"}, {"mac": "84:24:8D:F5:6B:43", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 7"}, {"mac": "84:24:8D:F6:08:6F", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 8"}, {"mac": "84:24:8D:F5:6B:67", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 9"}, {"mac": "00:16:25:15:1D:58", "site": "MARINE CONTAINER LOGISTICS 1", "asset": "Gate 2 L.H.S"}, {"mac": "00:16:25:15:1D:5A", "site": "MARINE CONTAINER LOGISTICS 2", "asset": "Gate 2 R.H.S"}, {"mac": "00:16:25:15:1D:5B", "site": "MARINE CONTAINER LOGISTICS 3", "asset": "Gate 1 L.H.S"}, {"mac": "00:16:25:15:1D:5D", "site": "MARINE CONTAINER LOGISTICS 4", "asset": "Gate 1 R.H.S"}, {"mac": "C4:7D:CC:72:BD:0A", "site": "MBK Logistix Pvt Ltd Cochin", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:72:BE:AF", "site": "MBK Logistix Pvt Ltd Cochin", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F0:F6:DC", "site": "MIV CFS COCHIN", "asset": "IN LHS"}, {"mac": "84:24:8D:F1:41:1A", "site": "MIV CFS COCHIN", "asset": "OUT LHS"}, {"mac": "84:24:8D:F1:0D:04", "site": "MIV CFS COCHIN", "asset": "IN RHS"}, {"mac": "84:24:8D:F1:2F:6A", "site": "MIV CFS COCHIN", "asset": "OUT RHS"}, {"mac": "10:07:23:6E:0D:0F", "site": "Pampampallam Toll Plaza", "asset": "Lane 1"}, {"mac": "10:07:23:6E:10:A3", "site": "Pampampallam Toll Plaza", "asset": "Lane 2"}, {"mac": "10:07:23:6E:0F:65", "site": "Pampampallam Toll Plaza", "asset": "Lane 3"}, {"mac": "10:07:23:6E:0F:F7", "site": "Pampampallam Toll Plaza", "asset": "Lane 4"}, {"mac": "10:07:23:6E:0F:56", "site": "Pampampallam Toll Plaza", "asset": "Lane 5"}, {"mac": "10:07:23:6E:0D:0B", "site": "Pampampallam Toll Plaza", "asset": "Lane 6"}, {"mac": "10:07:23:6E:0F:E6", "site": "Pampampallam Toll Plaza", "asset": "Lane 7"}, {"mac": "10:07:23:6E:0F:5B", "site": "Pampampallam Toll Plaza", "asset": "Lane 8"}, {"mac": "10:07:23:6E:0D:35", "site": "Pampampallam Toll Plaza", "asset": "Lane 9"}, {"mac": "10:07:23:6E:0D:C3", "site": "Pampampallam Toll Plaza", "asset": "Lane 10"}, {"mac": "10:07:23:6E:0D:AB", "site": "Pampampallam Toll Plaza", "asset": "Lane 11"}, {"mac": "C4:7D:CC:72:BE:47", "site": "Petta CFS", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:72:B9:21", "site": "Petta CFS", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:1D:52", "site": "Ponnarimanglam TP", "asset": "Lane 1"}, {"mac": "00:16:25:15:1D:0F", "site": "Ponnarimanglam TP", "asset": "Lane 2"}, {"mac": "00:16:25:15:1D:4E", "site": "Ponnarimanglam TP", "asset": "Lane 3"}, {"mac": "00:16:25:15:1D:4C", "site": "Ponnarimanglam TP", "asset": "Lane 4"}, {"mac": "00:16:25:15:1D:4F", "site": "Ponnarimanglam TP", "asset": "Lane 5"}, {"mac": "00:16:25:15:1D:0D", "site": "Ponnarimanglam TP", "asset": "Lane 6"}, {"mac": "00:16:25:15:1C:F8", "site": "Ponnarimanglam TP", "asset": "Lane 7"}, {"mac": "00:16:25:15:1C:F2", "site": "Ponnarimanglam TP", "asset": "Lane 8"}, {"mac": "00:16:25:15:1C:2D", "site": "Ponnarimanglam TP", "asset": "Lane 9"}, {"mac": "00:16:25:15:1C:44", "site": "Ponnarimanglam TP", "asset": "Lane 10"}, {"mac": "00:16:25:15:1C:31", "site": "Ponnarimanglam TP", "asset": "Lane 11"}, {"mac": "C4:7D:CC:68:2D:77", "site": "Reefco Container Services (India) Pvt Ltd", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:68:29:69", "site": "Reefco Container Services (India) Pvt Ltd", "asset": "IN/OUT RHS"}, {"mac": "C4:7D:CC:72:BD:02", "site": "SRISTAR CONTAINER SERVICES LLP Cochin", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:72:BE:58", "site": "SRISTAR CONTAINER SERVICES LLP Cochin", "asset": "IN/OUT RHS"}, {"mac": "10:07:23:6E:10:F7", "site": "Nest Electronics City NeST Hitek Park", "asset": "IN LHS"}, {"mac": "10:07:23:6E:10:B9", "site": "Nest Electronics City NeST Hitek Park", "asset": "IN RHS"}, {"mac": "10:07:23:6E:0E:8A", "site": "Nest Electronics City NeST Hitek Park", "asset": "OUT LHS"}, {"mac": "10:07:23:6E:0E:34", "site": "Nest Electronics City NeST Hitek Park", "asset": "OUT RHS"}, {"mac": "00:8D:F4:D0:02:33", "site": "Panniyankara Toll Plaza", "asset": "Lane 1"}, {"mac": "00:8D:F4:D0:02:2D", "site": "Panniyankara Toll Plaza", "asset": "Lane 2"}, {"mac": "00:8D:F4:D0:03:D4", "site": "Panniyankara Toll Plaza", "asset": "Lane 3"}, {"mac": "00:8D:F4:D0:02:03", "site": "Panniyankara Toll Plaza", "asset": "Lane 4"}, {"mac": "00:8D:F4:D0:01:AF", "site": "Panniyankara Toll Plaza", "asset": "Lane 5"}, {"mac": "00:8D:F4:D0:01:73", "site": "Panniyankara Toll Plaza", "asset": "Lane 6"}, {"mac": "00:8D:F4:D0:02:4A", "site": "Panniyankara Toll Plaza", "asset": "Lane 7"}, {"mac": "00:8D:F4:D0:02:84", "site": "Panniyankara Toll Plaza", "asset": "Lane 8"}, {"mac": "00:8D:F4:D0:02:45", "site": "Panniyankara Toll Plaza", "asset": "Lane 9"}, {"mac": "00:8D:F4:D0:01:79", "site": "Panniyankara Toll Plaza", "asset": "Lane 10"}, {"mac": "00:8D:F4:D0:01:9A", "site": "Panniyankara Toll Plaza", "asset": "Lane 11"}, {"mac": "00:8D:F4:D0:02:57", "site": "Panniyankara Toll Plaza", "asset": "Lane 12"}, {"mac": "00:8D:F4:D0:02:18", "site": "Panniyankara Toll Plaza", "asset": "Lane 13"}, {"mac": "00:8D:F4:D0:03:02", "site": "Panniyankara Toll Plaza", "asset": "Lane 14"}, {"mac": "00:8D:F4:D0:02:FF", "site": "Panniyankara Toll Plaza", "asset": "Lane 15"}, {"mac": "00:8D:F4:D0:01:94", "site": "Panniyankara Toll Plaza", "asset": "Lane 16"}, {"mac": "00:8D:F4:D0:02:27", "site": "Panniyankara Toll Plaza", "asset": "Lane 17"}, {"mac": "10:07:23:6E:10:AF", "site": "Accelerated freeze Drying Co ltd", "asset": "LHS"}, {"mac": "10:07:23:6E:10:D9", "site": "Accelerated freeze Drying Co ltd", "asset": "RHS"}, {"mac": "10:07:23:6E:10:6B", "site": "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn", "asset": "LHS"}, {"mac": "10:07:23:6E:11:8B", "site": "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn", "asset": "RHS"}, {"mac": "00:16:25:15:21:07", "site": "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn", "asset": "LHS"}, {"mac": "00:16:25:15:1F:DC", "site": "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn", "asset": "RHS"}, {"mac": "00:8D:F4:D0:0B:33", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "IN/LHS"}, {"mac": "00:8D:F4:D0:0B:20", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "IN/RHS"}, {"mac": "00:8D:F4:D0:0B:5F", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "OUT/LHS"}, {"mac": "00:8D:F4:D0:0B:2B", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "OUT/RHS"}, {"mac": "00:8D:F4:D0:0B:67", "site": "KSIDC Mega Food Park Pallipuram Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:66", "site": "KSIDC Mega Food Park Pallipuram Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:75", "site": "SIDCO Industrial Estate Kollakadavu Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:76", "site": "SIDCO Industrial Estate Kollakadavu Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:1C", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "IN/LHS"}, {"mac": "00:8D:F4:D0:0B:42", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "IN/RHS"}, {"mac": "00:8D:F4:D0:0B:34", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "OUT/LHS"}, {"mac": "00:8D:F4:D0:0B:41", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "OUT/RHS"}, {"mac": "00:8D:F4:D0:0B:79", "site": "Development Plot Athani Kerala", "asset": "Gate 1 LHS"}, {"mac": "00:8D:F4:D0:0B:7B", "site": "Development Plot Athani Kerala", "asset": "Gate 1 RHS"}, {"mac": "00:8D:F4:D0:0B:08", "site": "Development Plot Athani Kerala", "asset": "Gate 2 IN/LHS"}, {"mac": "00:8D:F4:D0:0B:47", "site": "Development Plot Athani Kerala", "asset": "Gate 2 IN/RHS"}, {"mac": "00:8D:F4:D0:0B:78", "site": "Development Plot Athani Kerala", "asset": "Gate 2 OUT/LHS"}, {"mac": "00:8D:F4:D0:0B:49", "site": "Development Plot Athani Kerala", "asset": "Gate 2 OUT/RHS"}, {"mac": "00:8D:F4:D0:0B:29", "site": "Industrial Development Plot Ananthapuram Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:1F", "site": "Industrial Development Plot Ananthapuram Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:OB:19", "site": "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:48", "site": "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0A:BF", "site": "A.M Fisheries Private Limited Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0A:BE", "site": "A.M Fisheries Private Limited Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:2A", "site": "Development plot Kunnamthanam kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:50", "site": "Development plot Kunnamthanam kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:9A", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate1/LHS"}, {"mac": "00:8D:F4:D0:0F:13", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate1/RHS"}, {"mac": "00:8D:F4:D0:OB:CB", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate2/LHS"}, {"mac": "10:07:23:6E:0D:F1", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate2/RHS"}];
+
+// Build MAC → { siteName, assetId } lookup map
+// normalise: uppercase, strip non hex/colon chars
+const _cdsNormMac = s => s ? s.toString().trim().toUpperCase().replace(/[^0-9A-F:]/g,'') : '';
+const _cdsSitesMap = new Map();
+SITES_DB.forEach(e => {
+  const mac = _cdsNormMac(e.mac);
+  if (mac) _cdsSitesMap.set(mac, { siteName: e.site, assetId: e.asset, engineer: e.engineer || '' });
+});
+
+// ── Storage keys ─────────────────────────────────────────────
+const K_DS_HISTORY    = 'dsc_ds_history_v1';
+const K_DS_EXCEL_LOCS = 'dsc_ds_excel_locs_v1';
+
+// ── DS history helpers ────────────────────────────────────────
+function getDsHistory()        { return lj(K_DS_HISTORY, []); }
+function saveDsHistoryLocal(a) { sj(K_DS_HISTORY, a); }
+
+// ── Downtime calculation (exact match from index-cds) ─────────
+function _cdsCalcDowntime(lastSyncedStr) {
+  if (!lastSyncedStr || lastSyncedStr.trim() === '-' || !lastSyncedStr.trim())
+    return { hours:0, minutes:0, label:'No sync' };
+  let d;
+  try { d = new Date(lastSyncedStr.replace(',','')); } catch(e) { d = null; }
+  if (!d || isNaN(d.getTime())) return { hours:0, minutes:0, label:'No sync' };
+  const diffMs = Date.now() - d.getTime();
+  if (diffMs < 0) return { hours:0, minutes:0, label:'No sync' };
+  const totalMins = Math.floor(diffMs / 60000);
+  const hours     = diffMs / 3600000;
+  const days      = Math.floor(totalMins / (60*24));
+  const hRem      = Math.floor((totalMins % (60*24)) / 60);
+  const mRem      = totalMins % 60;
+  let label;
+  if (days > 0)      label = days + 'd ' + hRem + 'h';
+  else if (hRem > 0) label = hRem + 'h ' + mRem + 'm';
+  else               label = mRem + 'm';
+  return { hours, minutes: totalMins, label };
+}
+
+// ── Colour coding (exact match from index-cds) ────────────────
+// green ≤48h · orange 48h-192h (8d) · red >192h
+function _cdsGetColor(hours) {
+  if (hours <= 48)  return 'green';
+  if (hours <= 192) return 'orange';
+  return 'red';
+}
+
+// ── State ─────────────────────────────────────────────────────
+let _cdsRawDevices  = null;   // parsed from Device_Status_All
+let _cdsReportRows  = [];     // matched + enriched rows
+let _cdsFilteredRows= [];     // after search filter
+let _cdsSortDir     = 'desc'; // desc = longest first
+let _dsCurrentPush  = null;
+
+// ── Admin DS panel ────────────────────────────────────────────
+function renderAdminDsPanel() {
+  const el = document.getElementById('panel-devstatus');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--accent-bg);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
+      <div style="font-size:12px;color:var(--accent);font-family:monospace">
+        🗄 Sites DB: <strong>${_cdsSitesMap.size}</strong> devices pre-loaded
+      </div>
+      <div style="font-size:11px;color:var(--text2)">Upload Device_Status_All_*.xlsx to generate report</div>
+    </div>
+
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
+      <div class="upload-drop-zone" id="ds-drop-zone">
+        <div class="upload-drop-zone-icon">📡</div>
+        <div class="upload-drop-zone-text" id="ds-drop-text">Drop Device_Status_All_*.xlsx here</div>
+        <div class="upload-drop-zone-sub">Col B = MAC · Col G = Last Synced · Col H = Status · drag &amp; drop or click</div>
+      </div>
+      <input type="file" id="ds-excel-input" accept=".xlsx,.xls" style="display:none"/>
+      <div id="ds-load-status" style="font-size:12px;color:var(--text2);margin-top:8px;display:none"></div>
+    </div>
+
+    <div id="ds-controls" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2);align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" id="ds-gen-btn" onclick="_cdsProcessData()">⚡ Generate Report</button>
+      <div class="ds-sort-toggle">
+        <span id="ds-sort-desc" class="active" onclick="_cdsSetSort('desc')">↓ Longest first</span>
+        <span id="ds-sort-asc" onclick="_cdsSetSort('asc')">↑ Shortest first</span>
+      </div>
+      <input type="text" id="ds-search" placeholder="🔍 filter site / mac / asset…"
+        style="flex:1;min-width:130px;border:1px solid var(--border2);border-radius:var(--radius);padding:5px 9px;font-size:12px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none"
+        oninput="_cdsApplySearch(this.value)"/>
+    </div>
+
+    <div id="ds-unmatched" style="display:none;margin:8px 14px;background:var(--amber-bg);border-left:3px solid var(--amber-dot);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--amber-text);font-family:monospace"></div>
+
+    <div id="ds-stats" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap;align-items:center">
+      <span class="ds-stat-chip ds-stat-green" id="ds-cnt-green" style="display:none">🟢 0 ≤48h</span>
+      <span class="ds-stat-chip ds-stat-orange" id="ds-cnt-orange" style="display:none">🟠 0 2d–8d</span>
+      <span class="ds-stat-chip ds-stat-red" id="ds-cnt-red" style="display:none">🔴 0 >8d</span>
+      <span style="margin-left:auto;font-size:11px;color:var(--text2)">Total matched: <strong id="ds-cnt-total">0</strong></span>
+    </div>
+
+    <div class="ds-preview-wrap">
+      <table class="ds-table" id="ds-report-table">
+        <thead><tr>
+          <th>#</th><th>Site Name</th><th>MAC ID</th><th>Asset ID</th>
+          <th>Last Sync</th><th>Status</th><th>Downtime</th>
+        </tr></thead>
+        <tbody id="ds-report-tbody">
+          <tr><td colspan="7">
+            <div style="padding:3rem 1rem;text-align:center;color:var(--text2)">
+              <div style="font-size:32px;margin-bottom:10px">📡</div>
+              <div style="font-size:13px;font-weight:600">Upload the Device Status report</div>
+              <div style="font-size:11px;margin-top:4px">Sites database pre-loaded · just upload the daily export</div>
+            </div>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="ds-push-section" style="display:none;padding:1rem 1.25rem;border-top:1px solid var(--border)">
+      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">Push to engineers</div>
+      <div id="ds-recipient-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="_cdsPushStatus()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          Send alert to engineers
+        </button>
+        <button class="btn btn-sm" onclick="_cdsExportExcel()" id="ds-export-btn"
+          style="background:var(--bg2);border:1px solid var(--border2)">⬇ Export Excel</button>
+        <span id="ds-push-result" style="font-size:12px;color:var(--text2)"></span>
+      </div>
+    </div>
+  `;
+
+  // Wire up events after innerHTML is set (avoids inline quote conflicts)
+  const dropZone  = document.getElementById('ds-drop-zone');
+  const fileInput = document.getElementById('ds-excel-input');
+
+  if (dropZone) {
+    dropZone.addEventListener('click', () => fileInput && fileInput.click());
+    dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) _cdsHandleFile(file);
+    });
+  }
+  if (fileInput) {
+    fileInput.addEventListener('change', e => {
+      if (e.target.files[0]) _cdsHandleFile(e.target.files[0]);
+      e.target.value = '';
+    });
+  }
+
+  _cdsRenderRecipientChips();
+}
+// ── Drop / file handlers ──────────────────────────────────────
+function _cdsHandleDrop(e) {
+  const file = e.dataTransfer.files[0];
+  if (file) _cdsHandleFile(file);
+}
+
+async function _cdsHandleFile(file) {
+  if (!file) return;
+  const dropText = document.getElementById('ds-drop-text');
+  const statusEl = document.getElementById('ds-load-status');
+  const controls = document.getElementById('ds-controls');
+  if (dropText) dropText.textContent = 'Reading…';
+  if (statusEl) { statusEl.style.display = 'block'; statusEl.textContent = 'Parsing file…'; }
+
+  try {
+    if (typeof XLSX === 'undefined') { showToast('Excel parser not loaded — try again'); return; }
+    const buf  = await file.arrayBuffer();
+    const wb   = XLSX.read(new Uint8Array(buf), { type:'array', raw:false });
+    const ws   = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header:1, defval:'' });
+
+    // Find header row
+    let headerRow = 0;
+    for (let i = 0; i < Math.min(5, rows.length); i++) {
+      const j = rows[i].join('|').toUpperCase();
+      if (j.includes('MAC') || j.includes('STATUS')) { headerRow = i; break; }
+    }
+
+    const ACTIVE = new Set(['down','maintenance','rma']);
+    const data = [];
+    for (let i = headerRow + 1; i < rows.length; i++) {
+      const row    = rows[i];
+      const mac    = _cdsNormMac(row[1]);
+      const status = (row[7] || '').toString().trim().toLowerCase();
+      if (!mac || !ACTIVE.has(status)) continue;
+      data.push({ mac, lastSync: (row[6]||'').toString().trim(), statusRaw: status });
+    }
+
+    _cdsRawDevices = data;
+    if (dropText) dropText.textContent = '✅ ' + file.name;
+    if (statusEl) statusEl.textContent = data.length + ' down/maintenance/rma devices loaded — tap Generate Report';
+    if (controls) { controls.style.display = 'flex'; }
+    showToast(data.length + ' devices loaded', );
+  } catch(err) {
+    showToast('Error reading file: ' + err.message);
+    if (dropText) dropText.textContent = 'Drop Device_Status_All_*.xlsx here';
+    if (statusEl) statusEl.textContent = '';
+  }
+}
+
+// ── Process & match (exact index-cds logic) ───────────────────
+function _cdsProcessData() {
+  if (!_cdsRawDevices) { showToast('Upload a file first'); return; }
+  const btn = document.getElementById('ds-gen-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="animation:spin .6s linear infinite"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="2" stroke-dasharray="20" stroke-dashoffset="5"/></svg> Processing…'; }
+
+  setTimeout(() => {
+    const matched = [], unmatched = [];
+    for (const dev of _cdsRawDevices) {
+      const info = _cdsSitesMap.get(dev.mac);
+      if (info) {
+        const dt = _cdsCalcDowntime(dev.lastSync);
+        matched.push({
+          siteName:  info.siteName,
+          mac:       dev.mac,
+          assetId:   info.assetId,
+          engineer:  info.engineer,
+          lastSync:  dev.lastSync,
+          downtime:  dt.label,
+          hours:     dt.hours,
+          minutes:   dt.minutes,
+          color:     _cdsGetColor(dt.hours),
+          statusRaw: dev.statusRaw,
+        });
+      } else {
+        unmatched.push(dev.mac);
+      }
+    }
+
+    // Sort longest first by default
+    _cdsSortDir = 'desc';
+    matched.sort((a,b) => b.minutes - a.minutes);
+    _cdsReportRows   = matched;
+    _cdsFilteredRows = matched;
+
+    // Update stats
+    const cG = matched.filter(r => r.color==='green').length;
+    const cO = matched.filter(r => r.color==='orange').length;
+    const cR = matched.filter(r => r.color==='red').length;
+    const statsEl = document.getElementById('ds-stats');
+    if (statsEl) statsEl.style.display = 'flex';
+    _cdsSetStatChip('ds-cnt-green',  cG, '🟢 ' + cG + ' ≤48h');
+    _cdsSetStatChip('ds-cnt-orange', cO, '🟠 ' + cO + ' 2d–8d');
+    _cdsSetStatChip('ds-cnt-red',    cR, '🔴 ' + cR + ' >8d');
+    const totEl = document.getElementById('ds-cnt-total');
+    if (totEl) totEl.textContent = matched.length;
+
+    // Unmatched banner
+    const banner = document.getElementById('ds-unmatched');
+    if (banner) {
+      if (unmatched.length) {
+        banner.style.display = 'block';
+        banner.textContent = '⚠ ' + unmatched.length + ' device(s) not in sites database and excluded.';
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+
+    // Sort toggle reset
+    const sd = document.getElementById('ds-sort-desc');
+    const sa = document.getElementById('ds-sort-asc');
+    if (sd) sd.classList.add('active');
+    if (sa) sa.classList.remove('active');
+
+    // Render
+    _cdsRenderTable(matched);
+
+    // Show push section
+    const pushSec = document.getElementById('ds-push-section');
+    if (pushSec) pushSec.style.display = matched.length ? 'block' : 'none';
+
+    if (btn) { btn.disabled = false; btn.innerHTML = '⚡ Generate Report'; }
+    showToast('Done — ' + matched.length + ' matched, ' + unmatched.length + ' skipped');
+  }, 50);
+}
+
+function _cdsSetStatChip(id, count, label) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (count > 0) { el.style.display = 'inline-flex'; el.textContent = label; }
+  else            { el.style.display = 'none'; }
+}
+
+// ── Sort ──────────────────────────────────────────────────────
+function _cdsSetSort(dir) {
+  _cdsSortDir = dir;
+  const sd = document.getElementById('ds-sort-desc');
+  const sa = document.getElementById('ds-sort-asc');
+  if (sd) sd.classList.toggle('active', dir==='desc');
+  if (sa) sa.classList.toggle('active', dir==='asc');
+  if (!_cdsReportRows.length) return;
+  _cdsReportRows.sort((a,b) => dir==='desc' ? b.minutes-a.minutes : a.minutes-b.minutes);
+  const q = (document.getElementById('ds-search')||{}).value||'';
+  _cdsApplySearch(q);
+}
+
+// ── Search ────────────────────────────────────────────────────
+function _cdsApplySearch(q) {
+  q = q.toLowerCase().trim();
+  _cdsFilteredRows = q
+    ? _cdsReportRows.filter(r =>
+        r.siteName.toLowerCase().includes(q) ||
+        r.mac.toLowerCase().includes(q) ||
+        (r.assetId||'').toLowerCase().includes(q) ||
+        r.downtime.toLowerCase().includes(q) ||
+        (r.engineer||'').toLowerCase().includes(q))
+    : _cdsReportRows;
+  _cdsRenderTable(_cdsFilteredRows);
+}
+
+// ── Render table (exact index-cds style) ─────────────────────
+function _cdsRenderTable(rows) {
+  const tbody = document.getElementById('ds-report-tbody');
+  if (!tbody) return;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div style="padding:2rem;text-align:center;color:var(--text2);font-size:13px">No results</div></td></tr>';
+    return;
+  }
+  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA' };
+  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma' };
+  tbody.innerHTML = rows.map((row, i) =>
+    '<tr>' +
+      '<td style="color:var(--text3);font-family:monospace;font-size:11px">' + String(i+1).padStart(2,'0') + '</td>' +
+      '<td style="font-weight:600;font-size:12px">' + esc(row.siteName) + '</td>' +
+      '<td style="font-family:monospace;font-size:11px;color:var(--text2)">' + esc(row.mac) + '</td>' +
+      '<td style="font-family:monospace;font-size:11px">' + (row.assetId ? esc(row.assetId) : '<span style="color:var(--text3)">—</span>') + '</td>' +
+      '<td style="font-family:monospace;font-size:11px;color:var(--text2)">' + (row.lastSync||'—') + '</td>' +
+      '<td><span class="' + (statusClass[row.statusRaw]||'') + '">' + (statusLabel[row.statusRaw]||esc(row.statusRaw)) + '</span></td>' +
+      '<td><span class="ds-dt-badge ds-dt-' + row.color + '">' +
+        (row.color==='green'?'🟢':row.color==='orange'?'🟠':'🔴') + ' ' + esc(row.downtime) +
+      '</span></td>' +
+    '</tr>'
+  ).join('');
+}
+
+// ── Recipient chips ───────────────────────────────────────────
+function _cdsRenderRecipientChips() {
+  const el = document.getElementById('ds-recipient-chips');
+  if (!el) return;
+  const engineers = getEngineerList();
+  el.innerHTML = engineers.map(e =>
+    '<label style="display:inline-flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;' +
+    'background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:3px 9px">' +
+      '<input type="checkbox" id="ds-rec-' + esc(e.key) + '" checked ' +
+        'style="accent-color:var(--accent);width:12px;height:12px"/>' +
+      esc(e.name) +
+    '</label>'
+  ).join('');
+}
+
+// ── Push to engineers ─────────────────────────────────────────
+async function _cdsPushStatus() {
+  if (!_cdsReportRows.length) { showToast('Generate a report first'); return; }
+  const engineers  = getEngineerList();
+  const recipients = engineers.filter(e => {
+    const cb = document.getElementById('ds-rec-' + e.key);
+    return cb && cb.checked;
+  }).map(e => e.key);
+  if (!recipients.length) { showToast('Select at least one engineer'); return; }
+
+  const resultEl = document.getElementById('ds-push-result');
+  if (resultEl) resultEl.textContent = 'Pushing…';
+
+  const cG = _cdsReportRows.filter(r => r.color==='green').length;
+  const cO = _cdsReportRows.filter(r => r.color==='orange').length;
+  const cR = _cdsReportRows.filter(r => r.color==='red').length;
+  const parts = [];
+  if (cR) parts.push(cR + ' critical');
+  if (cO) parts.push(cO + ' high priority');
+  if (cG) parts.push(cG + ' temporary');
+  const summary = parts.join(' · ') || 'All devices nominal';
+
+  // Build device list for KV push
+  const devices = _cdsReportRows.map(r => ({
+    mac:             r.mac,
+    site:            r.siteName,
+    assetId:         r.assetId,
+    assignedEngineer:r.engineer,
+    assignedUser:    '',
+    status:          r.statusRaw,
+    lastSynced:      r.lastSync,
+    downDays:        Math.floor(r.hours / 24),
+    downtime:        r.downtime,
+    hours:           r.hours,
+    severity:        r.color === 'red' ? 'critical' : r.color === 'orange' ? 'high' : 'temporary',
+    color:           r.color,
+  }));
+
+  try {
+    const r = await fetch(WORKER_URL + '/push-device-status', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        devices, missing:[], recipients,
+        sender: getCurrentUser(),
+        pushedAt: new Date().toISOString()
+      })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      logActivity(getCurrentUser(), 'alert',
+        'Pushed device status to <strong>' + recipients.length + ' engineer(s)</strong> — ' + summary
+      );
+      if (resultEl) resultEl.textContent = '✓ Sent to ' + d.sent + ' user(s)';
+      showToast('Device status pushed ✓');
+
+      // Cache locally
+      const history = getDsHistory();
+      history.unshift({ id:d.pushId, pushedAt:new Date().toISOString(),
+        pushedBy:getCurrentUser(), devices, missing:[], recipients });
+      if (history.length > 7) history.length = 7;
+      saveDsHistoryLocal(history);
+    } else {
+      if (resultEl) resultEl.textContent = 'Push failed: ' + (d.error||'unknown');
+      showToast('Push failed');
+    }
+  } catch(e) {
+    if (resultEl) resultEl.textContent = 'Offline';
+    showToast('Could not reach server');
+  }
+}
+
+// ── Export Excel (exact index-cds logic) ─────────────────────
+function _cdsExportExcel() {
+  if (!_cdsReportRows.length) return;
+  if (typeof XLSX === 'undefined') { showToast('Excel library not loaded'); return; }
+  const wb = XLSX.utils.book_new();
+  const wsData = [['Sl No.','Site Name','MAC ID','Asset ID','Last Sync','Status','Downtime']];
+  _cdsReportRows.forEach((row,i) => {
+    wsData.push([i+1, row.siteName||'', row.mac||'', row.assetId||'', row.lastSync||'', row.statusRaw||'', row.downtime||'']);
+  });
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols'] = [{wch:6},{wch:40},{wch:20},{wch:16},{wch:22},{wch:14},{wch:14}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Down Device Report');
+  const now = new Date();
+  const ts  = now.getDate().toString().padStart(2,'0')+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getFullYear();
+  XLSX.writeFile(wb, 'Down_Device_Report_' + ts + '.xlsx');
+  showToast('Excel exported!');
+}
+
+// ── Engineer view: show latest push ───────────────────────────
+async function renderEngineerDsPanel() {
+  const el = document.getElementById('panel-devstatus');
+  if (!el) return;
+
+  el.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text2);font-size:13px">' +
+    '<div style="font-size:24px;margin-bottom:8px">📡</div>Loading device status…</div>';
+
+  try {
+    const r = await fetch(WORKER_URL + '/get-device-status?latest=1');
+    if (r.ok) {
+      const d = await r.json();
+      if (d.ok && d.history && d.history.length) {
+        const history = getDsHistory();
+        const latest  = d.history[0];
+        if (!history.find(h => h.id === latest.id)) {
+          history.unshift(latest);
+          if (history.length > 7) history.length = 7;
+          saveDsHistoryLocal(history);
+        }
+      }
+    }
+  } catch(e) { /* offline */ }
+
+  const history = getDsHistory();
+  if (!history.length) {
+    el.innerHTML =
+      '<div style="padding:3rem 1rem;text-align:center;color:var(--text2)">' +
+      '<div style="font-size:32px;margin-bottom:10px">📡</div>' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:4px">No status updates yet</div>' +
+      '<div style="font-size:12px">Admin will push device status from the portal Excel</div>' +
+      '</div>';
+    return;
+  }
+  _dsCurrentPush = history[0];
+  _renderEngineerDsViewP1(history);
+}
+
+// ── Phase 1 base renderer ─────────────────────────────────────
+function _renderEngineerDsViewP1(history) {
+  const el   = document.getElementById('panel-devstatus');
+  if (!el || !_dsCurrentPush) return;
+  const push = _dsCurrentPush;
+  const devs = push.devices || [];
+
+  const dt = new Date(push.pushedAt).toLocaleString('en-IN', {
+    day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'
+  });
+
+  // Sort by hours desc for engineer view
+  const sorted = [...devs].sort((a,b) => (b.hours||0) - (a.hours||0));
+
+  const cG = devs.filter(d=>d.color==='green').length;
+  const cO = devs.filter(d=>d.color==='orange').length;
+  const cR = devs.filter(d=>d.color==='red').length;
+
+  const statChips = [
+    cR ? '<span class="ds-stat-chip ds-stat-red">🔴 '+cR+' Critical</span>'    : '',
+    cO ? '<span class="ds-stat-chip ds-stat-orange">🟠 '+cO+' High</span>'     : '',
+    cG ? '<span class="ds-stat-chip ds-stat-green">🟢 '+cG+' Temporary</span>' : '',
+  ].filter(Boolean).join('') || '<span style="font-size:12px;color:var(--green-text);font-weight:600">✅ All devices nominal</span>';
+
+  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA' };
+  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma' };
+
+  el.innerHTML =
+    '<div class="ds-push-meta">' +
+      '<span>📡 Pushed <strong>' + dt + '</strong> by ' + esc(push.pushedBy||'admin') + '</span>' +
+      (history.length > 1
+        ? '<button class="btn btn-sm" onclick="openDsHistory()">🕐 History ('+history.length+')</button>'
+        : '') +
+    '</div>' +
+    '<div class="ds-stat-row" style="padding:8px 14px;border-bottom:1px solid var(--border)">' + statChips + '</div>' +
+    '<div class="ds-filter-bar">' +
+      '<input type="text" placeholder="🔍 filter site / mac…" oninput="_cdsFilterEngTable(this.value)"/>' +
+    '</div>' +
+    '<div class="ds-preview-wrap">' +
+      '<table class="ds-table">' +
+        '<thead><tr><th>#</th><th>Site Name</th><th>MAC ID</th><th>Asset</th>' +
+          '<th>Last Sync</th><th>Status</th><th>Downtime</th><th>Action</th></tr></thead>' +
+        '<tbody id="eng-ds-tbody">' +
+          sorted.map((d,i) =>
+            '<tr>' +
+              '<td style="color:var(--text3);font-family:monospace;font-size:11px">'+String(i+1).padStart(2,'0')+'</td>' +
+              '<td style="font-weight:600;font-size:12px">'+esc(d.site||d.siteName||'')+'</td>' +
+              '<td style="font-family:monospace;font-size:10px;color:var(--text2)">'+esc(d.mac)+'</td>' +
+              '<td style="font-family:monospace;font-size:11px">'+esc(d.assetId||'—')+'</td>' +
+              '<td style="font-family:monospace;font-size:10px;color:var(--text2)">'+esc(d.lastSync||d.lastSynced||'—')+'</td>' +
+              '<td><span class="'+(statusClass[d.statusRaw||d.status]||'')+'">'+
+                (statusLabel[d.statusRaw||d.status]||esc(d.statusRaw||d.status||''))+'</span></td>' +
+              '<td><span class="ds-dt-badge ds-dt-'+(d.color||'green')+'">'+
+                (d.color==='red'?'🔴':d.color==='orange'?'🟠':'🟢')+' '+esc(d.downtime||'—')+'</span></td>' +
+              '<td id="ack-cell-'+esc(d.mac.replace(/:/g,'_'))+'"></td>' +
+            '</tr>'
+          ).join('') +
+        '</tbody>' +
+      '</table>' +
+    '</div>';
+}
+
+function _cdsFilterEngTable(q) {
+  if (!_dsCurrentPush) return;
+  q = q.toLowerCase();
+  const devs   = _dsCurrentPush.devices || [];
+  const sorted = [...devs].sort((a,b) => (b.hours||0)-(a.hours||0));
+  const filtered = q ? sorted.filter(d =>
+    (d.site||d.siteName||'').toLowerCase().includes(q) ||
+    (d.mac||'').toLowerCase().includes(q) ||
+    (d.assetId||'').toLowerCase().includes(q)
+  ) : sorted;
+  const tbody = document.getElementById('eng-ds-tbody');
+  if (!tbody) return;
+  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA' };
+  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma' };
+  tbody.innerHTML = filtered.map((d,i) =>
+    '<tr>' +
+      '<td style="color:var(--text3);font-family:monospace;font-size:11px">'+String(i+1).padStart(2,'0')+'</td>' +
+      '<td style="font-weight:600;font-size:12px">'+esc(d.site||d.siteName||'')+'</td>' +
+      '<td style="font-family:monospace;font-size:10px;color:var(--text2)">'+esc(d.mac)+'</td>' +
+      '<td style="font-family:monospace;font-size:11px">'+esc(d.assetId||'—')+'</td>' +
+      '<td style="font-family:monospace;font-size:10px;color:var(--text2)">'+esc(d.lastSync||d.lastSynced||'—')+'</td>' +
+      '<td><span class="'+(statusClass[d.statusRaw||d.status]||'')+'">'+
+        (statusLabel[d.statusRaw||d.status]||esc(d.statusRaw||d.status||''))+'</span></td>' +
+      '<td><span class="ds-dt-badge ds-dt-'+(d.color||'green')+'">'+
+        (d.color==='red'?'🔴':d.color==='orange'?'🟠':'🟢')+' '+esc(d.downtime||'—')+'</span></td>' +
+      '<td></td>' +
+    '</tr>'
+  ).join('');
+}
+
+// ── DS History modal ──────────────────────────────────────────
+function openDsHistory() {
+  const history = getDsHistory();
+  const el = document.getElementById('ds-history-modal-content');
+  if (!el) return;
+  el.innerHTML = history.map((h,i) => {
+    const dt = new Date(h.pushedAt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const devs = h.devices||[];
+    const cR = devs.filter(d=>d.color==='red').length;
+    const cO = devs.filter(d=>d.color==='orange').length;
+    const cG = devs.filter(d=>d.color==='green').length;
+    return '<div class="ds-history-item" onclick="loadDsHistoryEntry('+i+')">' +
+      '<div class="ds-history-item-date">'+dt+(i===0?' <span style="font-size:10px;color:var(--accent);font-weight:600">Latest</span>':'')+'</div>' +
+      '<div class="ds-history-item-meta">' +
+        (cR?'🔴 '+cR+' critical  ':'')+(cO?'🟠 '+cO+' high  ':'')+(cG?'🟢 '+cG+' temp  ':'') +
+        (!cR&&!cO&&!cG?'✅ All nominal':'')+' · '+devs.length+' devices' +
+      '</div>' +
+    '</div>';
+  }).join('') || '<div style="padding:1rem;color:var(--text2);font-size:13px">No history</div>';
+  document.getElementById('ds-history-modal').classList.add('open');
+}
+
+function loadDsHistoryEntry(idx) {
+  const history = getDsHistory();
+  if (!history[idx]) return;
+  _dsCurrentPush = history[idx];
+  closeDsHistory();
+  _renderEngineerDsViewP1(history);
+}
+
+function closeDsHistory() {
+  const m = document.getElementById('ds-history-modal');
+  if (m) m.classList.remove('open');
+}
+
+// ── onDevStatusTabOpen ────────────────────────────────────────
+async function _onDevStatusTabOpenP1() {
+  const user  = getCurrentUser();
+  const admin = isAdmin(user);
+  const eng   = isEngineer(user);
+  if (admin) renderAdminDsPanel();
+  else if (eng) await renderEngineerDsPanel();
+}
+
+// ════════════════════════════════════════════════════════════
+// v8 Phase 2 — Acknowledgements + Threading
+// ════════════════════════════════════════════════════════════
+
+// ── Storage keys (Phase 2) ───────────────────────────────────
+const K_ACK_CACHE    = 'dsc_ack_cache_v8';    // { pushId: { ackId: {mac,site,user,...} } }
+const K_THREAD_CACHE = 'dsc_thread_cache_v8'; // { 'pushId:mac': [messages] }
+
+// ── Ack cache helpers ────────────────────────────────────────
+function getAckCache() { return lj(K_ACK_CACHE, {}); }
+function saveAckCache(obj) { sj(K_ACK_CACHE, obj); }
+
+function getAcksForPush(pushId) {
+  const cache = getAckCache();
+  return cache[pushId] || {};
+}
+
+function setAcksForPush(pushId, acks) {
+  const cache = getAckCache();
+  cache[pushId] = acks;
+  // Prune old pushIds not in local history
+  const historyIds = new Set(getDsHistory().map(h => h.id));
+  Object.keys(cache).forEach(k => { if (!historyIds.has(k)) delete cache[k]; });
+  saveAckCache(cache);
+}
+
+// Thread cache helpers
+function getThreadCache() { return lj(K_THREAD_CACHE, {}); }
+function saveThreadCache(obj) { sj(K_THREAD_CACHE, obj); }
+function getThreadKey(pushId, mac) { return pushId + ':' + mac; }
+
+// ════════════════════════════════════════════════════════════
+// ENGINEER — Acknowledge a device
+// ════════════════════════════════════════════════════════════
+
+async function acknowledgeDevice(pushId, mac, site) {
+  const user     = getCurrentUser();
+  const userName = (credCache && credCache[user] && credCache[user].name) || user;
+
+  // Optimistic local update
+  const acks = getAcksForPush(pushId);
+  const ackId = mac.replace(/:/g, '_') + '_' + user;
+  acks[ackId] = { mac, site, user, userName, note: '', ts: new Date().toISOString() };
+  setAcksForPush(pushId, acks);
+
+  // Re-render immediately
+  if (_dsCurrentPush && _dsCurrentPush.id === pushId) {
+    renderAckOverlay(pushId);
+  }
+
+  showToast('Acknowledged — notifying admin…');
+
+  try {
+    const r = await fetch(WORKER_URL + '/ack-device', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pushId, mac, site, user, userName, note: '' })
+    });
+    const d = await r.json();
+    if (!d.ok) showToast('Ack failed: ' + (d.error || 'unknown'));
+    else {
+      logActivity(user, 'ack',
+        'Acknowledged <strong>' + esc(site) + '</strong> — ' +
+        '<span style="font-family:monospace;font-size:11px">' + esc(mac) + '</span>'
+      );
+    }
+  } catch(e) {
+    showToast('Offline — ack saved locally');
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// DEVICE ROW — Ack button + thread button rendering
+// ════════════════════════════════════════════════════════════
+
+// Replaces renderEngineerDsView table to include ack buttons.
+// Call this after Phase 1's renderEngineerDsView — it OVERRIDES
+// the tbody rendering to inject ack buttons per down device.
+function renderDsTableWithAcks(pushId, devices) {
+  const tbody = document.getElementById('eng-ds-tbody');
+  if (!tbody) return;
+  const acks  = getAcksForPush(pushId);
+  const user  = getCurrentUser();
+  const sorted = [...devices].sort((a, b) => severityOrder(a.severity) - severityOrder(b.severity));
+
+  let lastSev = null;
+  tbody.innerHTML = sorted.map(d => {
+    const sev = d.severity || d.status;
+    let hdr = '';
+    if (sev !== lastSev) {
+      lastSev = sev;
+      const secClass = sectionClass(sev);
+      hdr = '<tr><td colspan="7" style="padding:0">' +
+        '<div class="ds-section-hdr ' + secClass + '">' +
+          severityLabel(sev) +
+          '<span style="font-weight:400;font-size:10px;opacity:.7;margin-left:4px">' +
+            sorted.filter(x => (x.severity||x.status) === sev).length + ' devices' +
+          '</span>' +
+        '</div>' +
+      '</td></tr>';
+    }
+
+    const badge = '<span class="ds-sev-badge ' + severityClass(sev) + '">' + severityLabel(sev) + '</span>';
+    const downDaysCell = d.downDays !== null && d.downDays !== undefined
+      ? '<strong>' + d.downDays + '</strong>d' : '—';
+    const lastSyncFmt = d.lastSynced && d.lastSynced !== '-'
+      ? d.lastSynced.replace(',', '') : '—';
+
+    // Check if this device is acknowledged by current user
+    const ackId   = d.mac.replace(/:/g, '_') + '_' + user;
+    const myAck   = acks[ackId];
+    // All acks for this device (any user)
+    const allAcks = Object.values(acks).filter(a => a.mac === d.mac);
+
+    // Ack button — only for down devices
+    let ackCell = '';
+    if (d.status === 'down') {
+      if (myAck) {
+        ackCell = '<span class="btn-ack acked" style="font-size:10px;padding:3px 8px">✓ Acknowledged</span>';
+      } else {
+        const macSafe  = esc(d.mac.replace(/'/g, ''));
+        const siteSafe = esc((d.site || '').replace(/'/g, ''));
+        ackCell = '<button class="btn-ack" style="font-size:10px;padding:3px 8px" ' +
+          'onclick="acknowledgeDevice(\'' + esc(pushId) + '\',\'' + macSafe + '\',\'' + siteSafe + '\')">' +
+          "I'm on it" +
+          '</button>';
+      }
+      // Show other acks
+      if (allAcks.length) {
+        const others = allAcks.filter(a => a.user !== user);
+        if (others.length) {
+          ackCell += '<div style="font-size:9px;color:var(--text2);margin-top:3px">' +
+            others.map(a => esc(a.userName || a.user)).join(', ') + ' on it' +
+            '</div>';
+        }
+      }
+      // Thread button
+      const macKey = d.mac.replace(/:/g, '_');
+      ackCell += '<button class="btn" style="font-size:10px;padding:2px 7px;margin-top:3px;display:block" ' +
+        'onclick="openDeviceThread(\'' + esc(pushId) + '\',\'' + esc(d.mac) + '\',\'' + esc(d.site||'') + '\')">' +
+        '💬 Message' +
+        '</button>';
+    }
+
+    return hdr +
+      '<tr>' +
+        '<td style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + esc(d.site) + '">' + esc(d.site) + '</td>' +
+        '<td style="font-family:monospace;font-size:10px">' + esc(d.mac) + '</td>' +
+        '<td>' + badge + '</td>' +
+        '<td style="font-size:10px;white-space:nowrap">' + esc(lastSyncFmt) + '</td>' +
+        '<td style="text-align:center;font-size:11px">' + downDaysCell + '</td>' +
+        '<td style="font-size:11px">' + esc(d.assignedEngineer || '—') + '</td>' +
+        '<td style="min-width:90px">' + ackCell + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+// Re-render just the ack overlay without full table rebuild
+function renderAckOverlay(pushId) {
+  const tbody = document.getElementById('eng-ds-tbody');
+  if (!tbody || !_dsCurrentPush) return;
+  renderDsTableWithAcks(pushId, _dsCurrentPush.devices || []);
+}
+
+// ════════════════════════════════════════════════════════════
+// ADMIN — Ack status overview panel
+// Called when admin opens Device Status tab to show who
+// has/hasn't acknowledged down devices in the latest push.
+// ════════════════════════════════════════════════════════════
+
+async function renderAdminAckPanel(pushId, devices) {
+  const ackWrap = document.getElementById('ds-ack-overview');
+  if (!ackWrap) return;
+
+  const downDevices = devices.filter(d => d.status === 'down');
+  if (!downDevices.length) { ackWrap.style.display = 'none'; return; }
+
+  ackWrap.style.display = 'block';
+  ackWrap.innerHTML = '<div style="padding:6px 12px;font-size:11px;font-weight:700;color:var(--text2);' +
+    'text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);background:var(--bg2)">' +
+    '👷 Acknowledgement Status — Down Devices</div>' +
+    '<div id="ds-ack-rows"><div style="padding:10px 12px;font-size:12px;color:var(--text2)">Loading acks…</div></div>';
+
+  // Fetch acks from KV
+  let acks = {};
+  try {
+    const r = await fetch(WORKER_URL + '/get-acks?pushId=' + encodeURIComponent(pushId));
+    if (r.ok) {
+      const d = await r.json();
+      if (d.ok) {
+        acks = d.acks;
+        setAcksForPush(pushId, acks);
+      }
+    }
+  } catch(e) {
+    acks = getAcksForPush(pushId);
+  }
+
+  const rowsEl = document.getElementById('ds-ack-rows');
+  if (!rowsEl) return;
+  rowsEl.innerHTML = downDevices.map(d => {
+    const devAcks = Object.values(acks).filter(a => a.mac === d.mac);
+    const sev = d.severity || 'down';
+    const badge = '<span class="ds-sev-badge ' + severityClass(sev) + '" style="font-size:9px">' + severityLabel(sev) + '</span>';
+    const ackNames = devAcks.length
+      ? devAcks.map(a => '<span style="font-size:10px;background:var(--green-bg);color:var(--green-text);' +
+          'border:1px solid var(--green-dot);padding:1px 7px;border-radius:20px;font-weight:600">' +
+          '✓ ' + esc(a.userName || a.user) + '</span>').join(' ')
+      : '<span style="font-size:10px;color:var(--text3)">No acknowledgements yet</span>';
+    const macSafe  = esc(d.mac.replace(/'/g,''));
+    const siteSafe = esc((d.site||'').replace(/'/g,''));
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px">' +
+          esc(d.site) + ' ' + badge +
+        '</div>' +
+        '<div style="font-family:monospace;font-size:10px;color:var(--text3);margin-bottom:4px">' + esc(d.mac) + '</div>' +
+        '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">' + ackNames + '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">' +
+        '<button class="btn btn-sm" style="font-size:10px;padding:3px 8px" ' +
+          'onclick="openDeviceThread(\'' + esc(pushId) + '\',\'' + macSafe + '\',\'' + siteSafe + '\')">' +
+          '💬 Follow up' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('') || '<div style="padding:10px 12px;font-size:12px;color:var(--text2)">No down devices</div>';
+}
+
+// ════════════════════════════════════════════════════════════
+// DEVICE THREAD MODAL — Engineer & Admin
+// ════════════════════════════════════════════════════════════
+
+let _threadPushId = null;
+let _threadMac    = null;
+let _threadSite   = null;
+
+async function openDeviceThread(pushId, mac, site) {
+  _threadPushId = pushId;
+  _threadMac    = mac;
+  _threadSite   = site;
+
+  const modal = document.getElementById('device-thread-modal');
+  const title = document.getElementById('device-thread-title');
+  const body  = document.getElementById('device-thread-body');
+  if (!modal) return;
+
+  if (title) title.textContent = '💬 ' + site;
+  if (body)  body.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text2);font-size:12px">Loading messages…</div>';
+  modal.classList.add('open');
+
+  // Load thread from KV
+  let messages = [];
+  try {
+    const r = await fetch(WORKER_URL + '/get-thread?pushId=' + encodeURIComponent(pushId) +
+      '&mac=' + encodeURIComponent(mac));
+    if (r.ok) {
+      const d = await r.json();
+      if (d.ok) {
+        messages = d.thread;
+        // Cache locally
+        const tc = getThreadCache();
+        tc[getThreadKey(pushId, mac)] = messages;
+        saveThreadCache(tc);
+      }
+    }
+  } catch(e) {
+    // Use local cache
+    const tc = getThreadCache();
+    messages = tc[getThreadKey(pushId, mac)] || [];
+  }
+
+  renderThreadMessages(messages);
+}
+
+function renderThreadMessages(messages) {
+  const body = document.getElementById('device-thread-body');
+  if (!body) return;
+  const user = getCurrentUser();
+
+  if (!messages.length) {
+    body.innerHTML =
+      '<div style="padding:2rem;text-align:center;color:var(--text2);font-size:12px">' +
+      '<div style="font-size:24px;margin-bottom:8px">💬</div>' +
+      'No messages yet. Send the first one below.' +
+      '</div>';
+    return;
+  }
+
+  body.innerHTML = messages.map(m => {
+    const isMe = m.from === user;
+    const dt = new Date(m.ts).toLocaleString('en-IN', {
+      day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
+    });
+    return '<div style="display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';margin-bottom:10px">' +
+      '<div style="max-width:80%;background:' + (isMe ? 'var(--accent)' : 'var(--bg2)') + ';' +
+        'color:' + (isMe ? '#fff' : 'var(--text)') + ';' +
+        'padding:8px 12px;border-radius:' + (isMe ? '14px 14px 4px 14px' : '14px 14px 14px 4px') + ';' +
+        'font-size:13px;line-height:1.5">' +
+        esc(m.message) +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--text3);margin-top:3px">' +
+        esc(m.from) + ' · ' + dt +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Scroll to bottom
+  body.scrollTop = body.scrollHeight;
+}
+
+async function sendThreadMessage() {
+  const inp  = document.getElementById('thread-msg-inp');
+  const msg  = inp ? inp.value.trim() : '';
+  if (!msg) return;
+  if (!_threadPushId || !_threadMac) return;
+
+  const user = getCurrentUser();
+  const push = getDsHistory().find(h => h.id === _threadPushId);
+  // Recipients: if admin, send to all engineers who are recipients of this push.
+  // If engineer, send to admin only.
+  let recipients = [];
+  if (isAdmin(user)) {
+    recipients = push ? (push.recipients || []) : getEngineerList().map(e => e.key);
+  } else {
+    recipients = ['admin'];
+  }
+
+  if (inp) { inp.value = ''; inp.disabled = true; }
+
+  // Optimistic local add
+  const tc = getThreadCache();
+  const key = getThreadKey(_threadPushId, _threadMac);
+  if (!tc[key]) tc[key] = [];
+  const localMsg = { id: 'local_' + Date.now(), from: user, message: msg, ts: new Date().toISOString() };
+  tc[key].push(localMsg);
+  saveThreadCache(tc);
+  renderThreadMessages(tc[key]);
+
+  try {
+    const r = await fetch(WORKER_URL + '/send-followup', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pushId:     _threadPushId,
+        mac:        _threadMac,
+        site:       _threadSite,
+        message:    msg,
+        recipients,
+        sender:     user
+      })
+    });
+    const d = await r.json();
+    if (!d.ok) showToast('Message failed: ' + (d.error || 'unknown'));
+    else {
+      // Refresh thread from server
+      const r2 = await fetch(WORKER_URL + '/get-thread?pushId=' + encodeURIComponent(_threadPushId) +
+        '&mac=' + encodeURIComponent(_threadMac));
+      if (r2.ok) {
+        const d2 = await r2.json();
+        if (d2.ok) {
+          tc[key] = d2.thread;
+          saveThreadCache(tc);
+          renderThreadMessages(d2.thread);
+        }
+      }
+    }
+  } catch(e) {
+    showToast('Offline — message saved locally');
+  }
+
+  if (inp) inp.disabled = false;
+}
+
+function closeDeviceThread() {
+  _threadPushId = null;
+  _threadMac    = null;
+  _threadSite   = null;
+  const modal = document.getElementById('device-thread-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+// ════════════════════════════════════════════════════════════
+// ADMIN INBOX — Load ack notifications into activity log
+// (Extends existing loadAdminInbox to handle type:'ack')
+// The existing loadAdminInbox already handles this since
+// Phase 1 worker stores acks in admin inbox.
+// No changes needed — it already merges via loadAdminInbox().
+// ════════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════
+// HOOK INTO renderEngineerDsView
+// ════════════════════════════════════════════════════════════
+// Phase 2 OVERRIDES the tbody rendering done in Phase 1.
+// After renderEngineerDsView() is called, we call
+// renderDsTableWithAcks() to inject ack buttons.
+// This is done by REPLACING the renderEngineerDsView function.
+// Phase 2 extends renderEngineerDsView — calls Phase 1 base then adds acks
+function renderEngineerDsView(history) {
+  _renderEngineerDsViewP1(history);
+
+  const user  = getCurrentUser();
+  const push  = _dsCurrentPush;
+  if (!push) return;
+
+  if (isEngineer(user)) {
+    // Inject 7th column header
+    const headerRow = document.querySelector('#panel-devstatus .ds-table thead tr');
+    if (headerRow && headerRow.children.length === 6) {
+      const th = document.createElement('th');
+      th.textContent = 'Action';
+      headerRow.appendChild(th);
+    }
+    // Render with ack buttons
+    renderDsTableWithAcks(push.id, push.devices || []);
+  }
+
+  if (isAdmin(user)) {
+    // Inject ack overview section before the table
+    const wrap = document.getElementById('panel-devstatus');
+    if (wrap) {
+      // Insert ack panel before ds-preview-wrap
+      const previewWrap = wrap.querySelector('.ds-preview-wrap');
+      if (previewWrap && !document.getElementById('ds-ack-overview')) {
+        const ackDiv = document.createElement('div');
+        ackDiv.id = 'ds-ack-overview';
+        ackDiv.style.borderBottom = '1px solid var(--border)';
+        previewWrap.parentNode.insertBefore(ackDiv, previewWrap);
+      }
+      renderAdminAckPanel(push.id, push.devices || []);
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// UNREAD DOT — Show badge on Device Status tab when new
+// ack or thread message arrives via push notification
+// ════════════════════════════════════════════════════════════
+
+// Extend the existing service worker message handler
+// (the one that calls storeIncomingNotif and showInAppAlert)
+// to also set the DS badge if the notification is ack/followup type.
+// This is done by listening for the tag prefix.
+// storeIncomingNotif Phase 2 logic merged into original above
+
+// Clear badge when tab is opened
+async function onDevStatusTabOpen() {
+  const badge = document.getElementById('ds-badge');
+  if (badge) badge.style.display = 'none';
+  await _onDevStatusTabOpenP1();
+}
+
+// ════════════════════════════════════════════════════════════
+// v8 Phase 3 — Visit Approval + Engineer Status + Polish
+// ════════════════════════════════════════════════════════════
+
+// ── Storage keys (Phase 3) ───────────────────────────────────
+const K_MY_VISITS = 'dsc_my_visits_v8'; // engineer's own visit requests + statuses
+
+// ════════════════════════════════════════════════════════════
+// ADMIN — Visit Approval Panel (replaces basic card display)
+// ════════════════════════════════════════════════════════════
+
+// Override existing loadVisitRequests to use enhanced render
+// loadVisitRequests Phase 3 version — see original patched below
+
+function renderAdminVisitRequests(visits) {
+  const el = document.getElementById('admin-visit-requests');
+  if (!el) return;
+
+  if (!visits.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px 0">No visit requests yet.</div>';
+    return;
+  }
+
+  // Group: pending first, then by date
+  const pending  = visits.filter(v => v.status === 'pending'  || !v.status);
+  const approved = visits.filter(v => v.status === 'approved');
+  const rejected = visits.filter(v => v.status === 'rejected');
+  const ordered  = [...pending, ...approved, ...rejected];
+
+  el.innerHTML = ordered.map(v => {
+    const dt = new Date(v.ts).toLocaleDateString('en-IN', {
+      day:'2-digit', month:'short', year:'numeric'
+    });
+    const status  = v.status || 'pending';
+    const isPend  = status === 'pending';
+    const isApprv = status === 'approved';
+    const statusBadge = isPend
+      ? '<span style="font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber-text);padding:2px 8px;border-radius:20px">Pending</span>'
+      : isApprv
+      ? '<span style="font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green-text);padding:2px 8px;border-radius:20px">✓ Approved</span>'
+      : '<span style="font-size:10px;font-weight:700;background:var(--red-bg);color:var(--red-text);padding:2px 8px;border-radius:20px">✗ Rejected</span>';
+
+    const typeIcon = v.type === 'advance' ? '💰' : '📋';
+    const typeLabel = v.type === 'advance' ? 'Advance' : 'Approval';
+    const idSafe = esc(v.id.replace(/'/g,''));
+
+    return '<div style="border:1px solid var(--border);border-radius:var(--radius-lg);' +
+      'padding:.85rem 1rem;margin-bottom:10px;background:var(--bg)' +
+      (isPend ? ';border-left:3px solid var(--amber-dot)' : isApprv ? ';border-left:3px solid var(--green-dot)' : ';border-left:3px solid var(--red-dot)') + '">' +
+
+      // Header row
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">' +
+            typeIcon + ' ' + esc(v.subject || 'Visit Request') +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--text2)">' +
+            '👤 ' + esc(v.user) + ' · ' + typeLabel + ' · ' + dt +
+          '</div>' +
+        '</div>' +
+        statusBadge +
+      '</div>' +
+
+      // Admin note (if exists)
+      (v.adminNote
+        ? '<div style="font-size:11px;color:var(--text2);background:var(--bg2);border-radius:var(--radius);' +
+          'padding:5px 8px;margin-bottom:8px">Note: ' + esc(v.adminNote) + '</div>'
+        : '') +
+
+      // Action buttons — only for pending
+      (isPend
+        ? '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
+            '<button class="btn-approve" onclick="approveVisitRequest(\'' + idSafe + '\')">✓ Approve</button>' +
+            '<button class="btn-decline" onclick="rejectVisitRequest(\'' + idSafe + '\')">✗ Reject</button>' +
+            '<input type="text" id="note-' + idSafe + '" placeholder="Optional note to engineer…" ' +
+              'style="flex:1;min-width:120px;border:1px solid var(--border2);border-radius:var(--radius);' +
+              'padding:4px 8px;font-size:11px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none"/>' +
+          '</div>'
+        : '') +
+
+    '</div>';
+  }).join('');
+}
+
+async function approveVisitRequest(id) {
+  await updateVisitStatus(id, 'approved');
+}
+
+async function rejectVisitRequest(id) {
+  await updateVisitStatus(id, 'rejected');
+}
+
+async function updateVisitStatus(id, status) {
+  const noteEl = document.getElementById('note-' + id);
+  const note   = noteEl ? noteEl.value.trim() : '';
+  const user   = getCurrentUser();
+
+  // Optimistic UI — disable buttons
+  const approveBtn = document.querySelector('[onclick="approveVisitRequest(\'' + id + '\')"]');
+  const rejectBtn  = document.querySelector('[onclick="rejectVisitRequest(\'' + id + '\')"]');
+  if (approveBtn) approveBtn.disabled = true;
+  if (rejectBtn)  rejectBtn.disabled  = true;
+
+  try {
+    const r = await fetch(WORKER_URL + '/update-visit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status, adminNote: note, sender: user })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      const label = status === 'approved' ? 'approved ✓' : 'rejected ✗';
+      showToast('Visit request ' + label + (d.notified ? ' — engineer notified' : ''));
+      logActivity(user, 'remark',
+        'Visit request <strong>' + status + '</strong>' +
+        (note ? ' — Note: ' + esc(note) : '') +
+        (d.notified ? ' · Engineer notified via push' : '')
+      );
+      // Reload
+      await loadVisitRequests();
+    } else {
+      showToast('Failed: ' + (d.error || 'unknown'));
+      if (approveBtn) approveBtn.disabled = false;
+      if (rejectBtn)  rejectBtn.disabled  = false;
+    }
+  } catch(e) {
+    showToast('Could not reach server');
+    if (approveBtn) approveBtn.disabled = false;
+    if (rejectBtn)  rejectBtn.disabled  = false;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// ENGINEER — My Visit Requests status panel
+// Shown inside the Distant Visit tab → engineer view
+// Shows their submitted requests with live approval status
+// ════════════════════════════════════════════════════════════
+
+async function loadEngineerVisitStatus() {
+  const user = getCurrentUser();
+  if (!isEngineer(user)) return;
+
+  const el = document.getElementById('eng-visit-status');
+  if (!el) return;
+
+  el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px 0">Checking your requests…</div>';
+
+  try {
+    const r = await fetch(WORKER_URL + '/get-visit-status?user=' + encodeURIComponent(user));
+    if (!r.ok) throw new Error('Server error');
+    const d = await r.json();
+    if (d.ok && Array.isArray(d.visits)) {
+      sj(K_MY_VISITS, d.visits);
+      renderEngineerVisitStatus(d.visits);
+    }
+  } catch(e) {
+    // Use cache
+    const cached = lj(K_MY_VISITS, []);
+    if (cached.length) {
+      renderEngineerVisitStatus(cached);
+    } else {
+      el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px 0">No visit requests submitted yet.</div>';
+    }
+  }
+}
+
+function renderEngineerVisitStatus(visits) {
+  const el = document.getElementById('eng-visit-status');
+  if (!el) return;
+
+  if (!visits.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px 0">No visit requests yet.</div>';
+    return;
+  }
+
+  el.innerHTML = visits.map(v => {
+    const dt = new Date(v.ts).toLocaleDateString('en-IN', {
+      day:'2-digit', month:'short', year:'numeric'
+    });
+    const status   = v.status || 'pending';
+    const isPend   = status === 'pending';
+    const isApprv  = status === 'approved';
+    const typeIcon = v.type === 'advance' ? '💰' : '📋';
+
+    const statusConfig = {
+      pending:  { bg:'var(--amber-bg)',  color:'var(--amber-text)',  dot:'var(--amber-dot)',  label:'⏳ Pending approval' },
+      approved: { bg:'var(--green-bg)',  color:'var(--green-text)',  dot:'var(--green-dot)',  label:'✅ Approved' },
+      rejected: { bg:'var(--red-bg)',    color:'var(--red-text)',    dot:'var(--red-dot)',    label:'❌ Rejected' }
+    };
+    const cfg = statusConfig[status] || statusConfig.pending;
+
+    return '<div style="border:1px solid var(--border);border-radius:var(--radius-lg);' +
+      'padding:.75rem .9rem;margin-bottom:8px;background:var(--bg);' +
+      'border-left:3px solid ' + cfg.dot + '">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">' +
+            typeIcon + ' ' + esc(v.subject || 'Visit Request') +
+          '</div>' +
+          '<div style="font-size:10px;color:var(--text2)">' + dt + '</div>' +
+        '</div>' +
+        '<span style="font-size:10px;font-weight:700;background:' + cfg.bg + ';color:' + cfg.color + ';' +
+          'padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0">' +
+          cfg.label +
+        '</span>' +
+      '</div>' +
+      (v.adminNote
+        ? '<div style="margin-top:6px;font-size:11px;color:var(--text2);background:var(--bg2);' +
+          'border-radius:var(--radius);padding:5px 8px">💬 ' + esc(v.adminNote) + '</div>'
+        : '') +
+    '</div>';
+  }).join('');
+}
+
+// Hook into onVisitTabOpen to also load engineer status
+// onVisitTabOpen Phase 3 logic merged into original above
+
+// ════════════════════════════════════════════════════════════
+// POLISH — Loading states, empty states, error handling
+// ════════════════════════════════════════════════════════════
+
+// ── 1. Global fetch wrapper with timeout ─────────────────────
+async function fetchWithTimeout(url, opts = {}, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...opts, signal: controller.signal });
+    clearTimeout(timer);
+    return res;
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
+// ── 2. Settings save button polish ───────────────────────────
+// Adds a spinner state to the Save & sync button
+// saveSettings Phase 3 spinner merged into button — duplicate removed
+
+// ── 3. Network status banner polish ──────────────────────────
+function showNetworkError(message) {
+  const area = document.getElementById('error-area');
+  if (!area) return;
+  area.innerHTML =
+    '<div class="error-bar error-warn" id="network-err-bar">' +
+      '⚠️ ' + esc(message) +
+      '<button class="error-close" onclick="clearErr()">✕</button>' +
+    '</div>';
+  setTimeout(clearErr, 6000);
+}
+
+// ── 4. Push notification badge — existing updateUnreadBadge handles this ──
+// Visit approval notifications are already counted by the existing badge logic.
+
+// ── 5. Visit approval notification in-app handling ───────────
+// When engineer receives a visit approval/rejection push,
+// show a styled in-app banner with the right colour
+// showInAppAlert Phase 3 colour logic merged into original above
+
+// ── 6. Auto-refresh visit status when notification arrives ────
+// storeIncomingNotif Phase 3 logic merged into original above
+
+// ── 7. CSS spin animation (add to <style>) ────────────────────
+// @keyframes spin { to { transform: rotate(360deg) } }
+// (Added via inline style in the button above)
+
+// ── 8. Version tag update ─────────────────────────────────────
+// Change v6.0 to v8.0 in topbar and login footer
+// Search for: v6.0
+// Replace with: v8.0
+
+// ════════════════════════════════════════════════════════════
+// INIT — Phase 3 additions
+// In the existing init() IIFE, the fetchCredentials() call
+// already loads credentials. No new init needed.
+// onVisitTabOpen is already overridden above.
+// ════════════════════════════════════════════════════════════
+
 </script>
 
 <!-- ── FAB — Floating Action Button (engineers only) ── -->
@@ -7339,6 +8830,44 @@ function autoCompleteExpiredVisits() {
       <button class="pin-key del" onclick="pinPress('del')">⌫</button>
     </div>
     <button class="pin-switch-btn" onclick="pinSignOut()">Sign out instead</button>
+  </div>
+</div>
+
+<!-- ── Device Status History Modal (v8 Phase 1) ─────────── -->
+<div class="modal-backdrop" id="ds-history-modal" onclick="if(event.target===this)closeDsHistory()">
+  <div class="modal" style="max-width:440px">
+    <h2>Push History</h2>
+    <p>Last 7 device status pushes (kept for 7 days)</p>
+    <div id="ds-history-modal-content" style="margin:-1rem -1.5rem 0;border-top:1px solid var(--border)"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeDsHistory()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Device Thread Modal (v8 Phase 2) ─────────────────── -->
+<div class="modal-backdrop" id="device-thread-modal" onclick="if(event.target===this)closeDeviceThread()">
+  <div class="modal" style="max-width:480px;padding:0;display:flex;flex-direction:column;max-height:85vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;flex-shrink:0">
+      <button onclick="closeDeviceThread()" style="background:none;border:none;cursor:pointer;color:var(--text2);padding:4px;display:flex;align-items:center">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div style="flex:1;min-width:0">
+        <div id="device-thread-title" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Thread</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:1px">Device follow-up · messages kept 7 days</div>
+      </div>
+    </div>
+    <div id="device-thread-body" style="flex:1;overflow-y:auto;padding:1rem 1.25rem;min-height:160px;max-height:420px"></div>
+    <div style="display:flex;gap:8px;padding:.75rem 1.25rem;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0;align-items:flex-end">
+      <textarea id="thread-msg-inp" placeholder="Type a message…" rows="2"
+        style="flex:1;border:1px solid var(--border2);border-radius:var(--radius-lg);padding:8px 12px;font-size:13px;background:var(--bg);color:var(--text);font-family:var(--font);outline:none;resize:none;line-height:1.5"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendThreadMessage()}"
+        onfocus="this.style.borderColor='var(--accent)'"
+        onblur="this.style.borderColor='var(--border2)'"></textarea>
+      <button class="btn btn-primary" style="padding:8px 14px;flex-shrink:0;align-self:flex-end" onclick="sendThreadMessage()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 </body>
