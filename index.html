@@ -1186,6 +1186,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .ds-status-down        { color:var(--cds-red);   font-family:monospace;font-size:11px;font-weight:600 }
 .ds-status-maintenance { color:var(--cds-orange);font-family:monospace;font-size:11px;font-weight:600 }
 .ds-status-rma         { color:#7c5cfc;          font-family:monospace;font-size:11px;font-weight:600 }
+.ds-status-flapping    { color:#e0a800;          font-family:monospace;font-size:11px;font-weight:600 }
 
 /* DS sort toggle */
 .ds-sort-toggle { display:inline-flex;align-items:center;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;font-size:11px }
@@ -7602,7 +7603,7 @@ async function _cdsHandleFile(file) {
       if (j.includes('MAC') || j.includes('STATUS')) { headerRow = i; break; }
     }
 
-    const ACTIVE = new Set(['down','maintenance','rma']);
+    const ACTIVE = new Set(['down','maintenance','rma','flapping']);
     const data = [];
     for (let i = headerRow + 1; i < rows.length; i++) {
       const row    = rows[i];
@@ -7614,7 +7615,7 @@ async function _cdsHandleFile(file) {
 
     _cdsRawDevices = data;
     if (dropText) dropText.textContent = '✅ ' + file.name;
-    if (statusEl) statusEl.textContent = data.length + ' down/maintenance/rma devices loaded — tap Generate Report';
+    if (statusEl) statusEl.textContent = data.length + ' down/maintenance/rma/flapping devices loaded — tap Generate Report';
     if (controls) { controls.style.display = 'flex'; }
     showToast(data.length + ' devices loaded', );
   } catch(err) {
@@ -7742,8 +7743,8 @@ function _cdsRenderTable(rows) {
     tbody.innerHTML = '<tr><td colspan="7"><div style="padding:2rem;text-align:center;color:var(--text2);font-size:13px">No results</div></td></tr>';
     return;
   }
-  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA' };
-  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma' };
+  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA', flapping:'〰 Flapping' };
+  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma', flapping:'ds-status-flapping' };
   tbody.innerHTML = rows.map((row, i) =>
     '<tr>' +
       '<td style="color:var(--text3);font-family:monospace;font-size:11px">' + String(i+1).padStart(2,'0') + '</td>' +
@@ -7925,8 +7926,8 @@ function _renderEngineerDsViewP1(history) {
     cG ? '<span class="ds-stat-chip ds-stat-green">🟢 '+cG+' Temporary</span>' : '',
   ].filter(Boolean).join('') || '<span style="font-size:12px;color:var(--green-text);font-weight:600">✅ All devices nominal</span>';
 
-  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA' };
-  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma' };
+  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA', flapping:'〰 Flapping' };
+  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma', flapping:'ds-status-flapping' };
 
   el.innerHTML =
     '<div class="ds-push-meta">' +
@@ -7975,8 +7976,8 @@ function _cdsFilterEngTable(q) {
   ) : sorted;
   const tbody = document.getElementById('eng-ds-tbody');
   if (!tbody) return;
-  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA' };
-  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma' };
+  const statusLabel = { down:'⬇ Down', maintenance:'⚙ Maint.', rma:'🔧 RMA', flapping:'〰 Flapping' };
+  const statusClass = { down:'ds-status-down', maintenance:'ds-status-maintenance', rma:'ds-status-rma', flapping:'ds-status-flapping' };
   tbody.innerHTML = filtered.map((d,i) =>
     '<tr>' +
       '<td style="color:var(--text3);font-family:monospace;font-size:11px">'+String(i+1).padStart(2,'0')+'</td>' +
