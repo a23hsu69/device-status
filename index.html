@@ -1186,7 +1186,62 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .ds-status-down        { color:var(--cds-red);   font-family:monospace;font-size:11px;font-weight:600 }
 .ds-status-maintenance { color:var(--cds-orange);font-family:monospace;font-size:11px;font-weight:600 }
 .ds-status-rma         { color:#7c5cfc;          font-family:monospace;font-size:11px;font-weight:600 }
-.ds-status-flapping    { color:#e0a800;          font-family:monospace;font-size:11px;font-weight:600 }
+.ds-status-flapping    { color:var(--teal-dot);   font-family:monospace;font-size:11px;font-weight:600 }
+
+/* ── Kerala device status map ─────────────────────────────── */
+.ds-map-legend{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.ds-map-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--font);font-weight:600;
+  padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);
+  cursor:pointer;opacity:.55;transition:opacity .12s,border-color .12s}
+.ds-map-chip.on{opacity:1;border-color:var(--chip-color);color:var(--text)}
+.ds-map-chip-dot{width:8px;height:8px;border-radius:50%;background:var(--chip-color);flex-shrink:0}
+.ds-map-chip:hover{opacity:.85}
+
+.ds-map-wrap{position:relative;padding:10px 14px 16px;display:flex;flex-direction:column;gap:10px;
+  --map-paper:#e9dfc7;--map-paper-dark:#d8c9a3;--map-ink:#2b2118;--map-ink-soft:#5a4c3a}
+.ds-map-svg-wrap{position:relative;width:100%;max-width:420px;margin:0 auto;background:var(--map-paper);border-radius:var(--radius);
+  border:1px solid var(--map-paper-dark);padding:8px;
+  background-image:radial-gradient(ellipse at 20% 15%, rgba(120,95,50,.10), transparent 55%),
+                   radial-gradient(ellipse at 85% 80%, rgba(120,95,50,.12), transparent 50%)}
+.ds-kerala-svg{width:100%;height:auto;display:block;max-height:70vh;cursor:grab;touch-action:none}
+.ds-kerala-svg.ds-map-dragging{cursor:grabbing}
+.ds-kerala-outline{fill:var(--map-paper);stroke:var(--map-ink);stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}
+.ds-kerala-district-label{fill:var(--map-ink-soft);font-family:Georgia,'Times New Roman',serif;font-size:15px;
+  font-weight:600;text-anchor:middle;letter-spacing:.4px;pointer-events:none;opacity:.8}
+.ds-map-marker{cursor:pointer}
+.ds-map-marker circle{transition:r .1s}
+.ds-map-marker:hover circle,.ds-map-marker:focus circle{stroke:var(--map-ink);filter:brightness(1.08)}
+.ds-map-marker-count{font-size:11px;font-weight:700;fill:#fff;pointer-events:none;font-family:var(--font)}
+.ds-map-unplottable{font-size:11px;color:var(--text2);background:var(--bg2);border:1px dashed var(--border2);
+  border-radius:var(--radius);padding:8px 10px;line-height:1.5}
+
+.ds-map-zoom-controls{position:absolute;top:14px;right:14px;z-index:5;display:flex;flex-direction:column;
+  align-items:center;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);
+  overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ds-map-zoom-controls button{width:26px;height:24px;border:none;background:none;color:var(--text);
+  font-size:14px;font-weight:700;cursor:pointer;line-height:1;font-family:var(--font)}
+.ds-map-zoom-controls button:hover{background:var(--accent-bg);color:var(--accent)}
+.ds-map-zoom-controls button:not(:last-child){border-bottom:1px solid var(--border)}
+.ds-map-zoom-controls .ds-map-zoom-reset{font-size:11px}
+#ds-map-zoom-label{font-size:9px;color:var(--text3);padding:2px 0;border-bottom:1px solid var(--border);width:100%;text-align:center}
+.ds-map-hint{font-size:10px;color:var(--text3);text-align:center}
+
+.ds-map-tooltip{position:fixed;z-index:1000;background:var(--text);color:var(--bg);font-size:11px;font-weight:600;
+  padding:4px 9px;border-radius:6px;pointer-events:none;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.25);
+  display:none;font-family:var(--font)}
+
+.ds-site-panel{position:sticky;bottom:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:0 -4px 16px rgba(0,0,0,.12);max-height:280px;display:flex;flex-direction:column;overflow:hidden}
+.ds-site-panel-head{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;
+  border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.ds-site-panel-close{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;line-height:1;padding:2px 4px}
+.ds-site-panel-close:hover{color:var(--text)}
+.ds-site-panel-body{overflow-y:auto;padding:4px 12px}
+.ds-site-device-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;
+  padding:6px 0;border-bottom:1px solid var(--border);font-size:11px}
+.ds-site-device-row:last-child{border-bottom:none}
+.ds-site-device-mac{font-family:monospace;color:var(--text2)}
+.ds-site-device-asset{font-family:monospace;color:var(--text3)}
 
 /* DS sort toggle */
 .ds-sort-toggle { display:inline-flex;align-items:center;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;font-size:11px }
@@ -7420,7 +7475,7 @@ function autoCompleteExpiredVisits() {
 // ════════════════════════════════════════════════════════════
 
 // ── Sites database (from sites1.xlsx) ────────────────────────
-const SITES_DB = [{"mac": "C4:7D:CC:68:28:F9", "site": "Bay Container Terminal Pvt Ltd", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:68:29:2C", "site": "Bay Container Terminal Pvt Ltd", "asset": "IN/OUT RHS"}, {"mac": "C4:7D:CC:72:B7:DC", "site": "BHAVANI SHIPPING SERVICES (I) Kerala", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:65:78:04", "site": "BHAVANI SHIPPING SERVICES (I) Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:92:4D", "site": "MIV empty yard cochin", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:1C:1B", "site": "MIV empty yard cochin", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:1C:AA", "site": "Blueocean Container Terminals (I) Pvt Ltd 1 cochin", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:1C:ID", "site": "Blueocean Container Terminals (I) Pvt Ltd 1 cochin", "asset": "IN/OUT RHS"}, {"mac": "C4:7D:CC:68:29:22", "site": "Chakiat Agencies Private Limited", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:68:2D:69", "site": "Chakiat Agencies Private Limited", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F1:40:35", "site": "COCHIN PORT CFS", "asset": "IN/OUT LHS"}, {"mac": "84:24:8D:F1:45:A6", "site": "COCHIN PORT CFS", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:FC:B0:19", "site": "COCHIN SEZ", "asset": "IN LHS"}, {"mac": "84:24:8D:FC:AF:A4", "site": "COCHIN SEZ", "asset": "OUT LHS"}, {"mac": "84:24:8D:FC:AF:A6", "site": "COCHIN SEZ", "asset": "IN RHS"}, {"mac": "84:24:8D:F2:48:61", "site": "COCHIN SEZ", "asset": "OUT RHS"}, {"mac": "00:8D:F4:D0:00:53", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "IN / LHS"}, {"mac": "00:8D:F4:D0:00:9E", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "IN / RHS"}, {"mac": "00:8D:F4:D0:00:59", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "OUT / LHS"}, {"mac": "00:8D:F4:D0:00:08", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "OUT / RHS"}, {"mac": "00:16:25:15:1C:CC", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 1 L.H.S"}, {"mac": "00:16:25:15:1C:D8", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 1 R.H.S"}, {"mac": "00:16:25:15:1C:3A", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 2 L.H.S"}, {"mac": "00:16:25:15:1C:CD", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 2 R.H.S"}, {"mac": "84:24:8D:F1:40:EE", "site": "GDKL CFS COCHIN", "asset": "IN LHS"}, {"mac": "84:24:8D:F1:18:D5", "site": "GDKL CFS COCHIN", "asset": "OUT LHS"}, {"mac": "84:24:8D:F1:18:BB", "site": "GDKL CFS COCHIN", "asset": "IN RHS"}, {"mac": "84:24:8D:F1:40:96", "site": "GDKL CFS COCHIN", "asset": "OUT RHS"}, {"mac": "84:24:8D:F5:6B:26", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 1"}, {"mac": "84:24:8D:F5:4B:B8", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 2"}, {"mac": "84:24:8D:F7:81:62", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 3"}, {"mac": "84:24:8D:F5:4B:BD", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 4"}, {"mac": "84:24:8D:F0:F2:D8", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 5"}, {"mac": "84:24:8D:F5:46:E9", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 6"}, {"mac": "84:24:8D:F5:43:10", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 7"}, {"mac": "84:24:8D:FD:DC:18", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 8"}, {"mac": "84:24:8D:F5:46:EB", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 9"}, {"mac": "84:24:8D:F5:6B:3F", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 10"}, {"mac": "84:24:8D:F5:6B:36", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 11"}, {"mac": "84:24:8D:F5:6B:27", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 12"}, {"mac": "84:24:8D:F5:76:5A", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 13"}, {"mac": "84:24:8D:F1:3E:DB", "site": "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN", "asset": "IN LHS"}, {"mac": "84:24:8D:F1:3F:1B", "site": "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN", "asset": "IN RHS"}, {"mac": "00:16:25:15:22:83", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 1 LHS"}, {"mac": "00:16:25:15:22:55", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:21:E0", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:23:AD", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:BF", "site": "KINFRA Industrial Park, Adoor", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:22:54", "site": "KINFRA Industrial Park, Adoor", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:22:5D", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 1 LHS"}, {"mac": "00:8D:F4:D0:11:DD", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:23:19", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:23:16", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:BD", "site": "KINFRA IITP,Palakkad", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:23:13", "site": "KINFRA IITP,Palakkad", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:00:86", "site": "KINFRA Kalamassery", "asset": "IN / LHS"}, {"mac": "00:8D:F4:D0:00:95", "site": "KINFRA Kalamassery", "asset": "IN / RHS"}, {"mac": "00:8D:F4:D0:02:A2", "site": "KINFRA Kalamassery", "asset": "OUT / LHS"}, {"mac": "00:8D:F4:D0:00:8C", "site": "KINFRA Kalamassery", "asset": "OUT / RHS"}, {"mac": "00:16:25:15:23:1B", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "LHS"}, {"mac": "00:16:25:15:23:15", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "Middile"}, {"mac": "00:16:25:15:23:24", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "RHS"}, {"mac": "00:16:25:15:23:0B", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 1 LHS"}, {"mac": "00:16:25:15:22:86", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:23:59", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:23:BF", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:9F", "site": "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:23:2D", "site": "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:24:08", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 1 LHS"}, {"mac": "00:16:25:15:24:07", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 1 RHS"}, {"mac": "00:16:25:15:24:0B", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 2 LHS"}, {"mac": "00:16:25:15:24:09", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 2 RHS"}, {"mac": "00:16:25:15:22:63", "site": "KINFRA Small Industries Park, Thalassery, Kannur", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:23:2C", "site": "KINFRA Small Industries Park, Thalassery, Kannur", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:21:DB", "site": "KINFRA Techno Industrial\u00a0 Park, Kakkancherry\u00a0 Malappuram", "asset": "IN/OUT LHS"}, {"mac": "00:16:25:15:24:06", "site": "KINFRA Techno Industrial\u00a0 Park, Kakkancherry\u00a0 Malappuram", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:24:01", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "LHS"}, {"mac": "00:16:25:15:23:E1", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "Middile"}, {"mac": "00:16:25:15:24:04", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "RHS"}, {"mac": "84:24:8D:FB:5A:E0", "site": "KOTTAYAM ICD", "asset": "IN/OUT LHS"}, {"mac": "84:24:8D:F3:27:4A", "site": "KOTTAYAM ICD", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F1:40:86", "site": "KSIE CFS COCHIN", "asset": "IN/OUT LHS"}, {"mac": "84:24:8D:F1:40:DA", "site": "KSIE CFS COCHIN", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F0:F6:56", "site": "KSIE CFS COCHIN", "asset": "IN/OUT MIDDILE"}, {"mac": "84:24:8D:F5:3E:BD", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 1"}, {"mac": "84:24:8D:F6:08:04", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 2"}, {"mac": "84:24:8D:F0:F5:CB", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 3"}, {"mac": "84:24:8D:F5:6B:6F", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 4"}, {"mac": "84:24:8D:F3:25:F0", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 5"}, {"mac": "84:24:8D:F5:6B:2E", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 6"}, {"mac": "84:24:8D:F5:6B:43", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 7"}, {"mac": "84:24:8D:F6:08:6F", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 8"}, {"mac": "84:24:8D:F5:6B:67", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 9"}, {"mac": "00:16:25:15:1D:58", "site": "MARINE CONTAINER LOGISTICS 1", "asset": "Gate 2 L.H.S"}, {"mac": "00:16:25:15:1D:5A", "site": "MARINE CONTAINER LOGISTICS 2", "asset": "Gate 2 R.H.S"}, {"mac": "00:16:25:15:1D:5B", "site": "MARINE CONTAINER LOGISTICS 3", "asset": "Gate 1 L.H.S"}, {"mac": "00:16:25:15:1D:5D", "site": "MARINE CONTAINER LOGISTICS 4", "asset": "Gate 1 R.H.S"}, {"mac": "C4:7D:CC:72:BD:0A", "site": "MBK Logistix Pvt Ltd Cochin", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:72:BE:AF", "site": "MBK Logistix Pvt Ltd Cochin", "asset": "IN/OUT RHS"}, {"mac": "84:24:8D:F0:F6:DC", "site": "MIV CFS COCHIN", "asset": "IN LHS"}, {"mac": "84:24:8D:F1:41:1A", "site": "MIV CFS COCHIN", "asset": "OUT LHS"}, {"mac": "84:24:8D:F1:0D:04", "site": "MIV CFS COCHIN", "asset": "IN RHS"}, {"mac": "84:24:8D:F1:2F:6A", "site": "MIV CFS COCHIN", "asset": "OUT RHS"}, {"mac": "10:07:23:6E:0D:0F", "site": "Pampampallam Toll Plaza", "asset": "Lane 1"}, {"mac": "10:07:23:6E:10:A3", "site": "Pampampallam Toll Plaza", "asset": "Lane 2"}, {"mac": "10:07:23:6E:0F:65", "site": "Pampampallam Toll Plaza", "asset": "Lane 3"}, {"mac": "10:07:23:6E:0F:F7", "site": "Pampampallam Toll Plaza", "asset": "Lane 4"}, {"mac": "10:07:23:6E:0F:56", "site": "Pampampallam Toll Plaza", "asset": "Lane 5"}, {"mac": "10:07:23:6E:0D:0B", "site": "Pampampallam Toll Plaza", "asset": "Lane 6"}, {"mac": "10:07:23:6E:0F:E6", "site": "Pampampallam Toll Plaza", "asset": "Lane 7"}, {"mac": "10:07:23:6E:0F:5B", "site": "Pampampallam Toll Plaza", "asset": "Lane 8"}, {"mac": "10:07:23:6E:0D:35", "site": "Pampampallam Toll Plaza", "asset": "Lane 9"}, {"mac": "10:07:23:6E:0D:C3", "site": "Pampampallam Toll Plaza", "asset": "Lane 10"}, {"mac": "10:07:23:6E:0D:AB", "site": "Pampampallam Toll Plaza", "asset": "Lane 11"}, {"mac": "C4:7D:CC:72:BE:47", "site": "Petta CFS", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:72:B9:21", "site": "Petta CFS", "asset": "IN/OUT RHS"}, {"mac": "00:16:25:15:1D:52", "site": "Ponnarimanglam TP", "asset": "Lane 1"}, {"mac": "00:16:25:15:1D:0F", "site": "Ponnarimanglam TP", "asset": "Lane 2"}, {"mac": "00:16:25:15:1D:4E", "site": "Ponnarimanglam TP", "asset": "Lane 3"}, {"mac": "00:16:25:15:1D:4C", "site": "Ponnarimanglam TP", "asset": "Lane 4"}, {"mac": "00:16:25:15:1D:4F", "site": "Ponnarimanglam TP", "asset": "Lane 5"}, {"mac": "00:16:25:15:1D:0D", "site": "Ponnarimanglam TP", "asset": "Lane 6"}, {"mac": "00:16:25:15:1C:F8", "site": "Ponnarimanglam TP", "asset": "Lane 7"}, {"mac": "00:16:25:15:1C:F2", "site": "Ponnarimanglam TP", "asset": "Lane 8"}, {"mac": "00:16:25:15:1C:2D", "site": "Ponnarimanglam TP", "asset": "Lane 9"}, {"mac": "00:16:25:15:1C:44", "site": "Ponnarimanglam TP", "asset": "Lane 10"}, {"mac": "00:16:25:15:1C:31", "site": "Ponnarimanglam TP", "asset": "Lane 11"}, {"mac": "C4:7D:CC:68:2D:77", "site": "Reefco Container Services (India) Pvt Ltd", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:68:29:69", "site": "Reefco Container Services (India) Pvt Ltd", "asset": "IN/OUT RHS"}, {"mac": "C4:7D:CC:72:BD:02", "site": "SRISTAR CONTAINER SERVICES LLP Cochin", "asset": "IN/OUT LHS"}, {"mac": "C4:7D:CC:72:BE:58", "site": "SRISTAR CONTAINER SERVICES LLP Cochin", "asset": "IN/OUT RHS"}, {"mac": "10:07:23:6E:10:F7", "site": "Nest Electronics City NeST Hitek Park", "asset": "IN LHS"}, {"mac": "10:07:23:6E:10:B9", "site": "Nest Electronics City NeST Hitek Park", "asset": "IN RHS"}, {"mac": "10:07:23:6E:0E:8A", "site": "Nest Electronics City NeST Hitek Park", "asset": "OUT LHS"}, {"mac": "10:07:23:6E:0E:34", "site": "Nest Electronics City NeST Hitek Park", "asset": "OUT RHS"}, {"mac": "00:8D:F4:D0:02:33", "site": "Panniyankara Toll Plaza", "asset": "Lane 1"}, {"mac": "00:8D:F4:D0:02:2D", "site": "Panniyankara Toll Plaza", "asset": "Lane 2"}, {"mac": "00:8D:F4:D0:03:D4", "site": "Panniyankara Toll Plaza", "asset": "Lane 3"}, {"mac": "00:8D:F4:D0:02:03", "site": "Panniyankara Toll Plaza", "asset": "Lane 4"}, {"mac": "00:8D:F4:D0:01:AF", "site": "Panniyankara Toll Plaza", "asset": "Lane 5"}, {"mac": "00:8D:F4:D0:01:73", "site": "Panniyankara Toll Plaza", "asset": "Lane 6"}, {"mac": "00:8D:F4:D0:02:4A", "site": "Panniyankara Toll Plaza", "asset": "Lane 7"}, {"mac": "00:8D:F4:D0:02:84", "site": "Panniyankara Toll Plaza", "asset": "Lane 8"}, {"mac": "00:8D:F4:D0:02:45", "site": "Panniyankara Toll Plaza", "asset": "Lane 9"}, {"mac": "00:8D:F4:D0:01:79", "site": "Panniyankara Toll Plaza", "asset": "Lane 10"}, {"mac": "00:8D:F4:D0:01:9A", "site": "Panniyankara Toll Plaza", "asset": "Lane 11"}, {"mac": "00:8D:F4:D0:02:57", "site": "Panniyankara Toll Plaza", "asset": "Lane 12"}, {"mac": "00:8D:F4:D0:02:18", "site": "Panniyankara Toll Plaza", "asset": "Lane 13"}, {"mac": "00:8D:F4:D0:03:02", "site": "Panniyankara Toll Plaza", "asset": "Lane 14"}, {"mac": "00:8D:F4:D0:02:FF", "site": "Panniyankara Toll Plaza", "asset": "Lane 15"}, {"mac": "00:8D:F4:D0:01:94", "site": "Panniyankara Toll Plaza", "asset": "Lane 16"}, {"mac": "00:8D:F4:D0:02:27", "site": "Panniyankara Toll Plaza", "asset": "Lane 17"}, {"mac": "10:07:23:6E:10:AF", "site": "Accelerated freeze Drying Co ltd", "asset": "LHS"}, {"mac": "10:07:23:6E:10:D9", "site": "Accelerated freeze Drying Co ltd", "asset": "RHS"}, {"mac": "10:07:23:6E:10:6B", "site": "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn", "asset": "LHS"}, {"mac": "10:07:23:6E:11:8B", "site": "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn", "asset": "RHS"}, {"mac": "00:16:25:15:21:07", "site": "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn", "asset": "LHS"}, {"mac": "00:16:25:15:1F:DC", "site": "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn", "asset": "RHS"}, {"mac": "00:8D:F4:D0:0B:33", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "IN/LHS"}, {"mac": "00:8D:F4:D0:0B:20", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "IN/RHS"}, {"mac": "00:8D:F4:D0:0B:5F", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "OUT/LHS"}, {"mac": "00:8D:F4:D0:0B:2B", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "OUT/RHS"}, {"mac": "00:8D:F4:D0:0B:67", "site": "KSIDC Mega Food Park Pallipuram Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:66", "site": "KSIDC Mega Food Park Pallipuram Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:75", "site": "SIDCO Industrial Estate Kollakadavu Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:76", "site": "SIDCO Industrial Estate Kollakadavu Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:1C", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "IN/LHS"}, {"mac": "00:8D:F4:D0:0B:42", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "IN/RHS"}, {"mac": "00:8D:F4:D0:0B:34", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "OUT/LHS"}, {"mac": "00:8D:F4:D0:0B:41", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "OUT/RHS"}, {"mac": "00:8D:F4:D0:0B:79", "site": "Development Plot Athani Kerala", "asset": "Gate 1 LHS"}, {"mac": "00:8D:F4:D0:0B:7B", "site": "Development Plot Athani Kerala", "asset": "Gate 1 RHS"}, {"mac": "00:8D:F4:D0:0B:08", "site": "Development Plot Athani Kerala", "asset": "Gate 2 IN/LHS"}, {"mac": "00:8D:F4:D0:0B:47", "site": "Development Plot Athani Kerala", "asset": "Gate 2 IN/RHS"}, {"mac": "00:8D:F4:D0:0B:78", "site": "Development Plot Athani Kerala", "asset": "Gate 2 OUT/LHS"}, {"mac": "00:8D:F4:D0:0B:49", "site": "Development Plot Athani Kerala", "asset": "Gate 2 OUT/RHS"}, {"mac": "00:8D:F4:D0:0B:29", "site": "Industrial Development Plot Ananthapuram Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:1F", "site": "Industrial Development Plot Ananthapuram Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:OB:19", "site": "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:48", "site": "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0A:BF", "site": "A.M Fisheries Private Limited Kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0A:BE", "site": "A.M Fisheries Private Limited Kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:2A", "site": "Development plot Kunnamthanam kerala", "asset": "IN/OUT LHS"}, {"mac": "00:8D:F4:D0:0B:50", "site": "Development plot Kunnamthanam kerala", "asset": "IN/OUT RHS"}, {"mac": "00:8D:F4:D0:0B:9A", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate1/LHS"}, {"mac": "00:8D:F4:D0:0F:13", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate1/RHS"}, {"mac": "00:8D:F4:D0:OB:CB", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate2/LHS"}, {"mac": "10:07:23:6E:0D:F1", "site": "KSIDC Investment zone Palakkad\u00a0kerala", "asset": "Gate2/RHS"}];
+const SITES_DB = [{"mac": "C4:7D:CC:68:28:F9", "site": "Bay Container Terminal Pvt Ltd", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:68:29:2C", "site": "Bay Container Terminal Pvt Ltd", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:72:B7:DC", "site": "BHAVANI SHIPPING SERVICES (I) Kerala", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:65:78:04", "site": "BHAVANI SHIPPING SERVICES (I) Kerala", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:92:4D", "site": "MIV empty yard cochin", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:1B", "site": "MIV empty yard cochin", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:AA", "site": "Blueocean Container Terminals (I) Pvt Ltd 1 cochin", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:ID", "site": "Blueocean Container Terminals (I) Pvt Ltd 1 cochin", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:68:29:22", "site": "Chakiat Agencies Private Limited", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:68:2D:69", "site": "Chakiat Agencies Private Limited", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:1D:C7", "site": "COCHIN PORT CFS", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:1D:6B", "site": "COCHIN PORT CFS", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "84:24:8D:FC:B0:19", "site": "COCHIN SEZ", "asset": "IN LHS", "engineer": "Ayush"}, {"mac": "84:24:8D:FC:AF:A4", "site": "COCHIN SEZ", "asset": "OUT LHS", "engineer": "Ayush"}, {"mac": "84:24:8D:FC:AF:A6", "site": "COCHIN SEZ", "asset": "IN RHS", "engineer": "Ayush"}, {"mac": "84:24:8D:F2:48:61", "site": "COCHIN SEZ", "asset": "OUT RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:53", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "IN / LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:9E", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "IN / RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:59", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "OUT / LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:08", "site": "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED", "asset": "OUT / RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:1C:CC", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 1 L.H.S", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:D8", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 1 R.H.S", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:3A", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 2 L.H.S", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:CD", "site": "EMPIRE CONTAINER TERMINAL", "asset": "Gate 2 R.H.S", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1c:a6", "site": "GDKL CFS COCHIN", "asset": "IN LHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:40", "site": "GDKL CFS COCHIN", "asset": "OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1c:a5", "site": "GDKL CFS COCHIN", "asset": "IN RHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:c8", "site": "GDKL CFS COCHIN", "asset": "OUT RHS", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F5:6B:26", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 1", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:4B:B8", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 2", "engineer": "Ayush"}, {"mac": "84:24:8D:F7:81:62", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 3", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:4B:BD", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 4", "engineer": "Ayush"}, {"mac": "84:24:8D:F0:F2:D8", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 5", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:46:E9", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 6", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:43:10", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 7", "engineer": "Ayush"}, {"mac": "84:24:8D:FD:DC:18", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 8", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:46:EB", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 9", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:6B:3F", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 10", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:6B:36", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 11", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:6B:27", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 12", "engineer": "Ayush"}, {"mac": "84:24:8D:F5:76:5A", "site": "GIPL PALIYEKKARA TOLL PLAZA", "asset": "Lane 13", "engineer": "Ayush"}, {"mac": "00:8d:f4:d0:1e:05", "site": "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN", "asset": "IN LHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1e:02", "site": "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN", "asset": "IN RHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:22:83", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 1 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:55", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 1 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:21:E0", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 2 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:AD", "site": "KINFRA Export Promotion Industrial Park, Kakkanad", "asset": "Gate 2 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:BF", "site": "KINFRA Industrial Park, Adoor", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:54", "site": "KINFRA Industrial Park, Adoor", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:5D", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 1 LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:11:DD", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 1 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:19", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 2 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:16", "site": "KINFRA Industrial Park, kunnamthanam", "asset": "Gate 2 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:BD", "site": "KINFRA IITP,Palakkad", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:13", "site": "KINFRA IITP,Palakkad", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:86", "site": "KINFRA Kalamassery", "asset": "IN / LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:95", "site": "KINFRA Kalamassery", "asset": "IN / RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:A2", "site": "KINFRA Kalamassery", "asset": "OUT / LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:00:8C", "site": "KINFRA Kalamassery", "asset": "OUT / RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:1B", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:15", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "Middile", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:24", "site": "KINFRA Mega Food Park,Kozhipara,Palakkad", "asset": "RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:0B", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 1 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:86", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 1 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:59", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 2 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:BF", "site": "KINFRA small Industrial Park,koratty", "asset": "Gate 2 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:9F", "site": "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:2D", "site": "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:08", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 1 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:07", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 1 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:0B", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 2 LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:09", "site": "KINFRA Small Industries Park, Nellard ,Ernakulam", "asset": "Gate 2 RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:22:63", "site": "KINFRA Small Industries Park, Thalassery, Kannur", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:2C", "site": "KINFRA Small Industries Park, Thalassery, Kannur", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:21:DB", "site": "KINFRA Techno Industrial  Park, Kakkancherry  Malappuram", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:06", "site": "KINFRA Techno Industrial  Park, Kakkancherry  Malappuram", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:01", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "LHS", "engineer": "Ayush"}, {"mac": "00:16:25:15:23:E1", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "Middile", "engineer": "Ayush"}, {"mac": "00:16:25:15:24:04", "site": "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur", "asset": "RHS", "engineer": "Ayush"}, {"mac": "84:24:8D:FB:5A:E0", "site": "KOTTAYAM ICD", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "84:24:8D:F3:27:4A", "site": "KOTTAYAM ICD", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:8d:f4:d0:1d:a8", "site": "KSIE CFS COCHIN", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:b3", "site": "KSIE CFS COCHIN", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "10:07:23:6E:24:DC", "site": "KSIE CFS COCHIN", "asset": "IN/OUT MIDDILE", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F5:3E:BD", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 1", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F6:08:04", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 2", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F0:F5:CB", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 3", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F5:6B:6F", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 4", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F3:25:F0", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 5", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F5:6B:2E", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 6", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F5:6B:43", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 7", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F6:08:6F", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 8", "engineer": "Swethaswan"}, {"mac": "84:24:8D:F5:6B:67", "site": "KUMBALAM TOLL PLAZA", "asset": "Lane 9", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:58", "site": "MARINE CONTAINER LOGISTICS 1", "asset": "Gate 2 L.H.S", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:5A", "site": "MARINE CONTAINER LOGISTICS 2", "asset": "Gate 2 R.H.S", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:5B", "site": "MARINE CONTAINER LOGISTICS 3", "asset": "Gate 1 L.H.S", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:5D", "site": "MARINE CONTAINER LOGISTICS 4", "asset": "Gate 1 R.H.S", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:72:BD:0A", "site": "MBK Logistix Pvt Ltd Cochin", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:72:BE:AF", "site": "MBK Logistix Pvt Ltd Cochin", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:81", "site": "MIV CFS COCHIN", "asset": "IN LHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:6f", "site": "MIV CFS COCHIN", "asset": "OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:7c", "site": "MIV CFS COCHIN", "asset": "IN RHS", "engineer": "Swethaswan"}, {"mac": "00:8d:f4:d0:1d:dd", "site": "MIV CFS COCHIN", "asset": "OUT RHS", "engineer": "Swethaswan"}, {"mac": "10:07:23:6E:0D:0F", "site": "Pampampallam Toll Plaza", "asset": "Lane 1", "engineer": "Ayush"}, {"mac": "10:07:23:6E:10:A3", "site": "Pampampallam Toll Plaza", "asset": "Lane 2", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0F:65", "site": "Pampampallam Toll Plaza", "asset": "Lane 3", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0F:F7", "site": "Pampampallam Toll Plaza", "asset": "Lane 4", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0F:56", "site": "Pampampallam Toll Plaza", "asset": "Lane 5", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0D:0B", "site": "Pampampallam Toll Plaza", "asset": "Lane 6", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0F:E6", "site": "Pampampallam Toll Plaza", "asset": "Lane 7", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0F:5B", "site": "Pampampallam Toll Plaza", "asset": "Lane 8", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0D:35", "site": "Pampampallam Toll Plaza", "asset": "Lane 9", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0D:C3", "site": "Pampampallam Toll Plaza", "asset": "Lane 10", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0D:AB", "site": "Pampampallam Toll Plaza", "asset": "Lane 11", "engineer": "Ayush"}, {"mac": "C4:7D:CC:72:BE:47", "site": "Petta CFS", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:72:B9:21", "site": "Petta CFS", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:52", "site": "Ponnarimanglam TP", "asset": "Lane 1", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:0F", "site": "Ponnarimanglam TP", "asset": "Lane 2", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:4E", "site": "Ponnarimanglam TP", "asset": "Lane 3", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:4C", "site": "Ponnarimanglam TP", "asset": "Lane 4", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:4F", "site": "Ponnarimanglam TP", "asset": "Lane 5", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1D:0D", "site": "Ponnarimanglam TP", "asset": "Lane 6", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:F8", "site": "Ponnarimanglam TP", "asset": "Lane 7", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:F2", "site": "Ponnarimanglam TP", "asset": "Lane 8", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:2D", "site": "Ponnarimanglam TP", "asset": "Lane 9", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:44", "site": "Ponnarimanglam TP", "asset": "Lane 10", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1C:31", "site": "Ponnarimanglam TP", "asset": "Lane 11", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:68:2D:77", "site": "Reefco Container Services (India) Pvt Ltd", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:68:29:69", "site": "Reefco Container Services (India) Pvt Ltd", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:72:BD:02", "site": "SRISTAR CONTAINER SERVICES LLP Cochin", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "C4:7D:CC:72:BE:58", "site": "SRISTAR CONTAINER SERVICES LLP Cochin", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "10:07:23:6E:10:F7", "site": "Nest Electronics City NeST Hitek Park", "asset": "IN LHS", "engineer": "Ayush"}, {"mac": "10:07:23:6E:10:B9", "site": "Nest Electronics City NeST Hitek Park", "asset": "IN RHS", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0E:8A", "site": "Nest Electronics City NeST Hitek Park", "asset": "OUT LHS", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0E:34", "site": "Nest Electronics City NeST Hitek Park", "asset": "OUT RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:33", "site": "Panniyankara Toll Plaza", "asset": "Lane 1", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:2D", "site": "Panniyankara Toll Plaza", "asset": "Lane 2", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:03:D4", "site": "Panniyankara Toll Plaza", "asset": "Lane 3", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:03", "site": "Panniyankara Toll Plaza", "asset": "Lane 4", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:01:AF", "site": "Panniyankara Toll Plaza", "asset": "Lane 5", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:01:73", "site": "Panniyankara Toll Plaza", "asset": "Lane 6", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:4A", "site": "Panniyankara Toll Plaza", "asset": "Lane 7", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:84", "site": "Panniyankara Toll Plaza", "asset": "Lane 8", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:45", "site": "Panniyankara Toll Plaza", "asset": "Lane 9", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:01:79", "site": "Panniyankara Toll Plaza", "asset": "Lane 10", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:01:9A", "site": "Panniyankara Toll Plaza", "asset": "Lane 11", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:57", "site": "Panniyankara Toll Plaza", "asset": "Lane 12", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:18", "site": "Panniyankara Toll Plaza", "asset": "Lane 13", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:03:02", "site": "Panniyankara Toll Plaza", "asset": "Lane 14", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:FF", "site": "Panniyankara Toll Plaza", "asset": "Lane 15", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:01:94", "site": "Panniyankara Toll Plaza", "asset": "Lane 16", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:02:27", "site": "Panniyankara Toll Plaza", "asset": "Lane 17", "engineer": "Ayush"}, {"mac": "10:07:23:6e:10:af", "site": "Accelerated freeze Drying Co ltd", "asset": "LHS", "engineer": "Swethaswan"}, {"mac": "10:07:23:6e:10:d9", "site": "Accelerated freeze Drying Co ltd", "asset": "RHS", "engineer": "Swethaswan"}, {"mac": "10:07:23:6e:10:6b", "site": "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn", "asset": "LHS", "engineer": "Swethaswan"}, {"mac": "10:07:23:6e:11:8b", "site": "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn", "asset": "RHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:21:07", "site": "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn", "asset": "LHS", "engineer": "Swethaswan"}, {"mac": "00:16:25:15:1f:dc", "site": "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn", "asset": "RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:33", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "IN/LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:20", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "IN/RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:5F", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "OUT/LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:2B", "site": "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala", "asset": "OUT/RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:67", "site": "KSIDC Mega Food Park Pallipuram Kerala", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:66", "site": "KSIDC Mega Food Park Pallipuram Kerala", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:75", "site": "SIDCO Industrial Estate Kollakadavu Kerala", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:76", "site": "SIDCO Industrial Estate Kollakadavu Kerala", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:1C", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "IN/LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:42", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "IN/RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:34", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "OUT/LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:41", "site": "KSIDC Life Science Park Trivandrum Kerala", "asset": "OUT/RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:79", "site": "Development Plot Athani Kerala", "asset": "Gate 1 LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:7B", "site": "Development Plot Athani Kerala", "asset": "Gate 1 RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:08", "site": "Development Plot Athani Kerala", "asset": "Gate 2 IN/LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:47", "site": "Development Plot Athani Kerala", "asset": "Gate 2 IN/RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:78", "site": "Development Plot Athani Kerala", "asset": "Gate 2 OUT/LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:49", "site": "Development Plot Athani Kerala", "asset": "Gate 2 OUT/RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:29", "site": "Industrial Development Plot Ananthapuram Kerala", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:1F", "site": "Industrial Development Plot Ananthapuram Kerala", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:19", "site": "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala", "asset": "IN/OUT LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:48", "site": "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala", "asset": "IN/OUT RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0A:BF", "site": "A.M Fisheries Private Limited Kerala", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0A:BE", "site": "A.M Fisheries Private Limited Kerala", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:2A", "site": "Development plot Kunnamthanam kerala", "asset": "IN/OUT LHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:50", "site": "Development plot Kunnamthanam kerala", "asset": "IN/OUT RHS", "engineer": "Swethaswan"}, {"mac": "00:8D:F4:D0:0B:9A", "site": "KSIDC Investment zone Palakkad kerala", "asset": "Gate1/LHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0F:13", "site": "KSIDC Investment zone Palakkad kerala", "asset": "Gate1/RHS", "engineer": "Ayush"}, {"mac": "00:8D:F4:D0:0B:CB", "site": "KSIDC Investment zone Palakkad kerala", "asset": "Gate2/LHS", "engineer": "Ayush"}, {"mac": "10:07:23:6E:0D:F1", "site": "KSIDC Investment zone Palakkad kerala", "asset": "Gate2/RHS", "engineer": "Ayush"}];
 
 // Build MAC → { siteName, assetId } lookup map
 // normalise: uppercase, strip non hex/colon chars
@@ -7430,6 +7485,138 @@ SITES_DB.forEach(e => {
   const mac = _cdsNormMac(e.mac);
   if (mac) _cdsSitesMap.set(mac, { siteName: e.site, assetId: e.asset, engineer: e.engineer || '' });
 });
+
+// ── Status metadata for the Kerala device map (5 tracked statuses) ──
+const DS_STATUS_META = {
+  active:      { label: 'Active',      color: 'var(--green-dot)',  emoji: '🟢' },
+  down:        { label: 'Down',        color: 'var(--cds-red)',    emoji: '🔴' },
+  maintenance: { label: 'Maintenance', color: 'var(--cds-orange)', emoji: '🟠' },
+  rma:         { label: 'RMA',         color: '#7c5cfc',           emoji: '🟣' },
+  flapping:    { label: 'Flapping',    color: 'var(--teal-dot)',   emoji: '🔵' },
+};
+// Priority order used to pick a site marker's colour when it has a mix of statuses
+// (worst / most-urgent first).
+const DS_STATUS_PRIORITY = ['down', 'flapping', 'rma', 'maintenance', 'active'];
+
+// ── Approximate site coordinates on the schematic Kerala map ────
+// (Illustrative placement by district — not surveyed GPS coordinates.)
+const KERALA_SITE_COORDS = {
+  "A.M Fisheries Private Limited Kerala": { x:239.0, y:497.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn": { x:254.0, y:497.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn": { x:269.0, y:497.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co ltd": { x:239.0, y:512.0, district:"Alappuzha" },
+  "BHAVANI SHIPPING SERVICES (I) Kerala": { x:192.5, y:390.0, district:"Ernakulam" },
+  "Bay Container Terminal Pvt Ltd": { x:207.5, y:390.0, district:"Ernakulam" },
+  "Blueocean Container Terminals (I) Pvt Ltd 1 cochin": { x:222.5, y:390.0, district:"Ernakulam" },
+  "COCHIN PORT CFS": { x:237.5, y:390.0, district:"Ernakulam" },
+  "COCHIN SEZ": { x:252.5, y:390.0, district:"Ernakulam" },
+  "Chakiat Agencies Private Limited": { x:267.5, y:390.0, district:"Ernakulam" },
+  "Development Plot Athani Kerala": { x:237.5, y:382.5, district:"Thrissur" },
+  "Development plot Kunnamthanam kerala": { x:371.5, y:537.5, district:"Pathanamthitta" },
+  "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED": { x:192.5, y:405.0, district:"Ernakulam" },
+  "EMPIRE CONTAINER TERMINAL": { x:207.5, y:405.0, district:"Ernakulam" },
+  "GDKL CFS COCHIN": { x:222.5, y:405.0, district:"Ernakulam" },
+  "GIPL PALIYEKKARA TOLL PLAZA": { x:237.5, y:367.5, district:"Thrissur" },
+  "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN": { x:237.5, y:405.0, district:"Ernakulam" },
+  "Industrial Development Plot Ananthapuram Kerala": { x:210, y:76, district:"Kasaragod" },
+  "KINFRA Export Promotion Industrial Park, Kakkanad": { x:252.5, y:405.0, district:"Ernakulam" },
+  "KINFRA IITP,Palakkad": { x:329.0, y:323.5, district:"Palakkad" },
+  "KINFRA Industrial Park, Adoor": { x:386.5, y:537.5, district:"Pathanamthitta" },
+  "KINFRA Industrial Park, kunnamthanam": { x:371.5, y:552.5, district:"Pathanamthitta" },
+  "KINFRA Kalamassery": { x:267.5, y:405.0, district:"Ernakulam" },
+  "KINFRA Mega Food Park,Kozhipara,Palakkad": { x:344.0, y:323.5, district:"Palakkad" },
+  "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala": { x:279, y:205, district:"Wayanad" },
+  "KINFRA Small Industries Park, Nellard ,Ernakulam": { x:192.5, y:420.0, district:"Ernakulam" },
+  "KINFRA Small Industries Park, Thalassery, Kannur": { x:178.5, y:149.5, district:"Kannur" },
+  "KINFRA Techno Industrial  Park, Kakkancherry  Malappuram": { x:285, y:290, district:"Malappuram" },
+  "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur": { x:193.5, y:149.5, district:"Kannur" },
+  "KINFRA small Industrial Park,koratty": { x:252.5, y:367.5, district:"Thrissur" },
+  "KOTTAYAM ICD": { x:352, y:489, district:"Kottayam" },
+  "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala": { x:254.0, y:512.0, district:"Alappuzha" },
+  "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala": { x:178.5, y:164.5, district:"Kannur" },
+  "KSIDC Investment zone Palakkad kerala": { x:359.0, y:323.5, district:"Palakkad" },
+  "KSIDC Life Science Park Trivandrum Kerala": { x:291, y:643, district:"Thiruvananthapuram" },
+  "KSIDC Mega Food Park Pallipuram Kerala": { x:269.0, y:512.0, district:"Alappuzha" },
+  "KSIE CFS COCHIN": { x:207.5, y:420.0, district:"Ernakulam" },
+  "KUMBALAM TOLL PLAZA": { x:222.5, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 1": { x:237.5, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 2": { x:252.5, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 3": { x:267.5, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 4": { x:192.5, y:435.0, district:"Ernakulam" },
+  "MBK Logistix Pvt Ltd Cochin": { x:207.5, y:435.0, district:"Ernakulam" },
+  "MIV CFS COCHIN": { x:222.5, y:435.0, district:"Ernakulam" },
+  "MIV empty yard cochin": { x:237.5, y:435.0, district:"Ernakulam" },
+  "Nest Electronics City NeST Hitek Park": { x:222.5, y:450.0, district:"Ernakulam" },
+  "Pampampallam Toll Plaza": { x:329.0, y:338.5, district:"Palakkad" },
+  "Panniyankara Toll Plaza": { x:344.0, y:338.5, district:"Palakkad" },
+  "Petta CFS": { x:252.5, y:435.0, district:"Ernakulam" },
+  "Ponnarimanglam TP": { x:267.5, y:435.0, district:"Ernakulam" },
+  "Reefco Container Services (India) Pvt Ltd": { x:192.5, y:450.0, district:"Ernakulam" },
+  "SIDCO Industrial Estate Kollakadavu Kerala": { x:239.0, y:527.0, district:"Alappuzha" },
+  "SRISTAR CONTAINER SERVICES LLP Cochin": { x:207.5, y:450.0, district:"Ernakulam" },
+};
+
+const KERALA_DISTRICT_ANCHORS = {
+  "Kasaragod": {
+    "x": 210,
+    "y": 76
+  },
+  "Kannur": {
+    "x": 186,
+    "y": 157
+  },
+  "Wayanad": {
+    "x": 279,
+    "y": 205
+  },
+  "Kozhikode": {
+    "x": 246,
+    "y": 236
+  },
+  "Malappuram": {
+    "x": 285,
+    "y": 290
+  },
+  "Palakkad": {
+    "x": 344,
+    "y": 331
+  },
+  "Thrissur": {
+    "x": 245,
+    "y": 375
+  },
+  "Ernakulam": {
+    "x": 230,
+    "y": 420
+  },
+  "Idukki": {
+    "x": 400,
+    "y": 452
+  },
+  "Kottayam": {
+    "x": 352,
+    "y": 489
+  },
+  "Alappuzha": {
+    "x": 254,
+    "y": 512
+  },
+  "Pathanamthitta": {
+    "x": 379,
+    "y": 545
+  },
+  "Kollam": {
+    "x": 330,
+    "y": 585
+  },
+  "Thiruvananthapuram": {
+    "x": 291,
+    "y": 643
+  }
+};
+
+// Traced directly from the reference Kerala map image (outer coastline only).
+const KERALA_OUTLINE_PATH = "M95,48 L93,52 L110,97 L122,113 L139,158 L145,159 L155,174 L164,178 L166,187 L183,199 L195,217 L202,238 L215,248 L237,300 L244,337 L273,397 L279,431 L291,453 L300,520 L324,567 L330,594 L353,615 L372,642 L390,659 L397,673 L417,683 L434,697 L474,711 L467,707 L467,703 L451,702 L426,689 L426,665 L437,650 L437,642 L429,630 L429,618 L435,602 L428,591 L429,572 L438,565 L440,544 L447,536 L449,523 L457,515 L457,511 L446,501 L428,501 L428,489 L436,474 L433,468 L433,455 L438,448 L435,426 L442,409 L437,405 L434,394 L426,391 L412,398 L408,406 L391,405 L384,397 L391,333 L379,320 L360,314 L360,301 L375,298 L367,292 L364,272 L360,269 L354,274 L339,274 L339,255 L298,234 L299,221 L309,221 L324,211 L320,196 L306,194 L301,187 L293,186 L288,177 L278,177 L276,162 L263,167 L238,164 L227,146 L217,146 L211,139 L203,139 L191,121 L178,116 L177,95 L172,87 L160,85 L160,73 L145,70 L130,58 L122,58 L113,45 Z";
 
 // ── Storage keys ─────────────────────────────────────────────
 const K_DS_HISTORY    = 'dsc_ds_history_v1';
@@ -7470,24 +7657,26 @@ function _cdsGetColor(hours) {
 
 // ── State ─────────────────────────────────────────────────────
 let _cdsRawDevices  = null;   // parsed from Device_Status_All
-let _cdsReportRows  = [];     // matched + enriched rows
+let _cdsReportRows  = [];     // matched + enriched rows (problem devices only — for the downtime table)
 let _cdsFilteredRows= [];     // after search filter
+let _cdsAllMatchedRows = [];  // matched + enriched rows, ALL statuses incl. active — for the Kerala map
 let _cdsSortDir     = 'desc'; // desc = longest first
 let _dsCurrentPush  = null;
+let _cdsView        = 'map';  // 'map' | 'table' — current Device Status panel view
+let _cdsMapStatusFilter = new Set(['active','down','maintenance','rma','flapping']); // which statuses show on the map
+let _cdsOpenSite    = null;   // siteName currently drilled-into on the map
+
+// Map pan/zoom viewport (SVG user-space, tight-cropped around the Kerala outline).
+const DS_MAP_BASE_VIEW = { x: 78, y: 30, w: 411, h: 696 };
+let _cdsMapView = { ..._cds_cloneBaseView() };
+function _cds_cloneBaseView() { return { x: DS_MAP_BASE_VIEW.x, y: DS_MAP_BASE_VIEW.y, w: DS_MAP_BASE_VIEW.w, h: DS_MAP_BASE_VIEW.h }; }
 
 // ── Admin DS panel ────────────────────────────────────────────
-function renderAdminDsPanel() {
-  const el = document.getElementById('panel-devstatus');
-  if (!el) return;
-
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--accent-bg);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
-      <div style="font-size:12px;color:var(--accent);font-family:monospace">
-        🗄 Sites DB: <strong>${_cdsSitesMap.size}</strong> devices pre-loaded
-      </div>
-      <div style="font-size:11px;color:var(--text2)">Upload Device_Status_All_*.xlsx to generate report</div>
-    </div>
-
+// Shared upload + controls + map/table markup, used by both the admin panel
+// and the engineer self-service panel. The push-to-engineers section is
+// intentionally NOT part of this — that stays admin-only (see renderAdminDsPanel).
+function _cdsUploaderSectionHtml() {
+  return `
     <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
       <div class="upload-drop-zone" id="ds-drop-zone">
         <div class="upload-drop-zone-icon">📡</div>
@@ -7509,49 +7698,53 @@ function renderAdminDsPanel() {
         oninput="_cdsApplySearch(this.value)"/>
     </div>
 
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border)">
+      <div class="ds-sort-toggle">
+        <span id="ds-view-map-btn" class="active" onclick="_cdsSetDsView('map')">🗺 Map</span>
+        <span id="ds-view-table-btn" onclick="_cdsSetDsView('table')">📋 Table</span>
+      </div>
+      <span style="font-size:11px;color:var(--text2)">Map shows every tracked status · click a site to see its devices</span>
+    </div>
+
     <div id="ds-unmatched" style="display:none;margin:8px 14px;background:var(--amber-bg);border-left:3px solid var(--amber-dot);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--amber-text);font-family:monospace"></div>
 
-    <div id="ds-stats" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap;align-items:center">
-      <span class="ds-stat-chip ds-stat-green" id="ds-cnt-green" style="display:none">🟢 0 ≤48h</span>
-      <span class="ds-stat-chip ds-stat-orange" id="ds-cnt-orange" style="display:none">🟠 0 2d–8d</span>
-      <span class="ds-stat-chip ds-stat-red" id="ds-cnt-red" style="display:none">🔴 0 >8d</span>
-      <span style="margin-left:auto;font-size:11px;color:var(--text2)">Total matched: <strong id="ds-cnt-total">0</strong></span>
+    <div id="ds-map-section">
+      <div id="ds-map-legend" class="ds-map-legend"></div>
+      <div id="ds-map-wrap" class="ds-map-wrap"></div>
     </div>
 
-    <div class="ds-preview-wrap">
-      <table class="ds-table" id="ds-report-table">
-        <thead><tr>
-          <th>#</th><th>Site Name</th><th>MAC ID</th><th>Asset ID</th>
-          <th>Last Sync</th><th>Status</th><th>Downtime</th>
-        </tr></thead>
-        <tbody id="ds-report-tbody">
-          <tr><td colspan="7">
-            <div style="padding:3rem 1rem;text-align:center;color:var(--text2)">
-              <div style="font-size:32px;margin-bottom:10px">📡</div>
-              <div style="font-size:13px;font-weight:600">Upload the Device Status report</div>
-              <div style="font-size:11px;margin-top:4px">Sites database pre-loaded · just upload the daily export</div>
-            </div>
-          </td></tr>
-        </tbody>
-      </table>
-    </div>
+    <div id="ds-table-section" style="display:none">
+      <div id="ds-stats" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap;align-items:center">
+        <span class="ds-stat-chip ds-stat-green" id="ds-cnt-green" style="display:none">🟢 0 ≤48h</span>
+        <span class="ds-stat-chip ds-stat-orange" id="ds-cnt-orange" style="display:none">🟠 0 2d–8d</span>
+        <span class="ds-stat-chip ds-stat-red" id="ds-cnt-red" style="display:none">🔴 0 >8d</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text2)">Total matched: <strong id="ds-cnt-total">0</strong></span>
+      </div>
 
-    <div id="ds-push-section" style="display:none;padding:1rem 1.25rem;border-top:1px solid var(--border)">
-      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">Push to engineers</div>
-      <div id="ds-recipient-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="_cdsPushStatus()">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-          Send alert to engineers
-        </button>
-        <button class="btn btn-sm" onclick="_cdsExportExcel()" id="ds-export-btn"
-          style="background:var(--bg2);border:1px solid var(--border2)">⬇ Export Excel</button>
-        <span id="ds-push-result" style="font-size:12px;color:var(--text2)"></span>
+      <div class="ds-preview-wrap">
+        <table class="ds-table" id="ds-report-table">
+          <thead><tr>
+            <th>#</th><th>Site Name</th><th>MAC ID</th><th>Asset ID</th>
+            <th>Last Sync</th><th>Status</th><th>Downtime</th>
+          </tr></thead>
+          <tbody id="ds-report-tbody">
+            <tr><td colspan="7">
+              <div style="padding:3rem 1rem;text-align:center;color:var(--text2)">
+                <div style="font-size:32px;margin-bottom:10px">📡</div>
+                <div style="font-size:13px;font-weight:600">Upload the Device Status report</div>
+                <div style="font-size:11px;margin-top:4px">Sites database pre-loaded · just upload the daily export</div>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   `;
+}
 
-  // Wire up events after innerHTML is set (avoids inline quote conflicts)
+// Wires the dropzone/file-input events shared by both panels. Call once,
+// right after the markup from _cdsUploaderSectionHtml() is in the DOM.
+function _cdsWireUploaderSection() {
   const dropZone  = document.getElementById('ds-drop-zone');
   const fileInput = document.getElementById('ds-excel-input');
 
@@ -7573,6 +7766,50 @@ function renderAdminDsPanel() {
     });
   }
 
+  // Restore the last-generated report / map if this panel is being re-rendered
+  // (e.g. the user navigated away and back) rather than opened for the first time.
+  _cdsSetDsView(_cdsView);
+  if (_cdsAllMatchedRows.length) {
+    const controls = document.getElementById('ds-controls');
+    if (controls) controls.style.display = 'flex';
+    _cdsRenderTable(_cdsReportRows);
+    const statsEl = document.getElementById('ds-stats');
+    if (statsEl) statsEl.style.display = 'flex';
+    const totEl = document.getElementById('ds-cnt-total');
+    if (totEl) totEl.textContent = _cdsReportRows.length;
+    const pushSec = document.getElementById('ds-push-section');
+    if (pushSec) pushSec.style.display = _cdsReportRows.length ? 'block' : 'none';
+  }
+}
+
+function renderAdminDsPanel() {
+  const el = document.getElementById('panel-devstatus');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--accent-bg);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
+      <div style="font-size:12px;color:var(--accent);font-family:monospace">
+        🗄 Sites DB: <strong>${_cdsSitesMap.size}</strong> devices pre-loaded
+      </div>
+      <div style="font-size:11px;color:var(--text2)">Upload Device_Status_All_*.xlsx to generate report</div>
+    </div>
+    ${_cdsUploaderSectionHtml()}
+    <div id="ds-push-section" style="display:none;padding:1rem 1.25rem;border-top:1px solid var(--border)">
+      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">Push to engineers</div>
+      <div id="ds-recipient-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="_cdsPushStatus()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          Send alert to engineers
+        </button>
+        <button class="btn btn-sm" onclick="_cdsExportExcel()" id="ds-export-btn"
+          style="background:var(--bg2);border:1px solid var(--border2)">⬇ Export Excel</button>
+        <span id="ds-push-result" style="font-size:12px;color:var(--text2)"></span>
+      </div>
+    </div>
+  `;
+
+  _cdsWireUploaderSection();
   _cdsRenderRecipientChips();
 }
 // ── Drop / file handlers ──────────────────────────────────────
@@ -7603,7 +7840,9 @@ async function _cdsHandleFile(file) {
       if (j.includes('MAC') || j.includes('STATUS')) { headerRow = i; break; }
     }
 
-    const ACTIVE = new Set(['down','maintenance','rma','flapping']);
+    // Statuses we track anywhere in the app (table + map). 'active' is kept only
+    // for the map view — the downtime table filters it back out (see _cdsProcessData).
+    const ACTIVE = new Set(['down','maintenance','rma','flapping','active']);
     const data = [];
     for (let i = headerRow + 1; i < rows.length; i++) {
       const row    = rows[i];
@@ -7615,7 +7854,7 @@ async function _cdsHandleFile(file) {
 
     _cdsRawDevices = data;
     if (dropText) dropText.textContent = '✅ ' + file.name;
-    if (statusEl) statusEl.textContent = data.length + ' down/maintenance/rma/flapping devices loaded — tap Generate Report';
+    if (statusEl) statusEl.textContent = data.length + ' active/down/maintenance/rma/flapping devices loaded — tap Generate Report';
     if (controls) { controls.style.display = 'flex'; }
     showToast(data.length + ' devices loaded', );
   } catch(err) {
@@ -7657,20 +7896,24 @@ function _cdsProcessData() {
     // Sort longest first by default
     _cdsSortDir = 'desc';
     matched.sort((a,b) => b.minutes - a.minutes);
-    _cdsReportRows   = matched;
-    _cdsFilteredRows = matched;
+
+    // The map wants every matched device (including 'active'); the downtime
+    // table only makes sense for problem devices, so it keeps the old behaviour.
+    _cdsAllMatchedRows = matched;
+    _cdsReportRows     = matched.filter(r => r.statusRaw !== 'active');
+    _cdsFilteredRows   = _cdsReportRows;
 
     // Update stats
-    const cG = matched.filter(r => r.color==='green').length;
-    const cO = matched.filter(r => r.color==='orange').length;
-    const cR = matched.filter(r => r.color==='red').length;
+    const cG = _cdsReportRows.filter(r => r.color==='green').length;
+    const cO = _cdsReportRows.filter(r => r.color==='orange').length;
+    const cR = _cdsReportRows.filter(r => r.color==='red').length;
     const statsEl = document.getElementById('ds-stats');
     if (statsEl) statsEl.style.display = 'flex';
     _cdsSetStatChip('ds-cnt-green',  cG, '🟢 ' + cG + ' ≤48h');
     _cdsSetStatChip('ds-cnt-orange', cO, '🟠 ' + cO + ' 2d–8d');
     _cdsSetStatChip('ds-cnt-red',    cR, '🔴 ' + cR + ' >8d');
     const totEl = document.getElementById('ds-cnt-total');
-    if (totEl) totEl.textContent = matched.length;
+    if (totEl) totEl.textContent = _cdsReportRows.length;
 
     // Unmatched banner
     const banner = document.getElementById('ds-unmatched');
@@ -7690,14 +7933,16 @@ function _cdsProcessData() {
     if (sa) sa.classList.remove('active');
 
     // Render
-    _cdsRenderTable(matched);
+    _cdsRenderTable(_cdsReportRows);
+    _cdsResetMapView();
+    _cdsRenderKeralaMap();
 
     // Show push section
     const pushSec = document.getElementById('ds-push-section');
-    if (pushSec) pushSec.style.display = matched.length ? 'block' : 'none';
+    if (pushSec) pushSec.style.display = _cdsReportRows.length ? 'block' : 'none';
 
     if (btn) { btn.disabled = false; btn.innerHTML = '⚡ Generate Report'; }
-    showToast('Done — ' + matched.length + ' matched, ' + unmatched.length + ' skipped');
+    showToast('Done — ' + matched.length + ' matched (' + _cdsReportRows.length + ' active issues), ' + unmatched.length + ' skipped');
   }, 50);
 }
 
@@ -7760,6 +8005,339 @@ function _cdsRenderTable(rows) {
   ).join('');
 }
 
+// ══════════════════════════════════════════════════════════════
+// ── Kerala device status map ────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+
+// Switch between the Map and Table views of the Device Status panel.
+function _cdsSetDsView(view) {
+  _cdsView = view;
+  const mapBtn = document.getElementById('ds-view-map-btn');
+  const tblBtn = document.getElementById('ds-view-table-btn');
+  const mapSec = document.getElementById('ds-map-section');
+  const tblSec = document.getElementById('ds-table-section');
+  if (mapBtn) mapBtn.classList.toggle('active', view === 'map');
+  if (tblBtn) tblBtn.classList.toggle('active', view === 'table');
+  if (mapSec) mapSec.style.display = view === 'map' ? 'block' : 'none';
+  if (tblSec) tblSec.style.display = view === 'table' ? 'block' : 'none';
+  if (view === 'map') _cdsRenderKeralaMap();
+}
+
+// Toggle a status on/off in the map's filter chips.
+function _cdsToggleMapStatus(status) {
+  if (_cdsMapStatusFilter.has(status)) _cdsMapStatusFilter.delete(status);
+  else _cdsMapStatusFilter.add(status);
+  _cdsRenderKeralaMap();
+}
+
+// Group matched devices (all statuses) by site name.
+function _cdsAggregateBySite(rows) {
+  const map = new Map();
+  rows.forEach(r => {
+    if (!map.has(r.siteName)) {
+      map.set(r.siteName, { counts:{active:0,down:0,maintenance:0,rma:0,flapping:0}, devices: [] });
+    }
+    const entry = map.get(r.siteName);
+    if (entry.counts[r.statusRaw] !== undefined) entry.counts[r.statusRaw]++;
+    entry.devices.push(r);
+  });
+  return map;
+}
+
+// Worst (most urgent) status present at a site, restricted to the active filter.
+function _cdsWorstStatus(counts, filterSet) {
+  for (const s of DS_STATUS_PRIORITY) {
+    if (filterSet.has(s) && counts[s] > 0) return s;
+  }
+  return null;
+}
+
+// ── Map pan/zoom helpers ────────────────────────────────────
+function _cdsResetMapView() { _cdsMapView = _cds_cloneBaseView(); }
+
+function _cdsClampMapView(v) {
+  const minW = 60, maxW = DS_MAP_BASE_VIEW.w;
+  v.w = Math.max(minW, Math.min(maxW, v.w));
+  v.h = v.w * (DS_MAP_BASE_VIEW.h / DS_MAP_BASE_VIEW.w);
+  const padX = v.w * 0.5, padY = v.h * 0.5;
+  const minX = DS_MAP_BASE_VIEW.x - padX;
+  const maxX = DS_MAP_BASE_VIEW.x + DS_MAP_BASE_VIEW.w - v.w + padX;
+  const minY = DS_MAP_BASE_VIEW.y - padY;
+  const maxY = DS_MAP_BASE_VIEW.y + DS_MAP_BASE_VIEW.h - v.h + padY;
+  v.x = Math.max(minX, Math.min(maxX, v.x));
+  v.y = Math.max(minY, Math.min(maxY, v.y));
+  return v;
+}
+
+function _cdsApplyMapView(svg) {
+  if (svg) svg.setAttribute('viewBox', _cdsMapView.x + ' ' + _cdsMapView.y + ' ' + _cdsMapView.w + ' ' + _cdsMapView.h);
+  const pct = Math.round((DS_MAP_BASE_VIEW.w / _cdsMapView.w) * 100);
+  const label = document.getElementById('ds-map-zoom-label');
+  if (label) label.textContent = pct + '%';
+}
+
+function _cdsMapZoomBy(factor, cx, cy, svg) {
+  _cdsMapView.x = cx - (cx - _cdsMapView.x) * factor;
+  _cdsMapView.y = cy - (cy - _cdsMapView.y) * factor;
+  _cdsMapView.w *= factor;
+  _cdsMapView.h *= factor;
+  _cdsClampMapView(_cdsMapView);
+  _cdsApplyMapView(svg);
+}
+
+function _cdsMapZoomButton(dir) {
+  const svg = document.querySelector('.ds-kerala-svg');
+  if (!svg) return;
+  const cx = _cdsMapView.x + _cdsMapView.w / 2;
+  const cy = _cdsMapView.y + _cdsMapView.h / 2;
+  _cdsMapZoomBy(dir === 'in' ? 0.72 : 1 / 0.72, cx, cy, svg);
+}
+
+function _cdsMapZoomReset() {
+  _cdsResetMapView();
+  _cdsApplyMapView(document.querySelector('.ds-kerala-svg'));
+}
+
+function _cdsSvgPoint(svg, clientX, clientY) {
+  const rect = svg.getBoundingClientRect();
+  return {
+    x: _cdsMapView.x + (clientX - rect.left) * (_cdsMapView.w / rect.width),
+    y: _cdsMapView.y + (clientY - rect.top)  * (_cdsMapView.h / rect.height),
+  };
+}
+
+function _cdsTouchDist(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function _cdsWireMapPanZoom(svg) {
+  let dragging = false, moved = false, lastX = 0, lastY = 0, pinchDist = null;
+
+  svg.addEventListener('wheel', e => {
+    e.preventDefault();
+    const pt = _cdsSvgPoint(svg, e.clientX, e.clientY);
+    _cdsMapZoomBy(e.deltaY < 0 ? 0.85 : 1 / 0.85, pt.x, pt.y, svg);
+  }, { passive: false });
+
+  svg.addEventListener('dblclick', e => {
+    const pt = _cdsSvgPoint(svg, e.clientX, e.clientY);
+    _cdsMapZoomBy(0.55, pt.x, pt.y, svg);
+  });
+
+  svg.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY;
+    svg.classList.add('ds-map-dragging');
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const rect = svg.getBoundingClientRect();
+    const dx = (e.clientX - lastX) * (_cdsMapView.w / rect.width);
+    const dy = (e.clientY - lastY) * (_cdsMapView.h / rect.height);
+    if (Math.abs(e.clientX - lastX) > 2 || Math.abs(e.clientY - lastY) > 2) moved = true;
+    _cdsMapView.x -= dx; _cdsMapView.y -= dy;
+    _cdsClampMapView(_cdsMapView);
+    _cdsApplyMapView(svg);
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => { dragging = false; svg.classList.remove('ds-map-dragging'); });
+
+  // Touch: one finger pans, two fingers pinch-zoom.
+  svg.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      dragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      dragging = false; pinchDist = _cdsTouchDist(e.touches);
+    }
+  }, { passive: true });
+
+  svg.addEventListener('touchmove', e => {
+    if (e.touches.length === 1 && dragging) {
+      const rect = svg.getBoundingClientRect();
+      const t = e.touches[0];
+      const dx = (t.clientX - lastX) * (_cdsMapView.w / rect.width);
+      const dy = (t.clientY - lastY) * (_cdsMapView.h / rect.height);
+      _cdsMapView.x -= dx; _cdsMapView.y -= dy;
+      _cdsClampMapView(_cdsMapView);
+      _cdsApplyMapView(svg);
+      lastX = t.clientX; lastY = t.clientY;
+    } else if (e.touches.length === 2 && pinchDist != null) {
+      e.preventDefault();
+      const newDist = _cdsTouchDist(e.touches);
+      const factor = pinchDist / newDist;
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const pt = _cdsSvgPoint(svg, midX, midY);
+      _cdsMapZoomBy(factor, pt.x, pt.y, svg);
+      pinchDist = newDist;
+    }
+  }, { passive: false });
+
+  svg.addEventListener('touchend', e => {
+    if (e.touches.length === 0) { dragging = false; pinchDist = null; }
+  });
+
+  return () => moved; // caller can check whether the last mousedown turned into a drag
+}
+
+// ── Hover tooltip (site name on hover) ──────────────────────
+function _cdsShowMapTooltip(text, clientX, clientY) {
+  let tip = document.getElementById('ds-map-tooltip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'ds-map-tooltip';
+    tip.className = 'ds-map-tooltip';
+    document.body.appendChild(tip);
+  }
+  tip.textContent = text;
+  tip.style.left = (clientX + 14) + 'px';
+  tip.style.top  = (clientY + 14) + 'px';
+  tip.style.display = 'block';
+}
+function _cdsHideMapTooltip() {
+  const tip = document.getElementById('ds-map-tooltip');
+  if (tip) tip.style.display = 'none';
+}
+
+function _cdsRenderKeralaMap() {
+  const wrap = document.getElementById('ds-map-wrap');
+  const legendWrap = document.getElementById('ds-map-legend');
+  if (!wrap) return;
+
+  if (!_cdsAllMatchedRows.length) {
+    wrap.innerHTML = '<div style="padding:3rem 1rem;text-align:center;color:var(--text2)">' +
+      '<div style="font-size:32px;margin-bottom:10px">🗺️</div>' +
+      '<div style="font-size:13px;font-weight:600">Upload the Device Status report</div>' +
+      '<div style="font-size:11px;margin-top:4px">Kerala site map appears here once a report is generated</div>' +
+    '</div>';
+    if (legendWrap) legendWrap.innerHTML = '';
+    return;
+  }
+
+  const bySite   = _cdsAggregateBySite(_cdsAllMatchedRows);
+  const siteNames = [...bySite.keys()];
+  const plottable = siteNames.filter(n => KERALA_SITE_COORDS[n]);
+  const unplottable = siteNames.filter(n => !KERALA_SITE_COORDS[n]);
+
+  // Overall status totals (unaffected by the filter) for the legend counts.
+  const totals = {active:0,down:0,maintenance:0,rma:0,flapping:0};
+  _cdsAllMatchedRows.forEach(r => { if (totals[r.statusRaw] !== undefined) totals[r.statusRaw]++; });
+
+  // ── Legend / filter chips ──
+  const STATUS_UI_ORDER = ['active','down','maintenance','rma','flapping'];
+  if (legendWrap) {
+    legendWrap.innerHTML = STATUS_UI_ORDER.map(s => {
+      const meta = DS_STATUS_META[s];
+      const on = _cdsMapStatusFilter.has(s);
+      return '<button class="ds-map-chip' + (on ? ' on' : '') + '" data-status="' + s + '" ' +
+        'style="--chip-color:' + meta.color + '" onclick="_cdsToggleMapStatus(\'' + s + '\')">' +
+        '<span class="ds-map-chip-dot"></span>' + meta.label + ' <strong>' + totals[s] + '</strong>' +
+      '</button>';
+    }).join('');
+  }
+
+  // ── District name labels (matches the reference map's layout) ──
+  const districtLabels = Object.keys(KERALA_DISTRICT_ANCHORS).map(name => {
+    const a = KERALA_DISTRICT_ANCHORS[name];
+    return '<text x="' + a.x + '" y="' + a.y + '" class="ds-kerala-district-label">' + esc(name.toUpperCase()) + '</text>';
+  }).join('');
+
+  const markers = plottable.map(name => {
+    const c = KERALA_SITE_COORDS[name];
+    const entry = bySite.get(name);
+    const worst = _cdsWorstStatus(entry.counts, _cdsMapStatusFilter);
+    if (!worst) return ''; // nothing at this site matches the current filter — hide marker
+    const totalShown = STATUS_UI_ORDER.reduce((sum, s) => sum + (_cdsMapStatusFilter.has(s) ? entry.counts[s] : 0), 0);
+    const r = Math.max(8, Math.min(17, 6 + Math.sqrt(totalShown) * 3.2));
+    const color = DS_STATUS_META[worst].color;
+    const idx = plottable.indexOf(name);
+    return '<g class="ds-map-marker" data-site-idx="' + idx + '" tabindex="0" role="button" aria-label="' + esc(name) + '">' +
+      '<circle cx="' + c.x + '" cy="' + c.y + '" r="' + r + '" fill="' + color + '" stroke="var(--map-paper)" stroke-width="2.5"/>' +
+      (totalShown > 1 ? '<text x="' + c.x + '" y="' + (c.y + 4) + '" text-anchor="middle" class="ds-map-marker-count">' + totalShown + '</text>' : '') +
+    '</g>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div class="ds-map-svg-wrap">' +
+      '<div class="ds-map-zoom-controls">' +
+        '<button onclick="_cdsMapZoomButton(\'in\')" aria-label="Zoom in">+</button>' +
+        '<span id="ds-map-zoom-label">100%</span>' +
+        '<button onclick="_cdsMapZoomButton(\'out\')" aria-label="Zoom out">−</button>' +
+        '<button onclick="_cdsMapZoomReset()" class="ds-map-zoom-reset" aria-label="Reset view">⤢</button>' +
+      '</div>' +
+      '<svg viewBox="' + _cdsMapView.x + ' ' + _cdsMapView.y + ' ' + _cdsMapView.w + ' ' + _cdsMapView.h + '" ' +
+        'class="ds-kerala-svg" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="' + KERALA_OUTLINE_PATH + '" class="ds-kerala-outline"/>' +
+        districtLabels +
+        markers +
+      '</svg>' +
+      '<div class="ds-map-hint">scroll / pinch to zoom · drag to pan · click a site to open it</div>' +
+    '</div>' +
+    (unplottable.length
+      ? '<div class="ds-map-unplottable">ℹ ' + unplottable.length + ' matched site(s) not yet mapped: ' +
+
+          unplottable.map(esc).join(', ') + '</div>'
+      : '') +
+    '<div id="ds-site-panel" class="ds-site-panel" style="display:none"></div>';
+
+  const svgEl = wrap.querySelector('.ds-kerala-svg');
+  if (svgEl) _cdsWireMapPanZoom(svgEl);
+
+  // Wire marker clicks + hover tooltips (avoids inline-onclick quoting issues with site names).
+  wrap.querySelectorAll('.ds-map-marker').forEach(g => {
+    const idx = parseInt(g.getAttribute('data-site-idx'), 10);
+    const name = plottable[idx];
+    let dragStartX = 0, dragStartY = 0, wasDrag = false;
+    g.addEventListener('mousedown', e => { dragStartX = e.clientX; dragStartY = e.clientY; wasDrag = false; });
+    g.addEventListener('mousemove', e => {
+      if (Math.abs(e.clientX - dragStartX) > 3 || Math.abs(e.clientY - dragStartY) > 3) wasDrag = true;
+      _cdsShowMapTooltip(name, e.clientX, e.clientY);
+    });
+    g.addEventListener('mouseenter', e => _cdsShowMapTooltip(name, e.clientX, e.clientY));
+    g.addEventListener('mouseleave', _cdsHideMapTooltip);
+    const open = () => { if (!wasDrag) _cdsOpenSitePanel(name); };
+    g.addEventListener('click', open);
+    g.addEventListener('touchstart', () => _cdsShowMapTooltip(name, 0, 0), { passive: true });
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _cdsOpenSitePanel(name); } });
+  });
+
+  // Re-open the drill-down panel if a site was already selected (e.g. after a filter change).
+  if (_cdsOpenSite && bySite.has(_cdsOpenSite)) _cdsOpenSitePanel(_cdsOpenSite);
+}
+
+// "Zoom in" on a site: show its individual devices.
+function _cdsOpenSitePanel(siteName) {
+  _cdsOpenSite = siteName;
+  const panel = document.getElementById('ds-site-panel');
+  if (!panel) return;
+  const devices = _cdsAllMatchedRows.filter(r => r.siteName === siteName);
+  const statusLabel = { active:'🟢 Active', down:'🔴 Down', maintenance:'🟠 Maint.', rma:'🟣 RMA', flapping:'🔵 Flapping' };
+
+  panel.style.display = 'block';
+  panel.innerHTML =
+    '<div class="ds-site-panel-head">' +
+      '<div style="font-weight:700;font-size:13px">' + esc(siteName) + '</div>' +
+      '<button class="ds-site-panel-close" onclick="_cdsCloseSitePanel()" aria-label="Close">✕</button>' +
+    '</div>' +
+    '<div class="ds-site-panel-body">' +
+      devices.map(d =>
+        '<div class="ds-site-device-row">' +
+          '<span class="ds-site-device-mac">' + esc(d.mac) + '</span>' +
+          '<span class="ds-site-device-asset">' + (d.assetId ? esc(d.assetId) : '—') + '</span>' +
+          '<span>' + (statusLabel[d.statusRaw] || esc(d.statusRaw)) + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+}
+
+function _cdsCloseSitePanel() {
+  _cdsOpenSite = null;
+  const panel = document.getElementById('ds-site-panel');
+  if (panel) panel.style.display = 'none';
+}
+
 // ── Recipient chips ───────────────────────────────────────────
 function _cdsRenderRecipientChips() {
   const el = document.getElementById('ds-recipient-chips');
@@ -7777,6 +8355,7 @@ function _cdsRenderRecipientChips() {
 
 // ── Push to engineers ─────────────────────────────────────────
 async function _cdsPushStatus() {
+  if (!isAdmin(getCurrentUser())) { showToast('Only admins can push device status alerts'); return; }
   if (!_cdsReportRows.length) { showToast('Generate a report first'); return; }
   const engineers  = getEngineerList();
   const recipients = engineers.filter(e => {
@@ -7889,12 +8468,52 @@ async function renderEngineerDsPanel() {
   } catch(e) { /* offline */ }
 
   const history = getDsHistory();
+
+  // Engineers get both: their own self-service upload/map/table, and whatever
+  // the admin has explicitly pushed. Default to whichever has something to show;
+  // pushed alerts win the default when both exist, matching prior behaviour.
+  const defaultView = history.length ? 'pushed' : 'upload';
+
+  el.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--accent-bg);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">' +
+      '<div class="ds-sort-toggle">' +
+        '<span id="eng-view-upload-btn" onclick="_cdsSetEngView(\'upload\')">📥 Upload &amp; View</span>' +
+        '<span id="eng-view-pushed-btn" onclick="_cdsSetEngView(\'pushed\')">📨 Pushed by Admin' + (history.length ? ' (' + history.length + ')' : '') + '</span>' +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--text2)">🗄 ' + _cdsSitesMap.size + ' devices pre-loaded</div>' +
+    '</div>' +
+    '<div id="eng-upload-section" style="display:none">' + _cdsUploaderSectionHtml() + '</div>' +
+    '<div id="eng-pushed-section" style="display:none"></div>';
+
+  _cdsWireUploaderSection();
+  _renderEngineerPushedSection(history);
+  _cdsSetEngView(defaultView);
+}
+
+// Toggle between the engineer's own upload/map/table and the admin-pushed alerts.
+function _cdsSetEngView(view) {
+  const upBtn   = document.getElementById('eng-view-upload-btn');
+  const pushBtn = document.getElementById('eng-view-pushed-btn');
+  const upSec   = document.getElementById('eng-upload-section');
+  const pushSec = document.getElementById('eng-pushed-section');
+  if (upBtn)   upBtn.classList.toggle('active', view === 'upload');
+  if (pushBtn) pushBtn.classList.toggle('active', view === 'pushed');
+  if (upSec)   upSec.style.display   = view === 'upload' ? 'block' : 'none';
+  if (pushSec) pushSec.style.display = view === 'pushed' ? 'block' : 'none';
+  if (view === 'map' || view === 'upload') _cdsRenderKeralaMap(); // re-fit after becoming visible
+}
+
+// Renders the "pushed by admin" acknowledge view into its own container
+// (rather than owning the whole panel) so it can sit alongside the uploader.
+function _renderEngineerPushedSection(history) {
+  const sec = document.getElementById('eng-pushed-section');
+  if (!sec) return;
   if (!history.length) {
-    el.innerHTML =
+    sec.innerHTML =
       '<div style="padding:3rem 1rem;text-align:center;color:var(--text2)">' +
       '<div style="font-size:32px;margin-bottom:10px">📡</div>' +
       '<div style="font-size:14px;font-weight:600;margin-bottom:4px">No status updates yet</div>' +
-      '<div style="font-size:12px">Admin will push device status from the portal Excel</div>' +
+      '<div style="font-size:12px">Admin hasn\'t pushed a device status alert yet — you can also just upload the file yourself above</div>' +
       '</div>';
     return;
   }
@@ -7904,7 +8523,7 @@ async function renderEngineerDsPanel() {
 
 // ── Phase 1 base renderer ─────────────────────────────────────
 function _renderEngineerDsViewP1(history) {
-  const el   = document.getElementById('panel-devstatus');
+  const el   = document.getElementById('eng-pushed-section') || document.getElementById('panel-devstatus');
   if (!el || !_dsCurrentPush) return;
   const push = _dsCurrentPush;
   const devs = push.devices || [];
