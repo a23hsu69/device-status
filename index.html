@@ -1232,12 +1232,13 @@ body{display:flex;flex-direction:column;min-height:100vh}
   border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
 .ds-site-panel-close{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;line-height:1;padding:2px 4px}
 .ds-site-panel-close:hover{color:var(--text)}
-.ds-site-panel-body{overflow-y:auto;padding:4px 12px}
-.ds-site-device-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;
+.ds-site-panel-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 12px}
+.ds-site-device-row{display:grid;grid-template-columns:1.3fr 1fr auto auto;gap:8px;align-items:center;
   padding:6px 0;border-bottom:1px solid var(--border);font-size:11px}
 .ds-site-device-row:last-child{border-bottom:none}
 .ds-site-device-mac{font-family:monospace;color:var(--text2)}
 .ds-site-device-asset{font-family:monospace;color:var(--text3)}
+.ds-site-device-sync{font-size:10px;color:var(--text3);white-space:nowrap;text-align:right}
 
 /* DS sort toggle */
 .ds-sort-toggle { display:inline-flex;align-items:center;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;font-size:11px }
@@ -8315,17 +8316,19 @@ function _cdsOpenSitePanel(siteName) {
   panel.style.display = 'block';
   panel.innerHTML =
     '<div class="ds-site-panel-head">' +
-      '<div style="font-weight:700;font-size:13px">' + esc(siteName) + '</div>' +
+      '<div style="font-weight:700;font-size:13px">' + esc(siteName) + ' <span style="font-weight:400;color:var(--text3);font-size:11px">(' + devices.length + ')</span></div>' +
       '<button class="ds-site-panel-close" onclick="_cdsCloseSitePanel()" aria-label="Close">✕</button>' +
     '</div>' +
     '<div class="ds-site-panel-body">' +
-      devices.map(d =>
-        '<div class="ds-site-device-row">' +
+      devices.map(d => {
+        const syncShort = d.downtime === 'No sync' ? 'No sync' : d.downtime + ' ago';
+        return '<div class="ds-site-device-row">' +
           '<span class="ds-site-device-mac">' + esc(d.mac) + '</span>' +
           '<span class="ds-site-device-asset">' + (d.assetId ? esc(d.assetId) : '—') + '</span>' +
           '<span>' + (statusLabel[d.statusRaw] || esc(d.statusRaw)) + '</span>' +
-        '</div>'
-      ).join('') +
+          '<span class="ds-site-device-sync" title="' + esc(d.lastSync || '') + '">' + esc(syncShort) + '</span>' +
+        '</div>';
+      }).join('') +
     '</div>';
 }
 
