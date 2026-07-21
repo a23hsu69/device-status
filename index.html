@@ -1226,13 +1226,13 @@ body{display:flex;flex-direction:column;min-height:100vh}
   padding:4px 9px;border-radius:6px;pointer-events:none;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.25);
   display:none;font-family:var(--font)}
 
-.ds-site-panel{position:sticky;bottom:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
-  box-shadow:0 -4px 16px rgba(0,0,0,.12);max-height:280px;display:flex;flex-direction:column;overflow:hidden}
+.ds-site-panel{position:sticky;bottom:0;min-height:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:0 -4px 16px rgba(0,0,0,.12);max-height:320px;display:flex;flex-direction:column;overflow:hidden}
 .ds-site-panel-head{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;
   border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
 .ds-site-panel-close{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;line-height:1;padding:2px 4px}
 .ds-site-panel-close:hover{color:var(--text)}
-.ds-site-panel-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 12px}
+.ds-site-panel-body{flex:1;min-height:0;max-height:280px;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:4px 12px;overscroll-behavior:contain}
 .ds-site-device-row{display:grid;grid-template-columns:1.3fr 1fr auto auto;gap:8px;align-items:center;
   padding:6px 0;border-bottom:1px solid var(--border);font-size:11px}
 .ds-site-device-row:last-child{border-bottom:none}
