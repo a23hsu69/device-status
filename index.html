@@ -1197,27 +1197,23 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .ds-map-chip-dot{width:8px;height:8px;border-radius:50%;background:var(--chip-color);flex-shrink:0}
 .ds-map-chip:hover{opacity:.85}
 
-.ds-map-wrap{position:relative;padding:10px 14px 16px;display:flex;flex-direction:column;gap:10px;
-  --map-paper:#e9dfc7;--map-paper-dark:#d8c9a3;--map-ink:#2b2118;--map-ink-soft:#5a4c3a}
-.ds-map-svg-wrap{position:relative;width:100%;max-width:420px;margin:0 auto;background:var(--map-paper);border-radius:var(--radius);
-  border:1px solid var(--map-paper-dark);padding:8px;
-  background-image:radial-gradient(ellipse at 20% 15%, rgba(120,95,50,.10), transparent 55%),
-                   radial-gradient(ellipse at 85% 80%, rgba(120,95,50,.12), transparent 50%)}
+.ds-map-wrap{position:relative;padding:10px 14px 16px;display:flex;flex-direction:column;gap:10px}
+.ds-map-svg-wrap{position:relative;width:100%;max-width:640px;margin:0 auto}
 .ds-kerala-svg{width:100%;height:auto;display:block;max-height:70vh;cursor:grab;touch-action:none}
 .ds-kerala-svg.ds-map-dragging{cursor:grabbing}
-.ds-kerala-outline{fill:var(--map-paper);stroke:var(--map-ink);stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}
-.ds-kerala-district-label{fill:var(--map-ink-soft);font-family:Georgia,'Times New Roman',serif;font-size:15px;
-  font-weight:600;text-anchor:middle;letter-spacing:.4px;pointer-events:none;opacity:.8}
+.ds-kerala-outline{fill:var(--accent-bg);stroke:var(--border2);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.ds-kerala-district-label{fill:var(--text3);font-family:var(--font);font-size:12.5px;
+  font-weight:700;text-anchor:middle;letter-spacing:.3px;text-transform:uppercase;pointer-events:none}
 .ds-map-marker{cursor:pointer}
-.ds-map-marker circle{transition:r .1s}
-.ds-map-marker:hover circle,.ds-map-marker:focus circle{stroke:var(--map-ink);filter:brightness(1.08)}
-.ds-map-marker-count{font-size:11px;font-weight:700;fill:#fff;pointer-events:none;font-family:var(--font)}
+.ds-map-marker circle{transition:r .1s,stroke .1s}
+.ds-map-marker:hover circle,.ds-map-marker:focus circle{stroke:var(--accent);filter:brightness(1.05)}
+.ds-map-marker-count{font-size:10px;font-weight:700;fill:#fff;pointer-events:none;font-family:var(--font)}
 .ds-map-unplottable{font-size:11px;color:var(--text2);background:var(--bg2);border:1px dashed var(--border2);
   border-radius:var(--radius);padding:8px 10px;line-height:1.5}
 
 .ds-map-zoom-controls{position:absolute;top:14px;right:14px;z-index:5;display:flex;flex-direction:column;
   align-items:center;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);
-  overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  overflow:hidden;box-shadow:var(--shadow)}
 .ds-map-zoom-controls button{width:26px;height:24px;border:none;background:none;color:var(--text);
   font-size:14px;font-weight:700;cursor:pointer;line-height:1;font-family:var(--font)}
 .ds-map-zoom-controls button:hover{background:var(--accent-bg);color:var(--accent)}
@@ -7486,74 +7482,75 @@ SITES_DB.forEach(e => {
   if (mac) _cdsSitesMap.set(mac, { siteName: e.site, assetId: e.asset, engineer: e.engineer || '' });
 });
 
-// ── Status metadata for the Kerala device map (5 tracked statuses) ──
+// ── Status metadata for the Kerala device map (6 tracked statuses) ──
 const DS_STATUS_META = {
   active:      { label: 'Active',      color: 'var(--green-dot)',  emoji: '🟢' },
+  standby:     { label: 'Standby',     color: '#64748b',           emoji: '⚪' },
   down:        { label: 'Down',        color: 'var(--cds-red)',    emoji: '🔴' },
   maintenance: { label: 'Maintenance', color: 'var(--cds-orange)', emoji: '🟠' },
   rma:         { label: 'RMA',         color: '#7c5cfc',           emoji: '🟣' },
   flapping:    { label: 'Flapping',    color: 'var(--teal-dot)',   emoji: '🔵' },
 };
 // Priority order used to pick a site marker's colour when it has a mix of statuses
-// (worst / most-urgent first).
-const DS_STATUS_PRIORITY = ['down', 'flapping', 'rma', 'maintenance', 'active'];
+// (worst / most-urgent first). Standby is the least urgent — idle, not a problem.
+const DS_STATUS_PRIORITY = ['down', 'flapping', 'rma', 'maintenance', 'active', 'standby'];
 
 // ── Approximate site coordinates on the schematic Kerala map ────
 // (Illustrative placement by district — not surveyed GPS coordinates.)
 const KERALA_SITE_COORDS = {
-  "A.M Fisheries Private Limited Kerala": { x:239.0, y:497.0, district:"Alappuzha" },
-  "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn": { x:254.0, y:497.0, district:"Alappuzha" },
-  "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn": { x:269.0, y:497.0, district:"Alappuzha" },
-  "Accelerated freeze Drying Co ltd": { x:239.0, y:512.0, district:"Alappuzha" },
-  "BHAVANI SHIPPING SERVICES (I) Kerala": { x:192.5, y:390.0, district:"Ernakulam" },
-  "Bay Container Terminal Pvt Ltd": { x:207.5, y:390.0, district:"Ernakulam" },
-  "Blueocean Container Terminals (I) Pvt Ltd 1 cochin": { x:222.5, y:390.0, district:"Ernakulam" },
-  "COCHIN PORT CFS": { x:237.5, y:390.0, district:"Ernakulam" },
-  "COCHIN SEZ": { x:252.5, y:390.0, district:"Ernakulam" },
-  "Chakiat Agencies Private Limited": { x:267.5, y:390.0, district:"Ernakulam" },
-  "Development Plot Athani Kerala": { x:237.5, y:382.5, district:"Thrissur" },
-  "Development plot Kunnamthanam kerala": { x:371.5, y:537.5, district:"Pathanamthitta" },
-  "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED": { x:192.5, y:405.0, district:"Ernakulam" },
-  "EMPIRE CONTAINER TERMINAL": { x:207.5, y:405.0, district:"Ernakulam" },
-  "GDKL CFS COCHIN": { x:222.5, y:405.0, district:"Ernakulam" },
-  "GIPL PALIYEKKARA TOLL PLAZA": { x:237.5, y:367.5, district:"Thrissur" },
-  "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN": { x:237.5, y:405.0, district:"Ernakulam" },
+  "A.M Fisheries Private Limited Kerala": { x:234.0, y:492.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn": { x:254.0, y:492.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn": { x:274.0, y:492.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co ltd": { x:234.0, y:512.0, district:"Alappuzha" },
+  "BHAVANI SHIPPING SERVICES (I) Kerala": { x:170.0, y:372.0, district:"Ernakulam" },
+  "Bay Container Terminal Pvt Ltd": { x:194.0, y:372.0, district:"Ernakulam" },
+  "Blueocean Container Terminals (I) Pvt Ltd 1 cochin": { x:218.0, y:372.0, district:"Ernakulam" },
+  "COCHIN PORT CFS": { x:242.0, y:372.0, district:"Ernakulam" },
+  "COCHIN SEZ": { x:266.0, y:372.0, district:"Ernakulam" },
+  "Chakiat Agencies Private Limited": { x:290.0, y:372.0, district:"Ernakulam" },
+  "Development Plot Athani Kerala": { x:236.5, y:366.5, district:"Thrissur" },
+  "Development plot Kunnamthanam kerala": { x:370.5, y:536.5, district:"Pathanamthitta" },
+  "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED": { x:170.0, y:396.0, district:"Ernakulam" },
+  "EMPIRE CONTAINER TERMINAL": { x:194.0, y:396.0, district:"Ernakulam" },
+  "GDKL CFS COCHIN": { x:218.0, y:396.0, district:"Ernakulam" },
+  "GIPL PALIYEKKARA TOLL PLAZA": { x:253.5, y:366.5, district:"Thrissur" },
+  "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN": { x:242.0, y:396.0, district:"Ernakulam" },
   "Industrial Development Plot Ananthapuram Kerala": { x:210, y:76, district:"Kasaragod" },
-  "KINFRA Export Promotion Industrial Park, Kakkanad": { x:252.5, y:405.0, district:"Ernakulam" },
-  "KINFRA IITP,Palakkad": { x:329.0, y:323.5, district:"Palakkad" },
-  "KINFRA Industrial Park, Adoor": { x:386.5, y:537.5, district:"Pathanamthitta" },
-  "KINFRA Industrial Park, kunnamthanam": { x:371.5, y:552.5, district:"Pathanamthitta" },
-  "KINFRA Kalamassery": { x:267.5, y:405.0, district:"Ernakulam" },
-  "KINFRA Mega Food Park,Kozhipara,Palakkad": { x:344.0, y:323.5, district:"Palakkad" },
+  "KINFRA Export Promotion Industrial Park, Kakkanad": { x:266.0, y:396.0, district:"Ernakulam" },
+  "KINFRA IITP,Palakkad": { x:324.0, y:321.0, district:"Palakkad" },
+  "KINFRA Industrial Park, Adoor": { x:387.5, y:536.5, district:"Pathanamthitta" },
+  "KINFRA Industrial Park, kunnamthanam": { x:370.5, y:553.5, district:"Pathanamthitta" },
+  "KINFRA Kalamassery": { x:290.0, y:396.0, district:"Ernakulam" },
+  "KINFRA Mega Food Park,Kozhipara,Palakkad": { x:344.0, y:321.0, district:"Palakkad" },
   "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala": { x:279, y:205, district:"Wayanad" },
-  "KINFRA Small Industries Park, Nellard ,Ernakulam": { x:192.5, y:420.0, district:"Ernakulam" },
-  "KINFRA Small Industries Park, Thalassery, Kannur": { x:178.5, y:149.5, district:"Kannur" },
+  "KINFRA Small Industries Park, Nellard ,Ernakulam": { x:170.0, y:420.0, district:"Ernakulam" },
+  "KINFRA Small Industries Park, Thalassery, Kannur": { x:177.5, y:148.5, district:"Kannur" },
   "KINFRA Techno Industrial  Park, Kakkancherry  Malappuram": { x:285, y:290, district:"Malappuram" },
-  "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur": { x:193.5, y:149.5, district:"Kannur" },
-  "KINFRA small Industrial Park,koratty": { x:252.5, y:367.5, district:"Thrissur" },
+  "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur": { x:194.5, y:148.5, district:"Kannur" },
+  "KINFRA small Industrial Park,koratty": { x:236.5, y:383.5, district:"Thrissur" },
   "KOTTAYAM ICD": { x:352, y:489, district:"Kottayam" },
   "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala": { x:254.0, y:512.0, district:"Alappuzha" },
-  "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala": { x:178.5, y:164.5, district:"Kannur" },
-  "KSIDC Investment zone Palakkad kerala": { x:359.0, y:323.5, district:"Palakkad" },
+  "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala": { x:177.5, y:165.5, district:"Kannur" },
+  "KSIDC Investment zone Palakkad kerala": { x:364.0, y:321.0, district:"Palakkad" },
   "KSIDC Life Science Park Trivandrum Kerala": { x:291, y:643, district:"Thiruvananthapuram" },
-  "KSIDC Mega Food Park Pallipuram Kerala": { x:269.0, y:512.0, district:"Alappuzha" },
-  "KSIE CFS COCHIN": { x:207.5, y:420.0, district:"Ernakulam" },
-  "KUMBALAM TOLL PLAZA": { x:222.5, y:420.0, district:"Ernakulam" },
-  "MARINE CONTAINER LOGISTICS 1": { x:237.5, y:420.0, district:"Ernakulam" },
-  "MARINE CONTAINER LOGISTICS 2": { x:252.5, y:420.0, district:"Ernakulam" },
-  "MARINE CONTAINER LOGISTICS 3": { x:267.5, y:420.0, district:"Ernakulam" },
-  "MARINE CONTAINER LOGISTICS 4": { x:192.5, y:435.0, district:"Ernakulam" },
-  "MBK Logistix Pvt Ltd Cochin": { x:207.5, y:435.0, district:"Ernakulam" },
-  "MIV CFS COCHIN": { x:222.5, y:435.0, district:"Ernakulam" },
-  "MIV empty yard cochin": { x:237.5, y:435.0, district:"Ernakulam" },
-  "Nest Electronics City NeST Hitek Park": { x:222.5, y:450.0, district:"Ernakulam" },
-  "Pampampallam Toll Plaza": { x:329.0, y:338.5, district:"Palakkad" },
-  "Panniyankara Toll Plaza": { x:344.0, y:338.5, district:"Palakkad" },
-  "Petta CFS": { x:252.5, y:435.0, district:"Ernakulam" },
-  "Ponnarimanglam TP": { x:267.5, y:435.0, district:"Ernakulam" },
-  "Reefco Container Services (India) Pvt Ltd": { x:192.5, y:450.0, district:"Ernakulam" },
-  "SIDCO Industrial Estate Kollakadavu Kerala": { x:239.0, y:527.0, district:"Alappuzha" },
-  "SRISTAR CONTAINER SERVICES LLP Cochin": { x:207.5, y:450.0, district:"Ernakulam" },
+  "KSIDC Mega Food Park Pallipuram Kerala": { x:274.0, y:512.0, district:"Alappuzha" },
+  "KSIE CFS COCHIN": { x:194.0, y:420.0, district:"Ernakulam" },
+  "KUMBALAM TOLL PLAZA": { x:218.0, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 1": { x:242.0, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 2": { x:266.0, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 3": { x:290.0, y:420.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 4": { x:170.0, y:444.0, district:"Ernakulam" },
+  "MBK Logistix Pvt Ltd Cochin": { x:194.0, y:444.0, district:"Ernakulam" },
+  "MIV CFS COCHIN": { x:218.0, y:444.0, district:"Ernakulam" },
+  "MIV empty yard cochin": { x:242.0, y:444.0, district:"Ernakulam" },
+  "Nest Electronics City NeST Hitek Park": { x:266.0, y:444.0, district:"Ernakulam" },
+  "Pampampallam Toll Plaza": { x:324.0, y:341.0, district:"Palakkad" },
+  "Panniyankara Toll Plaza": { x:344.0, y:341.0, district:"Palakkad" },
+  "Petta CFS": { x:290.0, y:444.0, district:"Ernakulam" },
+  "Ponnarimanglam TP": { x:170.0, y:468.0, district:"Ernakulam" },
+  "Reefco Container Services (India) Pvt Ltd": { x:194.0, y:468.0, district:"Ernakulam" },
+  "SIDCO Industrial Estate Kollakadavu Kerala": { x:234.0, y:532.0, district:"Alappuzha" },
+  "SRISTAR CONTAINER SERVICES LLP Cochin": { x:218.0, y:468.0, district:"Ernakulam" },
 };
 
 const KERALA_DISTRICT_ANCHORS = {
@@ -7663,7 +7660,7 @@ let _cdsAllMatchedRows = [];  // matched + enriched rows, ALL statuses incl. act
 let _cdsSortDir     = 'desc'; // desc = longest first
 let _dsCurrentPush  = null;
 let _cdsView        = 'map';  // 'map' | 'table' — current Device Status panel view
-let _cdsMapStatusFilter = new Set(['active','down','maintenance','rma','flapping']); // which statuses show on the map
+let _cdsMapStatusFilter = new Set(['active','standby','down','maintenance','rma','flapping']); // which statuses show on the map
 let _cdsOpenSite    = null;   // siteName currently drilled-into on the map
 
 // Map pan/zoom viewport (SVG user-space, tight-cropped around the Kerala outline).
@@ -7842,7 +7839,7 @@ async function _cdsHandleFile(file) {
 
     // Statuses we track anywhere in the app (table + map). 'active' is kept only
     // for the map view — the downtime table filters it back out (see _cdsProcessData).
-    const ACTIVE = new Set(['down','maintenance','rma','flapping','active']);
+    const ACTIVE = new Set(['down','maintenance','rma','flapping','active','standby']);
     const data = [];
     for (let i = headerRow + 1; i < rows.length; i++) {
       const row    = rows[i];
@@ -7854,7 +7851,7 @@ async function _cdsHandleFile(file) {
 
     _cdsRawDevices = data;
     if (dropText) dropText.textContent = '✅ ' + file.name;
-    if (statusEl) statusEl.textContent = data.length + ' active/down/maintenance/rma/flapping devices loaded — tap Generate Report';
+    if (statusEl) statusEl.textContent = data.length + ' active/standby/down/maintenance/rma/flapping devices loaded — tap Generate Report';
     if (controls) { controls.style.display = 'flex'; }
     showToast(data.length + ' devices loaded', );
   } catch(err) {
@@ -7897,10 +7894,10 @@ function _cdsProcessData() {
     _cdsSortDir = 'desc';
     matched.sort((a,b) => b.minutes - a.minutes);
 
-    // The map wants every matched device (including 'active'); the downtime
+    // The map wants every matched device (including 'active'/'standby'); the downtime
     // table only makes sense for problem devices, so it keeps the old behaviour.
     _cdsAllMatchedRows = matched;
-    _cdsReportRows     = matched.filter(r => r.statusRaw !== 'active');
+    _cdsReportRows     = matched.filter(r => r.statusRaw !== 'active' && r.statusRaw !== 'standby');
     _cdsFilteredRows   = _cdsReportRows;
 
     // Update stats
@@ -8035,7 +8032,7 @@ function _cdsAggregateBySite(rows) {
   const map = new Map();
   rows.forEach(r => {
     if (!map.has(r.siteName)) {
-      map.set(r.siteName, { counts:{active:0,down:0,maintenance:0,rma:0,flapping:0}, devices: [] });
+      map.set(r.siteName, { counts:{active:0,standby:0,down:0,maintenance:0,rma:0,flapping:0}, devices: [] });
     }
     const entry = map.get(r.siteName);
     if (entry.counts[r.statusRaw] !== undefined) entry.counts[r.statusRaw]++;
@@ -8222,11 +8219,11 @@ function _cdsRenderKeralaMap() {
   const unplottable = siteNames.filter(n => !KERALA_SITE_COORDS[n]);
 
   // Overall status totals (unaffected by the filter) for the legend counts.
-  const totals = {active:0,down:0,maintenance:0,rma:0,flapping:0};
+  const totals = {active:0,standby:0,down:0,maintenance:0,rma:0,flapping:0};
   _cdsAllMatchedRows.forEach(r => { if (totals[r.statusRaw] !== undefined) totals[r.statusRaw]++; });
 
   // ── Legend / filter chips ──
-  const STATUS_UI_ORDER = ['active','down','maintenance','rma','flapping'];
+  const STATUS_UI_ORDER = ['active','standby','down','maintenance','rma','flapping'];
   if (legendWrap) {
     legendWrap.innerHTML = STATUS_UI_ORDER.map(s => {
       const meta = DS_STATUS_META[s];
@@ -8250,11 +8247,11 @@ function _cdsRenderKeralaMap() {
     const worst = _cdsWorstStatus(entry.counts, _cdsMapStatusFilter);
     if (!worst) return ''; // nothing at this site matches the current filter — hide marker
     const totalShown = STATUS_UI_ORDER.reduce((sum, s) => sum + (_cdsMapStatusFilter.has(s) ? entry.counts[s] : 0), 0);
-    const r = Math.max(8, Math.min(17, 6 + Math.sqrt(totalShown) * 3.2));
+    const r = Math.max(6, Math.min(13, 4.5 + Math.sqrt(totalShown) * 2.3));
     const color = DS_STATUS_META[worst].color;
     const idx = plottable.indexOf(name);
     return '<g class="ds-map-marker" data-site-idx="' + idx + '" tabindex="0" role="button" aria-label="' + esc(name) + '">' +
-      '<circle cx="' + c.x + '" cy="' + c.y + '" r="' + r + '" fill="' + color + '" stroke="var(--map-paper)" stroke-width="2.5"/>' +
+      '<circle cx="' + c.x + '" cy="' + c.y + '" r="' + r + '" fill="' + color + '" stroke="var(--bg)" stroke-width="2"/>' +
       (totalShown > 1 ? '<text x="' + c.x + '" y="' + (c.y + 4) + '" text-anchor="middle" class="ds-map-marker-count">' + totalShown + '</text>' : '') +
     '</g>';
   }).join('');
@@ -8313,7 +8310,7 @@ function _cdsOpenSitePanel(siteName) {
   const panel = document.getElementById('ds-site-panel');
   if (!panel) return;
   const devices = _cdsAllMatchedRows.filter(r => r.siteName === siteName);
-  const statusLabel = { active:'🟢 Active', down:'🔴 Down', maintenance:'🟠 Maint.', rma:'🟣 RMA', flapping:'🔵 Flapping' };
+  const statusLabel = { active:'🟢 Active', standby:'⚪ Standby', down:'🔴 Down', maintenance:'🟠 Maint.', rma:'🟣 RMA', flapping:'🔵 Flapping' };
 
   panel.style.display = 'block';
   panel.innerHTML =
