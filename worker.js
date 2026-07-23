@@ -700,8 +700,12 @@ async function handleRequest(request, env){
     if(!/^[a-f0-9]{64}$/.test(newHash)){
       return new Response(JSON.stringify({ok:false, error:'Invalid hash'}), {status:400, headers});
     }
-    await env.PUSH_SUBS.put('credentials', JSON.stringify({...stored, admin:{username:'admin', hash:newHash}}));
-    return new Response(JSON.stringify({ok:true}), {headers});
+    // passwordChangedAt lets every signed-in device detect "this session predates
+    // the current password" and force itself back to the login screen — this is
+    // what implements "log out of all devices" for the admin account.
+    const passwordChangedAt = Date.now();
+    await env.PUSH_SUBS.put('credentials', JSON.stringify({...stored, admin:{username:'admin', hash:newHash, passwordChangedAt}}));
+    return new Response(JSON.stringify({ok:true, passwordChangedAt}), {headers});
   }
 
   // POST /submit-report

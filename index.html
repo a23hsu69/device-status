@@ -2021,6 +2021,10 @@ const K = {
 const K_AUTH      = 'dsc_auth_v1';
 const K_AUTH_TS   = 'dsc_auth_ts_v1';
 const K_AUTH_US   = 'dsc_auth_user_v1';
+// Separate from K_AUTH_TS: only set on a real username+password login, never
+// refreshed by PIN/biometric unlocks. Used to detect "password changed on
+// another device" — PIN unlocks alone should never outrun a password change.
+const K_AUTH_LOGIN_TS = 'dsc_auth_login_ts_v1';
 const K_INSTALL   = 'dsc_install_dismissed';
 const AUTH_TTL    = 24 * 60 * 60 * 1000;
 
@@ -2134,7 +2138,7 @@ function isAuthValid() {
 }
 
 function clearSession() {
-  lrm(K_AUTH); lrm(K_AUTH_TS); lrm(K_AUTH_US);
+  lrm(K_AUTH); lrm(K_AUTH_TS); lrm(K_AUTH_US); lrm(K_AUTH_LOGIN_TS);
 }
 
 function applyRoleUI(user) {
@@ -2185,6 +2189,62 @@ function checkAuth() {
   }
 }
 
+// ── Force logout on all devices when the admin password changes ──────────
+// credCache.admin.passwordChangedAt is set server-side whenever the admin
+// password is updated (see /set-admin-password in worker.js). Any device
+// whose last *real* password login predates that timestamp gets signed out
+// automatically — PIN/biometric unlocks never refresh K_AUTH_LOGIN_TS, so a
+// device can't stay logged in past a password change just by keeping its PIN.
+function enforceAdminSessionValidity() {
+  if (getCurrentUser() !== 'admin') return;
+  if (!isAuthValid()) return;
+  const adminEntry = credCache && credCache.admin;
+  if (!adminEntry || !adminEntry.passwordChangedAt) return;
+  // Fall back to K_AUTH_TS for sessions logged in before this feature existed.
+  const lastRealLoginTs = parseInt(ls(K_AUTH_LOGIN_TS) || ls(K_AUTH_TS) || '0');
+  // Small grace window to absorb clock skew / request latency on the device
+  // that just performed the change itself.
+  if (adminEntry.passwordChangedAt > lastRealLoginTs + 500) {
+    forceLogoutStalePassword();
+  }
+}
+
+function forceLogoutStalePassword() {
+  if (!isAuthValid() || getCurrentUser() !== 'admin') return; // already signed out
+  clearSession();
+  tab = 'notifs';
+  hidePinLock();
+  document.getElementById('login-screen').style.display = 'flex';
+  const userEl = document.getElementById('login-user');
+  const passEl = document.getElementById('login-pass');
+  if (userEl) userEl.value = '';
+  if (passEl) passEl.value = '';
+  applyRoleUI('');
+  const errEl = document.getElementById('login-error');
+  if (errEl) {
+    errEl.textContent = 'This admin password was changed on another device. Please sign in again.';
+    errEl.style.display = 'block';
+  }
+  showToast('Signed out — admin password was changed elsewhere');
+}
+
+// Lightweight periodic re-check while the app stays open (catches a
+// password change made on another device without requiring a reload here).
+// Only fires network requests when the signed-in user is actually admin.
+async function pollAdminSessionCheck() {
+  if (getCurrentUser() !== 'admin') return;
+  try {
+    const r = await fetch(WORKER_URL + '/get-credentials');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (data.ok && data.credentials && Object.keys(data.credentials).length) {
+      credCache = data.credentials;
+      sj(K.CREDS, credCache);
+      enforceAdminSessionValidity();
+    }
+  } catch (e) { /* offline — will retry next cycle */ }
+}
+
 // In-memory credential cache loaded from KV on startup
 // { ayush: {username, hash}, swethaswan: {username, hash}, admin: {username, hash} }
 let credCache = null;
@@ -2205,6 +2265,7 @@ async function fetchCredentials() {
     if (data.ok && data.credentials && Object.keys(data.credentials).length) {
       credCache = data.credentials;
       sj(K.CREDS, credCache);
+      enforceAdminSessionValidity();
     }
   } catch (e) {
     const stored = lj(K.CREDS, null);
@@ -2276,6 +2337,7 @@ function doLogin() {
   if (hash === entry.hash) {
     lset(K_AUTH, '1');
     lset(K_AUTH_TS, Date.now().toString());
+    lset(K_AUTH_LOGIN_TS, Date.now().toString());
     lset(K_AUTH_US, entry.key); // store the canonical key (admin/ayush/swethaswan)
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('login-pass').value = '';
@@ -2318,6 +2380,7 @@ async function openSettingsModal() {
     if (data.ok && data.credentials) {
       credCache = data.credentials;
       sj(K.CREDS, credCache);
+      enforceAdminSessionValidity();
       statusEl.innerHTML = '<span style="color:var(--green-text)">✅</span> Credentials loaded from server.';
     } else {
       statusEl.innerHTML = '<span style="color:var(--amber-text)">⚠️</span> Using defaults — changes will sync on save.';
@@ -2920,6 +2983,7 @@ async function saveSettings() {
     sj(K.CREDS, credCache);
 
     // Save admin password if changed
+    let adminPasswordChanged = false;
     if (adminNewPw) {
       const adminNewHash = sha256('admin:' + adminNewPw);
       const r2 = await fetch(WORKER_URL + '/set-admin-password', {
@@ -2928,14 +2992,21 @@ async function saveSettings() {
       });
       const d2 = await r2.json();
       if (!d2.ok) { showToast(d2.error || 'Failed to update admin password'); btn.disabled = false; btn.textContent = 'Save & sync'; return; }
-      credCache.admin = { username: 'admin', hash: adminNewHash };
+      const changedAt = d2.passwordChangedAt || Date.now();
+      credCache.admin = { username: 'admin', hash: adminNewHash, passwordChangedAt: changedAt };
       sj(K.CREDS, credCache);
+      // This device just performed the change with the real password — keep
+      // it signed in by refreshing its own session timestamps past changedAt,
+      // rather than having the next poll log it out along with every other device.
+      lset(K_AUTH_TS, Date.now().toString());
+      lset(K_AUTH_LOGIN_TS, Date.now().toString());
+      adminPasswordChanged = true;
     }
 
-    logActivity('admin', 'remark', 'Updated credentials via settings');
+    logActivity('admin', 'remark', 'Updated credentials via settings' + (adminPasswordChanged ? ' — admin password changed, other devices signed out' : ''));
     // v8 — sites baked into SITES_DB, no sync needed
     closeSettingsModal();
-    showToast('Credentials saved and synced ✓');
+    showToast(adminPasswordChanged ? 'Password changed — all other devices have been signed out ✓' : 'Credentials saved and synced ✓');
   } catch (e) {
     showToast('Could not reach server: ' + e.message);
   }
@@ -7462,6 +7533,13 @@ function autoCompleteExpiredVisits() {
   
   // Auto-complete expired site visits
   autoCompleteExpiredVisits();
+
+  // Catch an admin password change made on another device: poll periodically
+  // while this tab stays open, and immediately whenever it regains focus.
+  setInterval(pollAdminSessionCheck, 60000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') pollAdminSessionCheck();
+  });
 
 })();
 
