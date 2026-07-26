@@ -1204,29 +1204,45 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .ds-map-chip-dot{width:8px;height:8px;border-radius:50%;background:var(--chip-color);flex-shrink:0}
 .ds-map-chip:hover{opacity:.85}
 
-.ds-map-wrap{position:relative;padding:10px 14px 16px;display:flex;flex-direction:column;gap:10px}
-.ds-map-svg-wrap{position:relative;width:100%;max-width:640px;margin:0 auto}
-.ds-kerala-svg{width:100%;height:auto;display:block;max-height:70vh;cursor:grab;touch-action:none}
+.ds-map-wrap{position:relative;padding:10px 14px 16px;display:flex;flex-direction:column;gap:10px;
+  --map-bg:#211f1c;--map-land:#0e322b;--map-land-hover:#154438;--map-line:#5f8577;--map-gold:#fee973;--map-gold-soft:#c9a227;--map-label:#f2efe8;--map-label-dim:#a9b8b0}
+.ds-map-svg-wrap{position:relative;width:100%;max-width:680px;margin:0 auto;background:var(--map-bg);border-radius:var(--radius-lg);padding:10px}
+.ds-kerala-svg{width:100%;height:auto;display:block;max-height:74vh;cursor:grab;touch-action:none}
 .ds-kerala-svg.ds-map-dragging{cursor:grabbing}
-.ds-kerala-outline{fill:var(--accent-bg);stroke:var(--border2);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
-.ds-kerala-district-label{fill:var(--text3);font-family:var(--font);font-size:12.5px;
-  font-weight:700;text-anchor:middle;letter-spacing:.3px;text-transform:uppercase;pointer-events:none}
+.ds-kerala-outline{fill:none;stroke:var(--map-gold);stroke-width:5;stroke-linejoin:round;stroke-linecap:round;pointer-events:none}
+.ds-kerala-glow{fill:none;stroke:var(--map-gold-soft);stroke-width:11;stroke-linejoin:round;stroke-linecap:round;
+  opacity:.75;filter:url(#ds-glow-filter);pointer-events:none}
+.ds-kerala-district{fill:var(--map-land);stroke:var(--map-line);stroke-width:1.8;stroke-linejoin:round;
+  cursor:pointer;transition:fill .12s}
+.ds-kerala-district:hover,.ds-kerala-district:focus{fill:var(--map-land-hover);outline:none}
+.ds-kerala-district.drilled{fill:var(--map-land-hover)}
+.ds-kerala-district-label{fill:var(--map-label);font-family:var(--font);font-size:16px;
+  font-weight:700;text-anchor:middle;letter-spacing:.3px;text-transform:uppercase;pointer-events:none;
+  paint-order:stroke;stroke:rgba(0,0,0,.55);stroke-width:2.5px;stroke-linejoin:round}
+.ds-kerala-district-count{fill:var(--map-label-dim);font-weight:600;font-size:13px}
 .ds-map-marker{cursor:pointer}
 .ds-map-marker circle{transition:r .1s,stroke .1s}
-.ds-map-marker:hover circle,.ds-map-marker:focus circle{stroke:var(--accent);filter:brightness(1.05)}
-.ds-map-marker-count{font-size:10px;font-weight:700;fill:#fff;pointer-events:none;font-family:var(--font)}
+.ds-map-marker:hover circle,.ds-map-marker:focus circle{filter:brightness(1.15)}
+.ds-map-marker-count{font-size:11px;font-weight:700;fill:#fff;pointer-events:none;font-family:var(--font)}
 .ds-map-unplottable{font-size:11px;color:var(--text2);background:var(--bg2);border:1px dashed var(--border2);
   border-radius:var(--radius);padding:8px 10px;line-height:1.5}
 
+.ds-map-back-btn{position:absolute;top:14px;left:14px;z-index:5;display:flex;align-items:center;gap:5px;
+  background:rgba(20,20,18,.85);color:#f2efe8;border:1px solid var(--map-gold-soft);border-radius:20px;
+  padding:6px 12px 6px 10px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:var(--font);
+  box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.ds-map-back-btn:hover{background:rgba(30,30,26,.95);border-color:var(--map-gold)}
+.ds-map-back-btn strong{color:var(--map-gold)}
+
 .ds-map-zoom-controls{position:absolute;top:14px;right:14px;z-index:5;display:flex;flex-direction:column;
-  align-items:center;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);
-  overflow:hidden;box-shadow:var(--shadow)}
-.ds-map-zoom-controls button{width:26px;height:24px;border:none;background:none;color:var(--text);
+  align-items:center;background:rgba(20,20,18,.85);border:1px solid var(--map-gold-soft);border-radius:var(--radius);
+  overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.ds-map-zoom-controls button{width:26px;height:24px;border:none;background:none;color:#f2efe8;
   font-size:14px;font-weight:700;cursor:pointer;line-height:1;font-family:var(--font)}
-.ds-map-zoom-controls button:hover{background:var(--accent-bg);color:var(--accent)}
-.ds-map-zoom-controls button:not(:last-child){border-bottom:1px solid var(--border)}
+.ds-map-zoom-controls button:hover{background:rgba(254,233,115,.15);color:var(--map-gold)}
+.ds-map-zoom-controls button:not(:last-child){border-bottom:1px solid rgba(255,255,255,.12)}
 .ds-map-zoom-controls .ds-map-zoom-reset{font-size:11px}
-#ds-map-zoom-label{font-size:9px;color:var(--text3);padding:2px 0;border-bottom:1px solid var(--border);width:100%;text-align:center}
+#ds-map-zoom-label{font-size:9px;color:#c9c4b8;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.12);width:100%;text-align:center}
 .ds-map-hint{font-size:10px;color:var(--text3);text-align:center}
 
 .ds-map-tooltip{position:fixed;z-index:1000;background:var(--text);color:var(--bg);font-size:11px;font-weight:600;
@@ -7591,123 +7607,124 @@ const DS_PRIORITY_META = {
 };
 const DS_PRIORITY_ORDER = ['P1', 'P2', 'P3'];
 
-// ── Approximate site coordinates on the schematic Kerala map ────
-// (Illustrative placement by district — not surveyed GPS coordinates.)
-const KERALA_SITE_COORDS = {
-  "A.M Fisheries Private Limited Kerala": { x:234.0, y:492.0, district:"Alappuzha" },
-  "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn": { x:254.0, y:492.0, district:"Alappuzha" },
-  "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn": { x:274.0, y:492.0, district:"Alappuzha" },
-  "Accelerated freeze Drying Co ltd": { x:234.0, y:512.0, district:"Alappuzha" },
-  "BHAVANI SHIPPING SERVICES (I) Kerala": { x:170.0, y:372.0, district:"Ernakulam" },
-  "Bay Container Terminal Pvt Ltd": { x:194.0, y:372.0, district:"Ernakulam" },
-  "Blueocean Container Terminals (I) Pvt Ltd 1 cochin": { x:218.0, y:372.0, district:"Ernakulam" },
-  "COCHIN PORT CFS": { x:242.0, y:372.0, district:"Ernakulam" },
-  "COCHIN SEZ": { x:266.0, y:372.0, district:"Ernakulam" },
-  "Chakiat Agencies Private Limited": { x:290.0, y:372.0, district:"Ernakulam" },
-  "Development Plot Athani Kerala": { x:236.5, y:366.5, district:"Thrissur" },
-  "Development plot Kunnamthanam kerala": { x:370.5, y:536.5, district:"Pathanamthitta" },
-  "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED": { x:170.0, y:396.0, district:"Ernakulam" },
-  "EMPIRE CONTAINER TERMINAL": { x:194.0, y:396.0, district:"Ernakulam" },
-  "GDKL CFS COCHIN": { x:218.0, y:396.0, district:"Ernakulam" },
-  "GIPL PALIYEKKARA TOLL PLAZA": { x:253.5, y:366.5, district:"Thrissur" },
-  "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN": { x:242.0, y:396.0, district:"Ernakulam" },
-  "Industrial Development Plot Ananthapuram Kerala": { x:210, y:76, district:"Kasaragod" },
-  "KINFRA Export Promotion Industrial Park, Kakkanad": { x:266.0, y:396.0, district:"Ernakulam" },
-  "KINFRA IITP,Palakkad": { x:324.0, y:321.0, district:"Palakkad" },
-  "KINFRA Industrial Park, Adoor": { x:387.5, y:536.5, district:"Pathanamthitta" },
-  "KINFRA Industrial Park, kunnamthanam": { x:370.5, y:553.5, district:"Pathanamthitta" },
-  "KINFRA Kalamassery": { x:290.0, y:396.0, district:"Ernakulam" },
-  "KINFRA Mega Food Park,Kozhipara,Palakkad": { x:344.0, y:321.0, district:"Palakkad" },
-  "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala": { x:279, y:205, district:"Wayanad" },
-  "KINFRA Small Industries Park, Nellard ,Ernakulam": { x:170.0, y:420.0, district:"Ernakulam" },
-  "KINFRA Small Industries Park, Thalassery, Kannur": { x:177.5, y:148.5, district:"Kannur" },
-  "KINFRA Techno Industrial  Park, Kakkancherry  Malappuram": { x:285, y:290, district:"Malappuram" },
-  "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur": { x:194.5, y:148.5, district:"Kannur" },
-  "KINFRA small Industrial Park,koratty": { x:236.5, y:383.5, district:"Thrissur" },
-  "KOTTAYAM ICD": { x:352, y:489, district:"Kottayam" },
-  "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala": { x:254.0, y:512.0, district:"Alappuzha" },
-  "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala": { x:177.5, y:165.5, district:"Kannur" },
-  "KSIDC Investment zone Palakkad kerala": { x:364.0, y:321.0, district:"Palakkad" },
-  "KSIDC Life Science Park Trivandrum Kerala": { x:291, y:643, district:"Thiruvananthapuram" },
-  "KSIDC Mega Food Park Pallipuram Kerala": { x:274.0, y:512.0, district:"Alappuzha" },
-  "KSIE CFS COCHIN": { x:194.0, y:420.0, district:"Ernakulam" },
-  "KUMBALAM TOLL PLAZA": { x:218.0, y:420.0, district:"Ernakulam" },
-  "MARINE CONTAINER LOGISTICS 1": { x:242.0, y:420.0, district:"Ernakulam" },
-  "MARINE CONTAINER LOGISTICS 2": { x:266.0, y:420.0, district:"Ernakulam" },
-  "MBK Logistix Pvt Ltd Cochin": { x:194.0, y:444.0, district:"Ernakulam" },
-  "MIV CFS COCHIN": { x:218.0, y:444.0, district:"Ernakulam" },
-  "MIV empty yard cochin": { x:242.0, y:444.0, district:"Ernakulam" },
-  "Nest Electronics City NeST Hitek Park": { x:266.0, y:444.0, district:"Ernakulam" },
-  "Pampampallam Toll Plaza": { x:324.0, y:341.0, district:"Palakkad" },
-  "Panniyankara Toll Plaza": { x:344.0, y:341.0, district:"Palakkad" },
-  "Petta CFS": { x:290.0, y:444.0, district:"Ernakulam" },
-  "Ponnarimanglam TP": { x:170.0, y:468.0, district:"Ernakulam" },
-  "Reefco Container Services (India) Pvt Ltd": { x:194.0, y:468.0, district:"Ernakulam" },
-  "SIDCO Industrial Estate Kollakadavu Kerala": { x:234.0, y:532.0, district:"Alappuzha" },
-  "SRISTAR CONTAINER SERVICES LLP Cochin": { x:218.0, y:468.0, district:"Ernakulam" },
+// Traced directly from the user-provided reference map image (glowing outer coastline).
+const KERALA_OUTLINE_PATH = "M98,56 L95,74 L114,128 L159,200 L186,288 L204,291 L226,323 L241,326 L244,343 L276,363 L304,397 L320,446 L348,468 L372,529 L383,538 L409,659 L419,667 L447,733 L456,737 L484,841 L510,902 L522,985 L519,1014 L528,1016 L534,1043 L593,1168 L595,1190 L614,1200 L756,1364 L807,1389 L816,1401 L835,1404 L834,1393 L802,1361 L802,1330 L810,1310 L824,1299 L805,1259 L805,1232 L820,1198 L805,1183 L807,1135 L820,1126 L845,1040 L863,1027 L866,1011 L853,1006 L849,988 L808,985 L808,954 L818,937 L816,891 L826,882 L822,837 L833,813 L819,791 L817,769 L804,763 L761,786 L757,802 L725,802 L709,785 L706,729 L711,700 L720,694 L726,643 L710,636 L693,612 L665,606 L665,582 L693,576 L674,561 L670,511 L608,520 L610,479 L529,439 L530,412 L551,411 L583,393 L573,353 L541,350 L534,336 L515,335 L505,315 L480,313 L474,282 L451,291 L397,287 L378,251 L337,244 L297,202 L275,197 L279,152 L271,134 L246,132 L243,111 L183,92 L179,76 L152,73 L147,59 L129,47 Z";
+
+// Per-district boundary polygons, extracted from the same reference image via a
+// weighted nearest-seed partition clipped to the true coastline (guarantees no gaps,
+// no overlaps, no leaks outside Kerala — each pixel belongs to exactly one district).
+const KERALA_DISTRICT_POLYGONS = {
+  "Alappuzha": "M588,905 L513,922 L522,982 L519,1014 L529,1019 L534,1044 L576,1133 L615,1103 L598,1050 L588,1004 Z",
+  "Ernakulam": "M569,739 L468,780 L483,839 L510,901 L513,921 L587,905 L637,862 L653,806 Z",
+  "Idukki": "M653,807 L639,865 L696,941 L758,1002 L866,1013 L853,1005 L849,988 L808,984 L808,954 L818,937 L816,891 L826,882 L822,836 L833,814 L819,791 L817,769 L804,763 L762,785 L756,802 L725,802 L709,780 Z",
+  "Kannur": "M172,243 L186,288 L204,291 L226,323 L241,327 L244,343 L278,365 L304,397 L313,426 L393,357 L421,290 L397,287 L390,276 Z",
+  "Kasaragod": "M98,56 L95,75 L113,126 L158,198 L172,242 L391,276 L378,251 L337,244 L297,202 L275,196 L279,151 L271,134 L246,131 L243,111 L185,93 L179,76 L153,73 L147,59 L129,47 Z",
+  "Kollam": "M615,1104 L587,1129 L786,1379 L807,1389 L816,1401 L835,1404 L834,1393 L802,1361 L802,1329 L810,1310 L824,1299 L805,1260 L805,1231 L820,1198 L710,1153 L627,1102 Z",
+  "Kottayam": "M637,863 L588,907 L589,1004 L616,1103 L626,1101 L688,1049 L754,1002 L695,941 Z",
+  "Kozhikode": "M393,359 L314,427 L320,446 L348,468 L370,525 L383,538 L391,574 L526,486 L460,431 Z",
+  "Malappuram": "M650,514 L609,520 L610,481 L526,487 L391,575 L402,628 L549,680 L583,616 Z",
+  "Palakkad": "M670,511 L653,513 L584,616 L549,681 L569,738 L652,805 L709,779 L706,727 L711,700 L720,694 L726,647 L709,635 L693,612 L665,605 L665,583 L693,576 L674,561 Z",
+  "Pathanamthitta": "M627,1101 L710,1152 L814,1192 L805,1183 L807,1135 L821,1124 L844,1042 L863,1027 L865,1014 L755,1002 L688,1050 Z",
+  "Thiruvananthapuram": "M578,1132 L593,1167 L595,1190 L617,1203 L756,1364 L785,1378 L586,1128 Z",
+  "Thrissur": "M403,629 L409,659 L419,667 L447,733 L457,739 L467,779 L568,739 L548,681 L475,658 Z",
+  "Wayanad": "M422,289 L393,358 L438,408 L527,486 L610,480 L529,438 L531,412 L551,411 L583,393 L573,353 L541,350 L534,336 L515,335 L505,315 L481,313 L474,282 L452,291 Z",
 };
 
+// District label anchor positions (matches the reference image's label placement).
 const KERALA_DISTRICT_ANCHORS = {
-  "Kasaragod": {
-    "x": 210,
-    "y": 76
-  },
-  "Kannur": {
-    "x": 186,
-    "y": 157
-  },
-  "Wayanad": {
-    "x": 279,
-    "y": 205
-  },
-  "Kozhikode": {
-    "x": 246,
-    "y": 236
-  },
-  "Malappuram": {
-    "x": 285,
-    "y": 290
-  },
-  "Palakkad": {
-    "x": 344,
-    "y": 331
-  },
-  "Thrissur": {
-    "x": 245,
-    "y": 375
-  },
-  "Ernakulam": {
-    "x": 230,
-    "y": 420
-  },
-  "Idukki": {
-    "x": 400,
-    "y": 452
-  },
-  "Kottayam": {
-    "x": 352,
-    "y": 489
-  },
-  "Alappuzha": {
-    "x": 254,
-    "y": 512
-  },
-  "Pathanamthitta": {
-    "x": 379,
-    "y": 545
-  },
-  "Kollam": {
-    "x": 330,
-    "y": 585
-  },
-  "Thiruvananthapuram": {
-    "x": 291,
-    "y": 643
-  }
+  "Alappuzha": { x:464.8, y:1011.5 },
+  "Ernakulam": { x:410.8, y:837.0 },
+  "Idukki": { x:746.2, y:876.2 },
+  "Kannur": { x:286.5, y:289.2 },
+  "Kasaragod": { x:347.2, y:139.2 },
+  "Kollam": { x:671.2, y:1174.8 },
+  "Kottayam": { x:634.2, y:973.2 },
+  "Kozhikode": { x:420.5, y:444.8 },
+  "Malappuram": { x:498.2, y:565.0 },
+  "Palakkad": { x:636.8, y:643.8 },
+  "Pathanamthitta": { x:719.2, y:1081.5 },
+  "Thiruvananthapuram": { x:564.5, y:1264.5 },
+  "Thrissur": { x:400.2, y:747.8 },
+  "Wayanad": { x:490.8, y:370.8 },
 };
 
-// Traced directly from the reference Kerala map image (outer coastline only).
-const KERALA_OUTLINE_PATH = "M95,48 L93,52 L110,97 L122,113 L139,158 L145,159 L155,174 L164,178 L166,187 L183,199 L195,217 L202,238 L215,248 L237,300 L244,337 L273,397 L279,431 L291,453 L300,520 L324,567 L330,594 L353,615 L372,642 L390,659 L397,673 L417,683 L434,697 L474,711 L467,707 L467,703 L451,702 L426,689 L426,665 L437,650 L437,642 L429,630 L429,618 L435,602 L428,591 L429,572 L438,565 L440,544 L447,536 L449,523 L457,515 L457,511 L446,501 L428,501 L428,489 L436,474 L433,468 L433,455 L438,448 L435,426 L442,409 L437,405 L434,394 L426,391 L412,398 L408,406 L391,405 L384,397 L391,333 L379,320 L360,314 L360,301 L375,298 L367,292 L364,272 L360,269 L354,274 L339,274 L339,255 L298,234 L299,221 L309,221 L324,211 L320,196 L306,194 L301,187 L293,186 L288,177 L278,177 L276,162 L263,167 L238,164 L227,146 L217,146 L211,139 L203,139 L191,121 L178,116 L177,95 L172,87 L160,85 L160,73 L145,70 L130,58 L122,58 L113,45 Z";
+// Bounding box (with padding) used to zoom into a single district for the drill-down view.
+const KERALA_DISTRICT_VIEW = {
+  "Alappuzha": { x:494.5, y:863.8, w:140.1, h:311.4 },
+  "Ernakulam": { x:434.5, y:706.1, w:253.0, h:248.9 },
+  "Idukki": { x:596.8, y:717.8, w:311.4, h:341.4 },
+  "Kannur": { x:127.0, y:209.9, w:340.0, h:250.2 },
+  "Kasaragod": { x:41.5, y:5.6, w:403.9, h:312.8 },
+  "Kollam": { x:542.2, y:1047.5, w:338.6, h:412.1 },
+  "Kottayam": { x:556.8, y:819.6, w:228.5, h:327.8 },
+  "Kozhikode": { x:275.7, y:320.1, w:289.7, h:293.8 },
+  "Malappuram": { x:344.2, y:445.0, w:353.6, h:272.0 },
+  "Palakkad": { x:517.0, y:457.9, w:242.1, h:401.2 },
+  "Pathanamthitta": { x:584.0, y:967.6, w:325.0, h:259.8 },
+  "Thiruvananthapuram": { x:539.4, y:1082.8, w:284.2, h:341.4 },
+  "Thrissur": { x:373.1, y:601.8, w:225.8, h:205.4 },
+  "Wayanad": { x:353.8, y:245.1, w:296.5, h:278.8 },
+};
+
+// Site marker positions — each one computed to sit strictly inside its real district
+// polygon above (well-spaced via farthest-point sampling, verified with a point-in-polygon
+// containment check against KERALA_DISTRICT_POLYGONS during generation).
+const KERALA_SITE_COORDS = {
+  "A.M Fisheries Private Limited Kerala": { x:553.0, y:953.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co Ltd Frozen foods Ezhupunn": { x:580.0, y:1123.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co Ltd Frozen store Ezhupunn": { x:542.0, y:1042.0, district:"Alappuzha" },
+  "Accelerated freeze Drying Co ltd": { x:596.0, y:1066.0, district:"Alappuzha" },
+  "BHAVANI SHIPPING SERVICES (I) Kerala": { x:594.0, y:774.0, district:"Ernakulam" },
+  "Bay Container Terminal Pvt Ltd": { x:516.0, y:917.0, district:"Ernakulam" },
+  "Blueocean Container Terminals (I) Pvt Ltd 1 cochin": { x:472.0, y:784.0, district:"Ernakulam" },
+  "COCHIN PORT CFS": { x:613.0, y:877.0, district:"Ernakulam" },
+  "COCHIN SEZ": { x:538.0, y:836.0, district:"Ernakulam" },
+  "Chakiat Agencies Private Limited": { x:645.0, y:818.0, district:"Ernakulam" },
+  "Development Plot Athani Kerala": { x:538.0, y:738.0, district:"Thrissur" },
+  "Development plot Kunnamthanam kerala": { x:819.0, y:1033.0, district:"Pathanamthitta" },
+  "EMMAY LOGISTICS (INDIA) PRIVATE LIMITED": { x:532.0, y:759.0, district:"Ernakulam" },
+  "EMPIRE CONTAINER TERMINAL": { x:560.0, y:886.0, district:"Ernakulam" },
+  "GDKL CFS COCHIN": { x:591.0, y:828.0, district:"Ernakulam" },
+  "GIPL PALIYEKKARA TOLL PLAZA": { x:417.0, y:647.0, district:"Thrissur" },
+  "INTERNATIONAL CONTAINER TRANSHIPMENT TERMINAL COCHIN": { x:486.0, y:835.0, district:"Ernakulam" },
+  "Industrial Development Plot Ananthapuram Kerala": { x:143.0, y:98.0, district:"Kasaragod" },
+  "KINFRA Export Promotion Industrial Park, Kakkanad": { x:511.0, y:872.0, district:"Ernakulam" },
+  "KINFRA IITP,Palakkad": { x:636.0, y:670.0, district:"Palakkad" },
+  "KINFRA Industrial Park, Adoor": { x:647.0, y:1101.0, district:"Pathanamthitta" },
+  "KINFRA Industrial Park, kunnamthanam": { x:797.0, y:1175.0, district:"Pathanamthitta" },
+  "KINFRA Kalamassery": { x:556.0, y:796.0, district:"Ernakulam" },
+  "KINFRA Mega Food Park,Kozhipara,Palakkad": { x:665.0, y:519.0, district:"Palakkad" },
+  "KINFRA Small Industries Park, Kalpetta,Wayanad,Kerala": { x:503.0, y:389.0, district:"Wayanad" },
+  "KINFRA Small Industries Park, Nellard ,Ernakulam": { x:513.0, y:800.0, district:"Ernakulam" },
+  "KINFRA Small Industries Park, Thalassery, Kannur": { x:325.0, y:344.0, district:"Kannur" },
+  "KINFRA Techno Industrial  Park, Kakkancherry  Malappuram": { x:439.0, y:571.0, district:"Malappuram" },
+  "KINFRA Textile Centre, Nadukani , Thaliparambu (Block F),Kannur": { x:187.0, y:255.0, district:"Kannur" },
+  "KINFRA small Industrial Park,koratty": { x:455.0, y:723.0, district:"Thrissur" },
+  "KOTTAYAM ICD": { x:723.0, y:1010.0, district:"Kottayam" },
+  "KSIDC Industrial Growth Centre Pallipuram Cherthala Kerala": { x:583.0, y:1003.0, district:"Alappuzha" },
+  "KSIDC Industrial Growth Centre Valiyavelicham Kannur Kerala": { x:406.0, y:297.0, district:"Kannur" },
+  "KSIDC Investment zone Palakkad kerala": { x:656.0, y:797.0, district:"Palakkad" },
+  "KSIDC Life Science Park Trivandrum Kerala": { x:611.0, y:1181.0, district:"Thiruvananthapuram" },
+  "KSIDC Mega Food Park Pallipuram Kerala": { x:528.0, y:995.0, district:"Alappuzha" },
+  "KSIE CFS COCHIN": { x:568.0, y:744.0, district:"Ernakulam" },
+  "KUMBALAM TOLL PLAZA": { x:614.0, y:802.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 1": { x:622.0, y:844.0, district:"Ernakulam" },
+  "MARINE CONTAINER LOGISTICS 2": { x:568.0, y:853.0, district:"Ernakulam" },
+  "MBK Logistix Pvt Ltd Cochin": { x:589.0, y:898.0, district:"Ernakulam" },
+  "MIV CFS COCHIN": { x:503.0, y:771.0, district:"Ernakulam" },
+  "MIV empty yard cochin": { x:540.0, y:865.0, district:"Ernakulam" },
+  "Nest Electronics City NeST Hitek Park": { x:532.0, y:893.0, district:"Ernakulam" },
+  "Pampampallam Toll Plaza": { x:586.0, y:743.0, district:"Palakkad" },
+  "Panniyankara Toll Plaza": { x:720.0, y:649.0, district:"Palakkad" },
+  "Petta CFS": { x:584.0, y:801.0, district:"Ernakulam" },
+  "Ponnarimanglam TP": { x:563.0, y:823.0, district:"Ernakulam" },
+  "Reefco Container Services (India) Pvt Ltd": { x:596.0, y:855.0, district:"Ernakulam" },
+  "SIDCO Industrial Estate Kollakadavu Kerala": { x:582.0, y:914.0, district:"Alappuzha" },
+  "SRISTAR CONTAINER SERVICES LLP Cochin": { x:512.0, y:844.0, district:"Ernakulam" },
+};
+
+const DS_MAP_BASE_VIEW = { x: 70, y: 22, w: 821, h: 1407 };
+let _cdsMapView = { x: DS_MAP_BASE_VIEW.x, y: DS_MAP_BASE_VIEW.y, w: DS_MAP_BASE_VIEW.w, h: DS_MAP_BASE_VIEW.h };
 
 // ── Storage keys ─────────────────────────────────────────────
 const K_DS_HISTORY    = 'dsc_ds_history_v1';
@@ -7757,11 +7774,6 @@ let _cdsView        = 'map';  // 'map' | 'table' — current Device Status panel
 let _cdsMapStatusFilter = new Set(['active','standby','down','maintenance','rma','flapping']); // which statuses show on the map
 let _cdsPriorityFilter  = new Set(['P1','P2','P3']); // which site priorities show — shared by the map AND the table
 let _cdsOpenSite    = null;   // siteName currently drilled-into on the map
-
-// Map pan/zoom viewport (SVG user-space, tight-cropped around the Kerala outline).
-const DS_MAP_BASE_VIEW = { x: 78, y: 30, w: 411, h: 696 };
-let _cdsMapView = { ..._cds_cloneBaseView() };
-function _cds_cloneBaseView() { return { x: DS_MAP_BASE_VIEW.x, y: DS_MAP_BASE_VIEW.y, w: DS_MAP_BASE_VIEW.w, h: DS_MAP_BASE_VIEW.h }; }
 
 // ── Admin DS panel ────────────────────────────────────────────
 // Shared upload + controls + map/table markup, used by both the admin panel
@@ -8034,6 +8046,7 @@ function _cdsProcessData() {
     // Render
     _cdsRenderPriorityChips();
     _cdsApplySearch((document.getElementById('ds-search')||{}).value || '');
+    _cdsDrilledDistrict = null;
     _cdsResetMapView();
     _cdsRenderKeralaMap();
 
@@ -8185,17 +8198,29 @@ function _cdsWorstStatus(counts, filterSet) {
 }
 
 // ── Map pan/zoom helpers ────────────────────────────────────
-function _cdsResetMapView() { _cdsMapView = _cds_cloneBaseView(); }
+// District currently drilled into (name) or null for the full-state view.
+let _cdsDrilledDistrict = null;
+
+// The bounds pan/zoom should stay within — a district's own padded bbox while
+// drilled in, otherwise the full Kerala base view.
+function _cdsCurrentClampBounds() {
+  if (_cdsDrilledDistrict && KERALA_DISTRICT_VIEW[_cdsDrilledDistrict]) return KERALA_DISTRICT_VIEW[_cdsDrilledDistrict];
+  return DS_MAP_BASE_VIEW;
+}
+
+function _cds_cloneView(v) { return { x: v.x, y: v.y, w: v.w, h: v.h }; }
+function _cdsResetMapView() { _cdsMapView = _cds_cloneView(_cdsCurrentClampBounds()); }
 
 function _cdsClampMapView(v) {
-  const minW = 60, maxW = DS_MAP_BASE_VIEW.w;
+  const bounds = _cdsCurrentClampBounds();
+  const minW = bounds.w * 0.22, maxW = bounds.w;
   v.w = Math.max(minW, Math.min(maxW, v.w));
-  v.h = v.w * (DS_MAP_BASE_VIEW.h / DS_MAP_BASE_VIEW.w);
+  v.h = v.w * (bounds.h / bounds.w);
   const padX = v.w * 0.5, padY = v.h * 0.5;
-  const minX = DS_MAP_BASE_VIEW.x - padX;
-  const maxX = DS_MAP_BASE_VIEW.x + DS_MAP_BASE_VIEW.w - v.w + padX;
-  const minY = DS_MAP_BASE_VIEW.y - padY;
-  const maxY = DS_MAP_BASE_VIEW.y + DS_MAP_BASE_VIEW.h - v.h + padY;
+  const minX = bounds.x - padX;
+  const maxX = bounds.x + bounds.w - v.w + padX;
+  const minY = bounds.y - padY;
+  const maxY = bounds.y + bounds.h - v.h + padY;
   v.x = Math.max(minX, Math.min(maxX, v.x));
   v.y = Math.max(minY, Math.min(maxY, v.y));
   return v;
@@ -8203,7 +8228,8 @@ function _cdsClampMapView(v) {
 
 function _cdsApplyMapView(svg) {
   if (svg) svg.setAttribute('viewBox', _cdsMapView.x + ' ' + _cdsMapView.y + ' ' + _cdsMapView.w + ' ' + _cdsMapView.h);
-  const pct = Math.round((DS_MAP_BASE_VIEW.w / _cdsMapView.w) * 100);
+  const bounds = _cdsCurrentClampBounds();
+  const pct = Math.round((bounds.w / _cdsMapView.w) * 100);
   const label = document.getElementById('ds-map-zoom-label');
   if (label) label.textContent = pct + '%';
 }
@@ -8228,6 +8254,25 @@ function _cdsMapZoomButton(dir) {
 function _cdsMapZoomReset() {
   _cdsResetMapView();
   _cdsApplyMapView(document.querySelector('.ds-kerala-svg'));
+}
+
+// ── District drill-down ──────────────────────────────────────
+// Zooms into a single district's bounding box for a bigger, more legible view
+// of its sites. Reuses the same pan/zoom machinery — the district's own bbox
+// simply becomes the new clamp bounds, so users can still pan/zoom within it.
+function _cdsDrillIntoDistrict(name) {
+  if (!KERALA_DISTRICT_VIEW[name]) return;
+  _cdsDrilledDistrict = name;
+  _cdsMapView = _cds_cloneView(KERALA_DISTRICT_VIEW[name]);
+  _cdsCloseSitePanel();
+  _cdsRenderKeralaMap();
+}
+
+function _cdsExitDistrictDrill() {
+  _cdsDrilledDistrict = null;
+  _cdsMapView = _cds_cloneView(DS_MAP_BASE_VIEW);
+  _cdsCloseSitePanel();
+  _cdsRenderKeralaMap();
 }
 
 function _cdsSvgPoint(svg, clientX, clientY) {
@@ -8370,10 +8415,29 @@ function _cdsRenderKeralaMap() {
     }).join('');
   }
 
+  // Per-site count, restricted to sites whose priority is currently visible — used
+  // to decide which districts get a "N sites" badge worth drilling into.
+  const districtSiteCount = {};
+  plottable.forEach(name => {
+    const entry = bySite.get(name);
+    if (entry.priority && !_cdsPriorityFilter.has(entry.priority)) return;
+    const d = KERALA_SITE_COORDS[name].district;
+    districtSiteCount[d] = (districtSiteCount[d] || 0) + 1;
+  });
+
+  // ── District fill polygons (each independently clickable → drill-down) ──
+  const districtShapes = Object.keys(KERALA_DISTRICT_POLYGONS).map(name => {
+    const isDrilled = _cdsDrilledDistrict === name;
+    return '<path d="' + KERALA_DISTRICT_POLYGONS[name] + '" class="ds-kerala-district' + (isDrilled ? ' drilled' : '') + '" data-district="' + esc(name) + '" tabindex="0" role="button" aria-label="' + esc(name) + ' district"/>';
+  }).join('');
+
   // ── District name labels (matches the reference map's layout) ──
   const districtLabels = Object.keys(KERALA_DISTRICT_ANCHORS).map(name => {
     const a = KERALA_DISTRICT_ANCHORS[name];
-    return '<text x="' + a.x + '" y="' + a.y + '" class="ds-kerala-district-label">' + esc(name.toUpperCase()) + '</text>';
+    const count = districtSiteCount[name] || 0;
+    return '<text x="' + a.x + '" y="' + a.y + '" class="ds-kerala-district-label">' + esc(name.toUpperCase()) +
+      (count > 1 ? ' <tspan class="ds-kerala-district-count">(' + count + ')</tspan>' : '') +
+      '</text>';
   }).join('');
 
   const markers = plottable.map(name => {
@@ -8383,17 +8447,25 @@ function _cdsRenderKeralaMap() {
     const worst = _cdsWorstStatus(entry.counts, _cdsMapStatusFilter);
     if (!worst) return ''; // nothing at this site matches the current filter — hide marker
     const totalShown = STATUS_UI_ORDER.reduce((sum, s) => sum + (_cdsMapStatusFilter.has(s) ? entry.counts[s] : 0), 0);
-    const r = Math.max(6, Math.min(13, 4.5 + Math.sqrt(totalShown) * 2.3));
+    const r = Math.max(8, Math.min(14, 6 + Math.sqrt(totalShown) * 2));
     const color = DS_STATUS_META[worst].color;
     const idx = plottable.indexOf(name);
     return '<g class="ds-map-marker" data-site-idx="' + idx + '" tabindex="0" role="button" aria-label="' + esc(name) + '">' +
-      '<circle cx="' + c.x + '" cy="' + c.y + '" r="' + r + '" fill="' + color + '" stroke="var(--bg)" stroke-width="2"/>' +
+      '<circle cx="' + c.x + '" cy="' + c.y + '" r="' + r + '" fill="' + color + '" stroke="#1a2420" stroke-width="2"/>' +
       (totalShown > 1 ? '<text x="' + c.x + '" y="' + (c.y + 4) + '" text-anchor="middle" class="ds-map-marker-count">' + totalShown + '</text>' : '') +
     '</g>';
   }).join('');
 
+  const backBtn = _cdsDrilledDistrict
+    ? '<button class="ds-map-back-btn" onclick="_cdsExitDistrictDrill()">' +
+        '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        'All Kerala &nbsp;·&nbsp; <strong>' + esc(_cdsDrilledDistrict.toUpperCase()) + '</strong>' +
+      '</button>'
+    : '';
+
   wrap.innerHTML =
     '<div class="ds-map-svg-wrap">' +
+      backBtn +
       '<div class="ds-map-zoom-controls">' +
         '<button onclick="_cdsMapZoomButton(\'in\')" aria-label="Zoom in">+</button>' +
         '<span id="ds-map-zoom-label">100%</span>' +
@@ -8402,15 +8474,22 @@ function _cdsRenderKeralaMap() {
       '</div>' +
       '<svg viewBox="' + _cdsMapView.x + ' ' + _cdsMapView.y + ' ' + _cdsMapView.w + ' ' + _cdsMapView.h + '" ' +
         'class="ds-kerala-svg" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs>' +
+          '<filter id="ds-glow-filter" x="-50%" y="-50%" width="200%" height="200%">' +
+            '<feGaussianBlur stdDeviation="6" result="blur"/>' +
+            '<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+          '</filter>' +
+        '</defs>' +
+        '<path d="' + KERALA_OUTLINE_PATH + '" class="ds-kerala-glow"/>' +
+        districtShapes +
         '<path d="' + KERALA_OUTLINE_PATH + '" class="ds-kerala-outline"/>' +
         districtLabels +
         markers +
       '</svg>' +
-      '<div class="ds-map-hint">scroll / pinch to zoom · drag to pan · click a site to open it</div>' +
+      '<div class="ds-map-hint">' + (_cdsDrilledDistrict ? 'scroll to zoom · drag to pan · click a site to open it' : 'click a district to zoom in · click a site to open it') + '</div>' +
     '</div>' +
     (unplottable.length
       ? '<div class="ds-map-unplottable">ℹ ' + unplottable.length + ' matched site(s) not yet mapped: ' +
-
           unplottable.map(esc).join(', ') + '</div>'
       : '') +
     '<div id="ds-site-panel" class="ds-site-panel" style="display:none"></div>';
@@ -8418,22 +8497,34 @@ function _cdsRenderKeralaMap() {
   const svgEl = wrap.querySelector('.ds-kerala-svg');
   if (svgEl) _cdsWireMapPanZoom(svgEl);
 
+  // Wire district clicks → drill-down (skip if the click was actually a drag-pan).
+  wrap.querySelectorAll('.ds-kerala-district').forEach(pathEl => {
+    const name = pathEl.getAttribute('data-district');
+    let dragStartX = 0, dragStartY = 0, wasDrag = false;
+    pathEl.addEventListener('mousedown', e => { dragStartX = e.clientX; dragStartY = e.clientY; wasDrag = false; });
+    pathEl.addEventListener('mousemove', e => {
+      if (Math.abs(e.clientX - dragStartX) > 3 || Math.abs(e.clientY - dragStartY) > 3) wasDrag = true;
+    });
+    pathEl.addEventListener('click', () => { if (!wasDrag) _cdsDrillIntoDistrict(name); });
+    pathEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _cdsDrillIntoDistrict(name); } });
+  });
+
   // Wire marker clicks + hover tooltips (avoids inline-onclick quoting issues with site names).
   wrap.querySelectorAll('.ds-map-marker').forEach(g => {
     const idx = parseInt(g.getAttribute('data-site-idx'), 10);
     const name = plottable[idx];
     let dragStartX = 0, dragStartY = 0, wasDrag = false;
-    g.addEventListener('mousedown', e => { dragStartX = e.clientX; dragStartY = e.clientY; wasDrag = false; });
+    g.addEventListener('mousedown', e => { dragStartX = e.clientX; dragStartY = e.clientY; wasDrag = false; e.stopPropagation(); });
     g.addEventListener('mousemove', e => {
       if (Math.abs(e.clientX - dragStartX) > 3 || Math.abs(e.clientY - dragStartY) > 3) wasDrag = true;
       _cdsShowMapTooltip(name, e.clientX, e.clientY);
     });
     g.addEventListener('mouseenter', e => _cdsShowMapTooltip(name, e.clientX, e.clientY));
     g.addEventListener('mouseleave', _cdsHideMapTooltip);
-    const open = () => { if (!wasDrag) _cdsOpenSitePanel(name); };
+    const open = (e) => { if (e) e.stopPropagation(); if (!wasDrag) _cdsOpenSitePanel(name); };
     g.addEventListener('click', open);
     g.addEventListener('touchstart', () => _cdsShowMapTooltip(name, 0, 0), { passive: true });
-    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _cdsOpenSitePanel(name); } });
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); _cdsOpenSitePanel(name); } });
   });
 
   // Re-open the drill-down panel if a site was already selected (e.g. after a filter change).
