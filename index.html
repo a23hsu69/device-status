@@ -7810,7 +7810,7 @@ function _cdsUploaderSectionHtml() {
       <span style="font-size:11px;color:var(--text2)">Map shows every tracked status · click a site to see its devices</span>
     </div>
 
-    <div id="ds-priority-filter" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2)"></div>
+    <div id="ds-priority-filter" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 14px;border-bottom:2px solid var(--accent-light);background:var(--accent-bg)"></div>
 
     <div id="ds-unmatched" style="display:none;margin:8px 14px;background:var(--amber-bg);border-left:3px solid var(--amber-dot);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--amber-text);font-family:monospace"></div>
 
@@ -8014,17 +8014,10 @@ function _cdsProcessData() {
     _cdsReportRows     = matched.filter(r => r.statusRaw !== 'active' && r.statusRaw !== 'standby');
     _cdsFilteredRows   = _cdsReportRows;
 
-    // Update stats
-    const cG = _cdsReportRows.filter(r => r.color==='green').length;
-    const cO = _cdsReportRows.filter(r => r.color==='orange').length;
-    const cR = _cdsReportRows.filter(r => r.color==='red').length;
     const statsEl = document.getElementById('ds-stats');
     if (statsEl) statsEl.style.display = 'flex';
-    _cdsSetStatChip('ds-cnt-green',  cG, '🟢 ' + cG + ' ≤48h');
-    _cdsSetStatChip('ds-cnt-orange', cO, '🟠 ' + cO + ' 2d–8d');
-    _cdsSetStatChip('ds-cnt-red',    cR, '🔴 ' + cR + ' >8d');
-    const totEl = document.getElementById('ds-cnt-total');
-    if (totEl) totEl.textContent = _cdsReportRows.length;
+    // (severity chip counts + total are computed by _cdsApplySearch below, which
+    // already runs against the priority filter — keeps this single source of truth.)
 
     // Unmatched banner
     const banner = document.getElementById('ds-unmatched');
@@ -8080,6 +8073,20 @@ function _cdsSetSort(dir) {
 }
 
 // ── Search ────────────────────────────────────────────────────
+// Recomputes the downtime-severity chips (🟢/🟠/🔴) and total count from whatever
+// rows are currently visible in the table — kept in sync with the priority filter
+// (and search text) every time either changes, same principle as the map's legend.
+function _cdsUpdateTableStats(rows) {
+  const cG = rows.filter(r => r.color==='green').length;
+  const cO = rows.filter(r => r.color==='orange').length;
+  const cR = rows.filter(r => r.color==='red').length;
+  _cdsSetStatChip('ds-cnt-green',  cG, '🟢 ' + cG + ' ≤48h');
+  _cdsSetStatChip('ds-cnt-orange', cO, '🟠 ' + cO + ' 2d–8d');
+  _cdsSetStatChip('ds-cnt-red',    cR, '🔴 ' + cR + ' >8d');
+  const totEl = document.getElementById('ds-cnt-total');
+  if (totEl) totEl.textContent = rows.length;
+}
+
 function _cdsApplySearch(q) {
   q = q.toLowerCase().trim();
   let rows = _cdsReportRows.filter(r => _cdsPriorityFilter.has(r.priority));
@@ -8094,6 +8101,7 @@ function _cdsApplySearch(q) {
   }
   _cdsFilteredRows = rows;
   _cdsRenderTable(_cdsFilteredRows);
+  _cdsUpdateTableStats(_cdsFilteredRows);
 }
 
 // ── Priority filter (site importance ranking — shared by the map AND table) ──
@@ -8103,7 +8111,7 @@ function _cdsRenderPriorityChips() {
   const totals = { P1:0, P2:0, P3:0 };
   _cdsAllMatchedRows.forEach(r => { if (r.priority && totals[r.priority] !== undefined) totals[r.priority]++; });
   el.innerHTML =
-    '<span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-right:2px">Priority</span>' +
+    '<span style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-right:2px">Priority <span style="font-weight:500;color:var(--text3);text-transform:none;letter-spacing:0">— primary filter</span></span>' +
     DS_PRIORITY_ORDER.map(p => {
       const meta = DS_PRIORITY_META[p];
       const on = _cdsPriorityFilter.has(p);
@@ -8111,7 +8119,7 @@ function _cdsRenderPriorityChips() {
         '<span class="ds-map-chip-dot"></span>' + meta.label + ' <strong>' + totals[p] + '</strong>' +
       '</button>';
     }).join('') +
-    '<span style="font-size:10.5px;color:var(--text3);margin-left:4px">applies to map &amp; table</span>';
+    '<span style="font-size:10.5px;color:var(--text3);margin-left:4px">controls map, table &amp; status counts</span>';
 }
 
 // Toggle a priority on/off — affects both the map markers and the table rows,
@@ -8398,21 +8406,28 @@ function _cdsRenderKeralaMap() {
   const plottable = siteNames.filter(n => KERALA_SITE_COORDS[n]);
   const unplottable = siteNames.filter(n => !KERALA_SITE_COORDS[n]);
 
-  // Overall status totals (unaffected by the filter) for the legend counts.
+  // Status totals computed WITHIN the currently selected priority (priority is the
+  // primary filter): P1 only → P1-site counts; P1+P2 selected → combined P1+P2 counts; etc.
   const totals = {active:0,standby:0,down:0,maintenance:0,rma:0,flapping:0};
-  _cdsAllMatchedRows.forEach(r => { if (totals[r.statusRaw] !== undefined) totals[r.statusRaw]++; });
+  _cdsAllMatchedRows.forEach(r => {
+    if (r.priority && !_cdsPriorityFilter.has(r.priority)) return;
+    if (totals[r.statusRaw] !== undefined) totals[r.statusRaw]++;
+  });
 
   // ── Legend / filter chips ──
   const STATUS_UI_ORDER = ['active','standby','down','maintenance','rma','flapping'];
   if (legendWrap) {
-    legendWrap.innerHTML = STATUS_UI_ORDER.map(s => {
+    legendWrap.innerHTML =
+      '<span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-right:2px">Status</span>' +
+      STATUS_UI_ORDER.map(s => {
       const meta = DS_STATUS_META[s];
       const on = _cdsMapStatusFilter.has(s);
       return '<button class="ds-map-chip' + (on ? ' on' : '') + '" data-status="' + s + '" ' +
         'style="--chip-color:' + meta.color + '" onclick="_cdsToggleMapStatus(\'' + s + '\')">' +
         '<span class="ds-map-chip-dot"></span>' + meta.label + ' <strong>' + totals[s] + '</strong>' +
       '</button>';
-    }).join('');
+    }).join('') +
+      '<span style="font-size:10.5px;color:var(--text3);margin-left:4px">for selected priority</span>';
   }
 
   // Per-site count, restricted to sites whose priority is currently visible — used
