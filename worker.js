@@ -950,6 +950,28 @@ async function handleRequest(request, env){
     return new Response(JSON.stringify({ok:true}), {headers});
   }
 
+  // GET /get-site-priorities — { siteName: 'P1'|'P2'|'P3', ... } overrides layered on top of
+  // the baked-in SITES_DB defaults, so admin edits persist without needing a fresh sites1.xlsx.
+  if(url.pathname === '/get-site-priorities' && request.method === 'GET'){
+    const overrides = await env.PUSH_SUBS.get('site_priority_overrides', {type:'json'}) || {};
+    return new Response(JSON.stringify({ok:true, overrides}), {headers});
+  }
+
+  // POST /set-site-priorities
+  if(url.pathname === '/set-site-priorities' && request.method === 'POST'){
+    const body = await request.json();
+    if(!body.overrides || typeof body.overrides !== 'object'){
+      return new Response(JSON.stringify({ok:false, error:'Missing overrides'}), {status:400, headers});
+    }
+    for(const v of Object.values(body.overrides)){
+      if(!['P1','P2','P3'].includes(v)){
+        return new Response(JSON.stringify({ok:false, error:'Invalid priority value'}), {status:400, headers});
+      }
+    }
+    await env.PUSH_SUBS.put('site_priority_overrides', JSON.stringify(body.overrides));
+    return new Response(JSON.stringify({ok:true}), {headers});
+  }
+
   // GET /check-subs
   if(url.pathname === '/check-subs' && request.method === 'GET'){
     const subs    = await env.PUSH_SUBS.get('subscriptions', {type:'json'}) || [];

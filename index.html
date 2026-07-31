@@ -1184,6 +1184,19 @@ body{display:flex;flex-direction:column;min-height:100vh}
   background:color-mix(in srgb, var(--pri-color) 12%, transparent);
 }
 
+/* ── Admin: site priority management (Settings) ── */
+.site-pri-list{max-height:340px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);margin-top:8px}
+.site-pri-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border)}
+.site-pri-row:last-child{border-bottom:none}
+.site-pri-name{font-size:12px;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.site-pri-custom{font-size:9px;font-weight:700;color:var(--accent);background:var(--accent-bg);border-radius:20px;padding:1px 6px;margin-left:5px;white-space:nowrap}
+.site-pri-btns{display:flex;gap:4px;flex-shrink:0}
+.site-pri-btn{width:30px;height:24px;border-radius:5px;font-size:10.5px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border2);background:var(--bg);color:var(--text2);font-family:var(--font);transition:all .12s}
+.site-pri-btn:hover{border-color:var(--pri-color);color:var(--pri-color)}
+.site-pri-btn.active{background:var(--pri-color);border-color:var(--pri-color);color:#fff}
+.site-pri-empty{padding:14px;text-align:center;font-size:12px;color:var(--text2)}
+
 /* DS stat chips */
 .ds-stat-green  { background:var(--cds-green-bg);  color:var(--cds-green);  border:1px solid var(--cds-green-border)  }
 .ds-stat-orange { background:var(--cds-orange-bg); color:var(--cds-orange); border:1px solid var(--cds-orange-border) }
@@ -1908,6 +1921,26 @@ body{display:flex;flex-direction:column;min-height:100vh}
         </div>
       </div>
 
+      <!-- SECTION: Site Priorities -->
+      <div class="sett-section-hdr">&#x1F3AF; Site Priorities</div>
+      <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-site-priority')" id="row-site-priority">
+        <div class="sett-row-icon" style="background:#eef2ff">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#6366f1" stroke-width="1.3"/><circle cx="8" cy="8" r="2.5" stroke="#6366f1" stroke-width="1.3"/></svg>
+        </div>
+        <div class="sett-row-body">
+          <div class="sett-row-title">Change site P1 / P2 / P3</div>
+          <div class="sett-row-sub" id="site-priority-sub">Tap a badge to set a site's priority</div>
+        </div>
+        <svg class="sett-chevron" id="chev-site-priority" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sett-panel" id="panel-site-priority">
+        <div class="sett-panel-inner">
+          <input class="cred-inp" type="text" id="site-priority-search" placeholder="Search sites…" autocomplete="off" oninput="renderSitePriorityList(this.value)"/>
+          <div class="site-pri-list" id="site-priority-list"></div>
+          <div class="cred-hint" style="margin-top:8px">Changes save immediately and sync to all devices — no need to hit Save &amp; sync below.</div>
+        </div>
+      </div>
+
       <!-- SECTION: About / Credits -->
       <div class="sett-section-hdr">&#x2139;&#xFE0F; About</div>
       <div class="sett-row" id="row-credits">
@@ -2329,6 +2362,8 @@ async function fetchCredentials() {
   } catch(e) { /* offline — use local cache */ }
   // Phase 2: fetch leave quota
   await fetchLeaveQuota();
+  // Site priority overrides (admin-editable P1/P2/P3)
+  if (typeof fetchSitePriorityOverrides === 'function') await fetchSitePriorityOverrides();
 }
 
 // Resolve username → { username, hash } from cache or defaults
@@ -2447,6 +2482,8 @@ async function openSettingsModal() {
   populateLeaveQuotaFields();
   populateCreditsVersion();
   // v8 — region sites section removed, sites are baked into SITES_DB
+  if (typeof fetchSitePriorityOverrides === 'function') await fetchSitePriorityOverrides();
+  if (typeof renderSitePriorityList === 'function') renderSitePriorityList('');
 
 // Initialize biometric UI in settings
   setTimeout(() => initBiometricUI(), 100);
@@ -7583,6 +7620,119 @@ SITES_DB.forEach(e => {
   const mac = _cdsNormMac(e.mac);
   if (mac) _cdsSitesMap.set(mac, { siteName: e.site, assetId: e.asset, engineer: e.engineer || '', priority: e.priority || '' });
 });
+
+// ── Site priority overrides (admin-editable P1/P2/P3, synced via KV) ─────────
+// SITE_DEFAULT_PRIORITY is the baked-in value from SITES_DB (one row per site is
+// enough since priority is uniform across every device at a site). Admin changes
+// layer on top as `sitePriorityOverrides`, persisted to the worker so they survive
+// reloads and apply on every device, without needing a fresh sites1.xlsx upload.
+const SITE_DEFAULT_PRIORITY = {};
+SITES_DB.forEach(e => { if (e.site && e.priority && !SITE_DEFAULT_PRIORITY[e.site]) SITE_DEFAULT_PRIORITY[e.site] = e.priority; });
+
+const K_SITE_PRIORITY_OVERRIDES = 'dsc_site_priority_overrides_v1';
+let sitePriorityOverrides = {};
+
+function getEffectiveSitePriority(siteName) {
+  return sitePriorityOverrides[siteName] || SITE_DEFAULT_PRIORITY[siteName] || '';
+}
+
+async function fetchSitePriorityOverrides() {
+  try {
+    const r = await fetch(WORKER_URL + '/get-site-priorities');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.ok && d.overrides) {
+      sitePriorityOverrides = d.overrides;
+      sj(K_SITE_PRIORITY_OVERRIDES, sitePriorityOverrides);
+    }
+  } catch (e) {
+    sitePriorityOverrides = lj(K_SITE_PRIORITY_OVERRIDES, {});
+  }
+  _cdsRefreshSitePriorities();
+}
+
+// Re-applies effective priorities everywhere they're cached: the MAC lookup map
+// (used for any future report generation) AND any already-matched rows currently
+// on screen (so a priority change takes effect immediately, no re-upload needed).
+function _cdsRefreshSitePriorities() {
+  for (const info of _cdsSitesMap.values()) info.priority = getEffectiveSitePriority(info.siteName);
+  [_cdsAllMatchedRows, _cdsReportRows, _cdsFilteredRows].forEach(arr => {
+    if (Array.isArray(arr)) arr.forEach(r => { r.priority = getEffectiveSitePriority(r.siteName); });
+  });
+}
+
+async function setSitePriority(siteName, priority) {
+  const prevOverrides = { ...sitePriorityOverrides };
+  if (getEffectiveSitePriority(siteName) === priority && sitePriorityOverrides[siteName] === priority) return; // no-op
+  sitePriorityOverrides = { ...sitePriorityOverrides, [siteName]: priority };
+  sj(K_SITE_PRIORITY_OVERRIDES, sitePriorityOverrides);
+  _cdsRefreshSitePriorities();
+  renderSitePriorityList((document.getElementById('site-priority-search')||{}).value || '');
+  // Live-refresh whatever's currently visible so the change is felt immediately.
+  if (typeof _cdsRenderPriorityChips === 'function') _cdsRenderPriorityChips();
+  if (typeof _cdsRenderKeralaMap === 'function' && _cdsAllMatchedRows.length) _cdsRenderKeralaMap();
+  if (typeof _cdsApplySearch === 'function' && _cdsAllMatchedRows.length) _cdsApplySearch((document.getElementById('ds-search')||{}).value || '');
+
+  try {
+    const r = await fetch(WORKER_URL + '/set-site-priorities', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ overrides: sitePriorityOverrides })
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'save failed');
+    showToast(siteName + ' set to ' + priority + ' ✓');
+    logActivity(getCurrentUser(), 'remark', 'Set <strong>' + esc(siteName) + '</strong> priority to ' + priority);
+  } catch (e) {
+    // Roll back on failure so the UI doesn't silently drift from the server.
+    sitePriorityOverrides = prevOverrides;
+    sj(K_SITE_PRIORITY_OVERRIDES, sitePriorityOverrides);
+    _cdsRefreshSitePriorities();
+    renderSitePriorityList((document.getElementById('site-priority-search')||{}).value || '');
+    if (typeof _cdsRenderPriorityChips === 'function') _cdsRenderPriorityChips();
+    if (typeof _cdsRenderKeralaMap === 'function' && _cdsAllMatchedRows.length) _cdsRenderKeralaMap();
+    if (typeof _cdsApplySearch === 'function' && _cdsAllMatchedRows.length) _cdsApplySearch((document.getElementById('ds-search')||{}).value || '');
+    showToast('Could not save — try again (' + e.message + ')');
+  }
+}
+
+function renderSitePriorityList(filter) {
+  const el = document.getElementById('site-priority-list');
+  if (!el) return;
+  const q = (filter || '').toLowerCase().trim();
+  const names = Object.keys(SITE_DEFAULT_PRIORITY).sort();
+  const filtered = q ? names.filter(n => n.toLowerCase().includes(q)) : names;
+
+  if (!filtered.length) {
+    el.innerHTML = '<div class="site-pri-empty">No sites match "' + esc(filter) + '".</div>';
+    return;
+  }
+
+  el.innerHTML = filtered.map((name, i) => {
+    const current = getEffectiveSitePriority(name);
+    const isOverridden = !!sitePriorityOverrides[name];
+    return '<div class="site-pri-row">' +
+      '<div class="site-pri-name" title="' + esc(name) + '">' + esc(name) + (isOverridden ? '<span class="site-pri-custom">custom</span>' : '') + '</div>' +
+      '<div class="site-pri-btns" data-site-idx="' + i + '">' +
+        DS_PRIORITY_ORDER.map(p => '<button class="site-pri-btn' + (current === p ? ' active' : '') + '" style="--pri-color:' + (DS_PRIORITY_META[p]?.color||'') + '" data-priority="' + p + '">' + p + '</button>').join('') +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Event delegation with data attributes (site names may contain characters
+  // unsafe to interpolate directly into an inline onclick string).
+  el.querySelectorAll('.site-pri-btns').forEach((wrap, i) => {
+    const name = filtered[i];
+    wrap.querySelectorAll('.site-pri-btn').forEach(btn => {
+      btn.addEventListener('click', () => setSitePriority(name, btn.getAttribute('data-priority')));
+    });
+  });
+
+  const subEl = document.getElementById('site-priority-sub');
+  if (subEl) {
+    const overriddenCount = Object.keys(sitePriorityOverrides).length;
+    subEl.textContent = names.length + ' sites' + (overriddenCount ? ' · ' + overriddenCount + ' customised' : '');
+  }
+}
 
 // ── Status metadata for the Kerala device map (6 tracked statuses) ──
 const DS_STATUS_META = {
