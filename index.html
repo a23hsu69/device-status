@@ -3944,10 +3944,11 @@ function buildWizardForm(type) {
       <input class="report-inp" type="date" id="poc-date" value="${today}" onchange="updatePocMeta()"/>
     </div>
     <div class="report-field">
-      <label>Container number <span style="font-size:10px;color:var(--text3);font-weight:400">— type or scan, then press Enter</span></label>
+      <label>Container number <span style="font-size:10px;color:var(--text3);font-weight:400">— 4 letters + 7 numbers, e.g. ABCD1234567, then press Enter</span></label>
       <div style="display:flex;gap:8px">
-        <input class="report-inp" type="text" id="poc-container-inp" placeholder="e.g. DPWU9078594" autocomplete="off" autocapitalize="characters" inputmode="text"
+        <input class="report-inp" type="text" id="poc-container-inp" placeholder="ABCD1234567" autocomplete="off" autocapitalize="characters" inputmode="text" maxlength="11"
           style="flex:1;font-family:monospace;letter-spacing:.5px"
+          oninput="sanitizePocContainerInput(this)"
           onkeydown="if(event.key==='Enter'){event.preventDefault();addPocContainer();}"/>
         <button class="btn btn-primary" type="button" onclick="addPocContainer()">Add</button>
       </div>
@@ -4025,23 +4026,37 @@ function updatePocMeta() {
   savePocDraft();
 }
 
+// Live-filters the container input as the engineer types or a scanner wedges
+// text in: forces uppercase, allows only 4 letters then up to 7 digits, and
+// silently drops anything else (spaces, symbols, misplaced characters).
+function sanitizePocContainerInput(el) {
+  const raw = el.value.toUpperCase();
+  let letters = '';
+  let digits = '';
+  for (const ch of raw) {
+    if (letters.length < 4 && /[A-Z]/.test(ch)) letters += ch;
+    else if (letters.length === 4 && digits.length < 7 && /[0-9]/.test(ch)) digits += ch;
+  }
+  el.value = letters + digits;
+}
+
 function addPocContainer() {
   const inp = document.getElementById('poc-container-inp');
   if (!inp) return;
   const raw = inp.value.trim().toUpperCase().replace(/\s+/g, '');
   const hintEl = document.getElementById('poc-container-hint');
   if (!raw) return;
+  if (!CONTAINER_NO_RE.test(raw)) {
+    if (hintEl) { hintEl.textContent = '✕ Must be 4 letters + 7 numbers, e.g. ABCD1234567'; hintEl.style.color = 'var(--red-text)'; }
+    return; // blocked — leave the input as-is so they can finish/fix it
+  }
   if (pocEntries.some(e => e.containerNo === raw)) {
     if (hintEl) { hintEl.textContent = '⚠ ' + raw + ' already logged'; hintEl.style.color = 'var(--amber-text)'; }
     inp.value = ''; inp.focus();
     return;
   }
-  const valid = CONTAINER_NO_RE.test(raw);
   pocEntries.push({ containerNo: raw, ok: true });
-  if (hintEl) {
-    hintEl.textContent = valid ? '' : '⚠ Doesn\u2019t look like a standard container number — logged anyway';
-    hintEl.style.color = 'var(--amber-text)';
-  }
+  if (hintEl) hintEl.textContent = '';
   inp.value = '';
   inp.focus();
   renderPocList();
