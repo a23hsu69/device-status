@@ -4098,31 +4098,74 @@ function renderPocList() {
   ).join('');
 }
 
+// Lazy-loads ExcelJS only when a POC file is actually exported — the SheetJS
+// build this app already loads elsewhere (xlsx.full.min.js) cannot write cell
+// colors/fonts on save (community edition strips styles on write), so
+// matching the blue header row needs a styling-capable library instead.
+// Loaded on demand rather than in <head> so engineers who never use this
+// report don't pay for an extra ~950KB download on every page load.
+let _exceljsLoadPromise = null;
+function loadExcelJs() {
+  if (typeof ExcelJS !== 'undefined') return Promise.resolve();
+  if (_exceljsLoadPromise) return _exceljsLoadPromise;
+  _exceljsLoadPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => { _exceljsLoadPromise = null; reject(new Error('Could not load Excel styling library — check your connection')); };
+    document.head.appendChild(s);
+  });
+  return _exceljsLoadPromise;
+}
+
 // Builds a workbook matching the current POC format: Sr. No. / Location of
-// POC / Date of POC / Container No / Cross Checked in LDB Portal.
+// POC / Date of POC / Container No / Cross Checked in LDB Portal, with the
+// same blue bold header and Cambria body font as the reference file.
 function buildPocWorkbook() {
   const location = document.getElementById('poc-location')?.value.trim() || 'Unknown site';
   const dateStr  = document.getElementById('poc-date')?.value || new Date().toISOString().slice(0, 10);
   const dateObj  = new Date(dateStr);
-  const rows = [['Sr. No.', 'Location of POC', 'Date of POC', 'Container No', 'Cross Checked in LDB Portal']];
-  pocEntries.forEach((e, i) => { rows.push([i + 1, location, dateObj, e.containerNo, e.ok ? 'Reading OK' : 'Mismatch']); });
-  const ws = XLSX.utils.aoa_to_sheet(rows, { cellDates: true });
-  ws['!cols'] = [{ wch: 8 }, { wch: 32 }, { wch: 14 }, { wch: 20 }, { wch: 24 }];
-  for (let r = 2; r <= pocEntries.length + 1; r++) { const cell = ws['C' + r]; if (cell) cell.z = 'dd/mm/yyyy'; }
-  const wb = XLSX.utils.book_new();
+  const wb = new ExcelJS.Workbook();
   const tabName = (location || 'POC').replace(/[:\\/?*[\]]/g, '').slice(0, 31) || 'POC';
-  XLSX.utils.book_append_sheet(wb, ws, tabName);
+  const ws = wb.addWorksheet(tabName);
+  ws.columns = [
+    { header: 'Sr. No.', key: 'sr', width: 8 },
+    { header: 'Location of POC', key: 'loc', width: 32 },
+    { header: 'Date of POC', key: 'date', width: 14 },
+    { header: 'Container No', key: 'container', width: 20 },
+    { header: 'Cross Checked in LDB Portal', key: 'check', width: 24 },
+  ];
+  ws.getRow(1).eachCell(cell => {
+    cell.font = { bold: true, name: 'Calibri', size: 11 };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9BC2E6' } };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+  });
+  pocEntries.forEach((e, i) => {
+    const row = ws.addRow({ sr: i + 1, loc: location, date: dateObj, container: e.containerNo, check: e.ok ? 'Reading OK' : 'Mismatch' });
+    row.getCell('date').numFmt = 'dd/mm/yyyy';
+    row.eachCell(cell => { cell.alignment = { horizontal: 'center' }; });
+    row.getCell('loc').font       = { name: 'Cambria', size: 14 };
+    row.getCell('date').font      = { name: 'Cambria', size: 14 };
+    row.getCell('container').font = { name: 'Cambria', size: 14 };
+  });
   const fname = (location || 'POC').trim().replace(/\s+/g, '_') + '_' +
     String(dateObj.getDate()).padStart(2, '0') + '-' + String(dateObj.getMonth() + 1).padStart(2, '0') + '-' + dateObj.getFullYear() + '.xlsx';
   return { wb, fname, location, count: pocEntries.length };
 }
 
-function generatePocExcel() {
-  if (typeof XLSX === 'undefined') { showToast('Excel library not loaded — try again in a moment'); return; }
+async function generatePocExcel() {
   if (!pocEntries.length) { showToast('Log at least one container first'); return; }
   if (!document.getElementById('poc-location')?.value.trim()) { showToast('Enter the POC location first'); return; }
+  if (typeof ExcelJS === 'undefined') showToast('Loading Excel engine…');
+  try { await loadExcelJs(); } catch (e) { showToast(e.message); return; }
   const { wb, fname, location, count } = buildPocWorkbook();
-  XLSX.writeFile(wb, fname);
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
   logActivity(getCurrentUser(), 'report',
     'Filed <strong>Container POC — ' + esc(location) + '</strong> (' + count + ' containers)',
     pocEntries.map((e, i) => (i + 1) + '. ' + e.containerNo + (e.ok ? ' — Reading OK' : ' — Mismatch')).join('\n')
@@ -4139,7 +4182,7 @@ function generatePocExcel() {
   showToast(fname + ' downloaded ✓');
 }
 
-function emailPocExcel() {
+async function emailPocExcel() {
   if (!pocEntries.length) { showToast('Log at least one container first'); return; }
   const location = document.getElementById('poc-location')?.value.trim();
   if (!location) { showToast('Enter the POC location first'); return; }
@@ -4150,7 +4193,7 @@ function emailPocExcel() {
   const ccSel  = document.getElementById('wizard-cc-sel');
   const toVal  = toSel ? toSel.value.trim() : '';
   const ccVals = ccSel ? Array.from(ccSel.selectedOptions).map(o => o.value).filter(Boolean) : [];
-  generatePocExcel();
+  await generatePocExcel();
   showInAppAlert('📎 Attach the file you just downloaded', 'The Excel file saved to your device — attach it to this mail before sending.');
   let mailto = 'mailto:' + encodeURIComponent(toVal);
   const params = [];
