@@ -1619,6 +1619,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
               <div class="report-type-icon">🗓️</div>
               <div><div class="report-type-name">Leave Application</div><div class="report-type-desc">Generate a formal leave request mail in BCL format.</div></div>
             </div>
+            <div class="report-type-card" onclick="openReportWizard('poc')">
+              <div class="report-type-icon">📦</div>
+              <div><div class="report-type-name">Container POC</div><div class="report-type-desc">Log container reads at a site — type or scan container numbers, export straight to Excel.</div></div>
+            </div>
           </div>
         </div>
 
@@ -1642,13 +1646,23 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
         <!-- ── ENGINEER VIEW ── -->
         <div id="visit-eng-view">
-          <!-- Engineer visit request status (v8 Phase 3) -->
-          <div id="eng-visit-status-wrap" style="padding:.75rem 1.25rem;border-bottom:1px solid var(--border)">
-            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              My Requests
+          <!-- Engineer visit request status (v8 Phase 3) — collapsed by default -->
+          <div id="eng-visit-status-wrap">
+            <div class="sett-row sett-row-tap" onclick="toggleSettPanel('panel-my-visit-requests')" id="row-my-visit-requests" style="border-bottom:1px solid var(--border)">
+              <div class="sett-row-icon" style="background:var(--accent-bg)">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="var(--accent)" stroke-width="1.3"/><path d="M5 8l2 2 4-4" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="sett-row-body">
+                <div class="sett-row-title">My Requests</div>
+                <div class="sett-row-sub" id="my-visit-requests-sub">Tap to view your submitted requests</div>
+              </div>
+              <svg class="sett-chevron" id="chev-my-visit-requests" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <div id="eng-visit-status"><div style="font-size:12px;color:var(--text2)">Loading…</div></div>
+            <div class="sett-panel" id="panel-my-visit-requests">
+              <div class="sett-panel-inner">
+                <div id="eng-visit-status"><div style="font-size:12px;color:var(--text2)">Loading…</div></div>
+              </div>
+            </div>
           </div>
           <!-- Two action cards -->
           <div id="visit-type-selector">
@@ -3647,7 +3661,8 @@ function openReportWizard(type) {
     electrical:  '⚡ Electrical Issue Report',
     rma:         '🔧 RMA Request',
     sim:         '📶 SIM Fault Report',
-    leave:       '🗓️ Leave Application'
+    leave:       '🗓️ Leave Application',
+    poc:         '📦 Container POC Report'
   };
   document.getElementById('wizard-title').textContent = titles[type] || 'Report';
   document.getElementById('report-type-selector').style.display = 'none';
@@ -3655,6 +3670,8 @@ function openReportWizard(type) {
   document.getElementById('wizard-body').innerHTML = buildWizardForm(type);
   // Auto-add first RMA card
   if (type === 'rma') { rmaComponentCount = 0; addRmaComponent(); }
+  // Ready the rapid-entry container list
+  if (type === 'poc') { initPocWizard(); }
   // Pre-fill To/CC from saved contacts after form is rendered
   fillWizardMailFields();
   // Phase 6: inject progress bar
@@ -3911,7 +3928,237 @@ function buildWizardForm(type) {
       </button>
     </div>`;
   }
+  if (type === 'poc') {
+    const today   = new Date().toISOString().slice(0, 10);
+    const lastLoc = ls('dsc_poc_last_location_v1') || '';
+    const siteOptions = getDeviceSites().map(s => '<option value="' + esc(s.replace(/_/g, ' ')) + '">').join('');
+
+    return `
+    <div class="report-field">
+      <label>Location of POC</label>
+      <input class="report-inp" type="text" id="poc-location" list="poc-site-list" placeholder="e.g. GIPL Paliyekkara Toll Plaza" value="${esc(lastLoc)}" oninput="updatePocMeta()"/>
+      <datalist id="poc-site-list">${siteOptions}</datalist>
+    </div>
+    <div class="report-field">
+      <label>Date of POC</label>
+      <input class="report-inp" type="date" id="poc-date" value="${today}" onchange="updatePocMeta()"/>
+    </div>
+    <div class="report-field">
+      <label>Container number <span style="font-size:10px;color:var(--text3);font-weight:400">— type or scan, then press Enter</span></label>
+      <div style="display:flex;gap:8px">
+        <input class="report-inp" type="text" id="poc-container-inp" placeholder="e.g. DPWU9078594" autocomplete="off" autocapitalize="characters" inputmode="text"
+          style="flex:1;font-family:monospace;letter-spacing:.5px"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addPocContainer();}"/>
+        <button class="btn btn-primary" type="button" onclick="addPocContainer()">Add</button>
+      </div>
+      <div class="cred-hint" id="poc-container-hint" style="margin-top:4px"></div>
+    </div>
+    <div class="report-field">
+      <label>Logged containers (<span id="poc-count">0</span>)</label>
+      <div id="poc-list" style="max-height:260px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:4px 8px"></div>
+      <button class="btn btn-sm" type="button" style="margin-top:8px" onclick="clearPocList()">Clear all</button>
+    </div>
+    <div class="mail-compose-box">
+      <div class="mail-compose-box-title">Mail recipients <span style="font-size:10px;font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0">(optional — only used by "Email it")</span></div>
+      <div class="contact-sel-group">
+        <div class="contact-sel-row">
+          <label>To</label>
+          <select id="wizard-to-sel">${buildContactOptions('to')}</select>
+        </div>
+        <div class="contact-sel-row">
+          <label>CC</label>
+          <select id="wizard-cc-sel" multiple size="3">${buildContactOptions('cc')}</select>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="generatePocExcel()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download Excel
+      </button>
+      <button class="btn" onclick="emailPocExcel()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 6-12 6V9.5l8-1.5-8-1.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        Email it
+      </button>
+    </div>`;
+  }
   return '';
+}
+
+// ── Container POC report ──────────────────────────────────────
+// Sr.No / Location / Date / Cross-checked are all set once per batch — the
+// only thing the engineer types per container is the container number.
+const K_POC_DRAFT = 'dsc_poc_draft_v1'; // { location, date, entries, savedAt }
+let pocEntries = [];
+const CONTAINER_NO_RE = /^[A-Z]{4}\d{7}$/;
+
+function initPocWizard() {
+  const draft   = lj(K_POC_DRAFT, null);
+  // Only restore a draft saved within the last 12h — same shift, protects
+  // against losing an in-progress scan to an accidental tab switch, but
+  // never silently carries yesterday's containers into today's batch.
+  const isFresh = draft && draft.savedAt && (Date.now() - draft.savedAt) < 12 * 60 * 60 * 1000;
+  if (isFresh && Array.isArray(draft.entries) && draft.entries.length) {
+    pocEntries = draft.entries.slice();
+    const locEl  = document.getElementById('poc-location'); if (locEl  && draft.location) locEl.value  = draft.location;
+    const dateEl = document.getElementById('poc-date');     if (dateEl && draft.date)     dateEl.value = draft.date;
+  } else {
+    pocEntries = [];
+  }
+  renderPocList();
+  const inp = document.getElementById('poc-container-inp');
+  if (inp) inp.focus();
+}
+
+function savePocDraft() {
+  sj(K_POC_DRAFT, {
+    location: document.getElementById('poc-location')?.value || '',
+    date:     document.getElementById('poc-date')?.value || '',
+    entries:  pocEntries,
+    savedAt:  Date.now()
+  });
+}
+
+function updatePocMeta() {
+  const loc = document.getElementById('poc-location')?.value.trim();
+  if (loc) lset('dsc_poc_last_location_v1', loc);
+  savePocDraft();
+}
+
+function addPocContainer() {
+  const inp = document.getElementById('poc-container-inp');
+  if (!inp) return;
+  const raw = inp.value.trim().toUpperCase().replace(/\s+/g, '');
+  const hintEl = document.getElementById('poc-container-hint');
+  if (!raw) return;
+  if (pocEntries.some(e => e.containerNo === raw)) {
+    if (hintEl) { hintEl.textContent = '⚠ ' + raw + ' already logged'; hintEl.style.color = 'var(--amber-text)'; }
+    inp.value = ''; inp.focus();
+    return;
+  }
+  const valid = CONTAINER_NO_RE.test(raw);
+  pocEntries.push({ containerNo: raw, ok: true });
+  if (hintEl) {
+    hintEl.textContent = valid ? '' : '⚠ Doesn\u2019t look like a standard container number — logged anyway';
+    hintEl.style.color = 'var(--amber-text)';
+  }
+  inp.value = '';
+  inp.focus();
+  renderPocList();
+  savePocDraft();
+}
+
+function removePocContainer(idx) {
+  pocEntries.splice(idx, 1);
+  renderPocList();
+  savePocDraft();
+}
+
+function togglePocOk(idx) {
+  pocEntries[idx].ok = !pocEntries[idx].ok;
+  renderPocList();
+  savePocDraft();
+}
+
+function clearPocList() {
+  if (!pocEntries.length) return;
+  if (clearPocList._confirm) {
+    clearPocList._confirm = false;
+    pocEntries = [];
+    renderPocList();
+    savePocDraft();
+    showToast('List cleared');
+  } else {
+    clearPocList._confirm = true;
+    showToast('Tap "Clear all" again to confirm');
+    setTimeout(() => { clearPocList._confirm = false; }, 3000);
+  }
+}
+clearPocList._confirm = false;
+
+function renderPocList() {
+  const countEl = document.getElementById('poc-count');
+  const listEl  = document.getElementById('poc-list');
+  if (countEl) countEl.textContent = pocEntries.length;
+  if (!listEl) return;
+  if (!pocEntries.length) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:10px 4px;text-align:center">No containers logged yet — type or scan one above.</div>';
+    return;
+  }
+  listEl.innerHTML = pocEntries.map((e, i) =>
+    '<div style="display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--border)">' +
+      '<span style="font-size:10px;color:var(--text3);width:22px;flex-shrink:0">' + (i + 1) + '</span>' +
+      '<span style="flex:1;font-family:monospace;font-size:12.5px;letter-spacing:.5px;color:var(--text)">' + esc(e.containerNo) + '</span>' +
+      '<button onclick="togglePocOk(' + i + ')" style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid;cursor:pointer;font-family:var(--font);white-space:nowrap;' +
+        (e.ok ? 'background:var(--green-bg);border-color:var(--green-dot);color:var(--green-text)' : 'background:var(--red-bg);border-color:var(--red-dot);color:var(--red-text)') + '">' +
+        (e.ok ? '✓ Reading OK' : '✗ Mismatch') +
+      '</button>' +
+      '<button onclick="removePocContainer(' + i + ')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 4px;line-height:1">✕</button>' +
+    '</div>'
+  ).join('');
+}
+
+// Builds a workbook matching the current POC format: Sr. No. / Location of
+// POC / Date of POC / Container No / Cross Checked in LDB Portal.
+function buildPocWorkbook() {
+  const location = document.getElementById('poc-location')?.value.trim() || 'Unknown site';
+  const dateStr  = document.getElementById('poc-date')?.value || new Date().toISOString().slice(0, 10);
+  const dateObj  = new Date(dateStr);
+  const rows = [['Sr. No.', 'Location of POC', 'Date of POC', 'Container No', 'Cross Checked in LDB Portal']];
+  pocEntries.forEach((e, i) => { rows.push([i + 1, location, dateObj, e.containerNo, e.ok ? 'Reading OK' : 'Mismatch']); });
+  const ws = XLSX.utils.aoa_to_sheet(rows, { cellDates: true });
+  ws['!cols'] = [{ wch: 8 }, { wch: 32 }, { wch: 14 }, { wch: 20 }, { wch: 24 }];
+  for (let r = 2; r <= pocEntries.length + 1; r++) { const cell = ws['C' + r]; if (cell) cell.z = 'dd/mm/yyyy'; }
+  const wb = XLSX.utils.book_new();
+  const tabName = (location || 'POC').replace(/[:\\/?*[\]]/g, '').slice(0, 31) || 'POC';
+  XLSX.utils.book_append_sheet(wb, ws, tabName);
+  const fname = (location || 'POC').trim().replace(/\s+/g, '_') + '_' +
+    String(dateObj.getDate()).padStart(2, '0') + '-' + String(dateObj.getMonth() + 1).padStart(2, '0') + '-' + dateObj.getFullYear() + '.xlsx';
+  return { wb, fname, location, count: pocEntries.length };
+}
+
+function generatePocExcel() {
+  if (typeof XLSX === 'undefined') { showToast('Excel library not loaded — try again in a moment'); return; }
+  if (!pocEntries.length) { showToast('Log at least one container first'); return; }
+  if (!document.getElementById('poc-location')?.value.trim()) { showToast('Enter the POC location first'); return; }
+  const { wb, fname, location, count } = buildPocWorkbook();
+  XLSX.writeFile(wb, fname);
+  logActivity(getCurrentUser(), 'report',
+    'Filed <strong>Container POC — ' + esc(location) + '</strong> (' + count + ' containers)',
+    pocEntries.map((e, i) => (i + 1) + '. ' + e.containerNo + (e.ok ? ' — Reading OK' : ' — Mismatch')).join('\n')
+  );
+  fetch(WORKER_URL + '/submit-report', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user: getCurrentUser(), type: 'poc',
+      subject: 'Container POC — ' + location + ' (' + count + ' containers)',
+      reportBody: pocEntries.map((e, i) => (i + 1) + '. ' + e.containerNo + (e.ok ? ' — Reading OK' : ' — Mismatch')).join('\n'),
+      ts: Date.now()
+    })
+  }).catch(() => {});
+  showToast(fname + ' downloaded ✓');
+}
+
+function emailPocExcel() {
+  if (!pocEntries.length) { showToast('Log at least one container first'); return; }
+  const location = document.getElementById('poc-location')?.value.trim();
+  if (!location) { showToast('Enter the POC location first'); return; }
+  const count   = pocEntries.length;
+  const subject = 'Container POC — ' + location + ' (' + count + ' containers)';
+  const body    = 'Dear Sir,\n\nPlease find attached the container POC readings for ' + location + '.\n\nTotal containers checked: ' + count + '\n\nRegards';
+  const toSel  = document.getElementById('wizard-to-sel');
+  const ccSel  = document.getElementById('wizard-cc-sel');
+  const toVal  = toSel ? toSel.value.trim() : '';
+  const ccVals = ccSel ? Array.from(ccSel.selectedOptions).map(o => o.value).filter(Boolean) : [];
+  generatePocExcel();
+  showInAppAlert('📎 Attach the file you just downloaded', 'The Excel file saved to your device — attach it to this mail before sending.');
+  let mailto = 'mailto:' + encodeURIComponent(toVal);
+  const params = [];
+  if (ccVals.length) params.push('cc=' + encodeURIComponent(ccVals.join(',')));
+  params.push('subject=' + encodeURIComponent(subject));
+  params.push('body=' + encodeURIComponent(body));
+  mailto += '?' + params.join('&');
+  setTimeout(() => { window.location.href = mailto; }, 900);
 }
 
 function previewAndSend() {
@@ -7175,6 +7422,7 @@ const WIZARD_STEPS = {
   rma:        ['Site & Device', 'Components',      'Preview & Send'],
   sim:        ['Site & Device', 'SIM Details',     'Preview & Send'],
   leave:      ['Duration',      'Reason & Details', 'Preview & Send'],
+  poc:        ['Site & Date',   'Log Containers',   'Export'],
 };
 
 function buildWizardProgressBar(type, activeStep) {
@@ -9705,12 +9953,18 @@ async function loadEngineerVisitStatus() {
 }
 
 function renderEngineerVisitStatus(visits) {
-  const el = document.getElementById('eng-visit-status');
+  const el  = document.getElementById('eng-visit-status');
+  const sub = document.getElementById('my-visit-requests-sub');
   if (!el) return;
 
   if (!visits.length) {
     el.innerHTML = '<div style="font-size:12px;color:var(--text2);padding:8px 0">No visit requests yet.</div>';
+    if (sub) sub.textContent = 'No requests yet';
     return;
+  }
+  if (sub) {
+    const pending = visits.filter(v => (v.status || 'pending') === 'pending').length;
+    sub.textContent = (pending ? pending + ' pending · ' : '') + visits.length + ' total';
   }
 
   el.innerHTML = visits.map(v => {
